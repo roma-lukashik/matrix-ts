@@ -17,8 +17,8 @@
   "scripts": {
     "start": "tsc",
     "build": "tsc",
-    "test": "jest",
-    "test:watch": "jest --watch-all --coverage"
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch-all --coverage --passWithNoTests"
   },
   "files": [
     "dist/**/*"
