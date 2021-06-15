@@ -1,5 +1,5 @@
 import { identity } from '../utils/function'
-import { reverse, zip } from '../utils/array'
+import { array, reverse, zip } from '../utils/array'
 
 export type Matrix1 = number[]
 export type Matrix2 = number[][]
@@ -23,7 +23,7 @@ export const create = <
     MatrixN
   )
 >(fill: () => number, ...[d0, ...dn]: T): R =>
-  Array.from({ length: d0 }, () => dn.length ? create(fill, ...dn): fill()) as R
+  array(d0, () => dn.length ? create(fill, ...dn): fill()) as R
 
 export const zeros = <T extends number[]>(...dn: T) => create(identity(0), ...dn)
 
