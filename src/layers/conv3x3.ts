@@ -1,18 +1,15 @@
 import { randn } from '../random'
-import { divide, Matrix2, Matrix3, sample, shape, zeros } from '../matrix'
+import { divide, Matrix2, Matrix3, multiply, sample, shape } from '../matrix'
 import { range } from '../utils/array'
 
 export const conv3x3 = (filtersNumber: number): Matrix3 => divide(randn(filtersNumber, 3, 3), 9)
 
-export const forward = (input: Matrix2, filtersNumber: number): Matrix3 => {
+export const forward = (input: Matrix2, filters: Matrix3): Matrix3 => {
   const [h, w] = shape(input)
-  const output = zeros(h - 2, w - 2, filtersNumber)
-}
-
-const frames3x3 = (input: Matrix2): Matrix2[] => {
-  const [h, w] = shape(input)
-  return range(0, h - 2).flatMap((i) =>
-    range(0, w - 2).map((j) => frame3x3(input, i, j))
+  return range(0, h - 2).map((i) =>
+    range(0, w - 2).map((j) =>
+      multiply(frame3x3(input, i, j), filters) // add sum by axis (1,2)
+    )
   )
 }
 
