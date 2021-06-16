@@ -54,6 +54,10 @@ describe('matrix', () => {
   })
 
   describe('#shape', () => {
+    it('returns 0 shape for the empty matrix', () => {
+      expect(matrix.shape([])).toEqual([0])
+    })
+
     it('returns 2x2 shape', () => {
       expect(matrix.shape(matrix.create(one, 2, 2))).toEqual([2, 2])
     })
