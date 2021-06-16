@@ -69,20 +69,24 @@ export const sample = <
     Vector2[]
   )
 >(matrix: T, ...[d0, ...rest]: S): T =>
-  d0 ? matrix.slice(d0[0], d0[1]).map((item) => isMatrixN(item) ? sample(item, ...rest) : item) as T : matrix
+  d0 ? matrix.slice(...d0).map((item) => isMatrixN(item) ? sample(item, ...rest) : item) as T : matrix
 
+// Number of rows.
 const size = (matrix: Matrix0 | MatrixN): number => isMatrixN(matrix) ? matrix.length : 0
 
+// Number of dimensions.
 const ndim = (matrix: Matrix0 | MatrixN): number => isMatrixN(matrix) ? shape(matrix).length : 0
+
+// Typesafe casting value to MatrixN.
+const matrixN = <T extends MatrixN>(value: Matrix0 | T): T =>
+  isMatrixN(value) ? value : error(`Value ${value} is not an instance of MatrixN`)
+
+// Typesafe casting value to Matrix0.
+const matrix0 = (value: Matrix0 | MatrixN): Matrix0 =>
+  isMatrixN(value) ? error(`Value is not an instance of Matrix0`) : value
 
 const isMatrixN = <T extends MatrixN>(matrix: Matrix0 | T): matrix is T => Array.isArray(matrix)
 
-const isMatrix0 = (matrix: Matrix0 | MatrixN): matrix is Matrix0 => !isMatrixN(matrix)
-
-const toMatrixN = <T extends MatrixN>(value: Matrix0 | T): T =>
-  isMatrixN(value) ? value : error(`Value ${value} is not an instance of MatrixN`)
-
-// Needs refactoring.
 const broadcast = <
   T1 extends MatrixN | Matrix0,
   T2 extends MatrixN | Matrix0,
@@ -92,23 +96,23 @@ const broadcast = <
     Matrix0
   )
 >(a: T1, b: T2, callback: math.BinaryOperator): T3 => {
-  if (isMatrix0(a) && isMatrix0(b)) {
-    return callback(a, b) as T3
+  if (size(a) === 0 && size(b) === 0) {
+    return callback(matrix0(a), matrix0(b)) as T3
   }
   if (ndim(a) < ndim(b)) {
-    return toMatrixN(b).map((x) => broadcast(a, x, callback)) as T3
+    return matrixN(b).map((x) => broadcast(a, x, callback)) as T3
   }
   if (ndim(a) > ndim(b)) {
-    return toMatrixN(a).map((x) => broadcast(x, b, callback)) as T3
+    return matrixN(a).map((x) => broadcast(x, b, callback)) as T3
   }
   if (size(a) === size(b)) {
-    return zip(toMatrixN(a), toMatrixN(b)).map(([x, y]) => broadcast(x, y, callback)) as T3
+    return zip(matrixN(a), matrixN(b)).map(([x, y]) => broadcast(x, y, callback)) as T3
   }
   if (size(a) === 1) {
-    return broadcast(array(size(b), identity(toMatrixN(a)[0])), b, callback) as T3
+    return broadcast(array(size(b), identity(matrixN(a)[0])), b, callback) as T3
   }
   if (size(b) === 1) {
-    return broadcast(a, array(size(a), identity(toMatrixN(b)[0])), callback) as T3
+    return broadcast(a, array(size(a), identity(matrixN(b)[0])), callback) as T3
   }
 
   return error('Matrix could not be broadcast together.')
