@@ -1,5 +1,5 @@
-import { error, identity } from '../utils/function'
-import { array, zip } from '../utils/array'
+import { constant, error } from '../utils/function'
+import { array, first, zip } from '../utils/array'
 import * as math from '../utils/math'
 
 export type Matrix0 = number
@@ -37,7 +37,7 @@ export const create = <
 >(fill: () => number, ...[d0, ...dn]: T): R =>
   array(d0, () => dn.length ? create(fill, ...dn): fill()) as R
 
-export const zeros = <T extends VectorN>(...dn: T) => create(identity(0), ...dn)
+export const zeros = <T extends VectorN>(...dn: T) => create(constant(0), ...dn)
 
 export const shape = <
   T extends MatrixN,
@@ -49,8 +49,8 @@ export const shape = <
     VectorN
   )
 >(matrix: T): S => [
-  size(matrix),
-  ...(isMatrixN(matrix[0]) ? shape(matrix[0]) : []),
+  len(matrix),
+  ...(isMatrixN(first(matrix)) ? shape(matrixN(first(matrix))) : []),
 ] as S
 
 export const multiply: MatrixBinaryOperator = (matrix1, matrix2) =>
@@ -72,7 +72,7 @@ export const sample = <
   d0 ? matrix.slice(...d0).map((item) => isMatrixN(item) ? sample(item, ...rest) : item) as T : matrix
 
 // Number of rows.
-const size = (matrix: Matrix0 | MatrixN): number => isMatrixN(matrix) ? matrix.length : 0
+const len = (matrix: Matrix0 | MatrixN): number => isMatrixN(matrix) ? matrix.length : 0
 
 // Number of dimensions.
 const ndim = (matrix: Matrix0 | MatrixN): number => isMatrixN(matrix) ? shape(matrix).length : 0
@@ -95,24 +95,24 @@ const broadcast = <
     T2 extends MatrixN ? MatrixN :
     Matrix0
   )
->(a: T1, b: T2, callback: math.BinaryOperator): T3 => {
-  if (size(a) === 0 && size(b) === 0) {
-    return callback(matrix0(a), matrix0(b)) as T3
+>(a: T1, b: T2, operator: math.BinaryOperator): T3 => {
+  if (len(a) === 0 && len(b) === 0) {
+    return operator(matrix0(a), matrix0(b)) as T3
   }
   if (ndim(a) < ndim(b)) {
-    return matrixN(b).map((x) => broadcast(a, x, callback)) as T3
+    return matrixN(b).map((x) => broadcast(a, x, operator)) as T3
   }
   if (ndim(a) > ndim(b)) {
-    return matrixN(a).map((x) => broadcast(x, b, callback)) as T3
+    return matrixN(a).map((x) => broadcast(x, b, operator)) as T3
   }
-  if (size(a) === size(b)) {
-    return zip(matrixN(a), matrixN(b)).map(([x, y]) => broadcast(x, y, callback)) as T3
+  if (len(a) === len(b)) {
+    return zip(matrixN(a), matrixN(b)).map(([x, y]) => broadcast(x, y, operator)) as T3
   }
-  if (size(a) === 1) {
-    return broadcast(array(size(b), identity(matrixN(a)[0])), b, callback) as T3
+  if (len(a) === 1) {
+    return broadcast(array(len(b), constant(first(matrixN(a)))), b, operator) as T3
   }
-  if (size(b) === 1) {
-    return broadcast(a, array(size(a), identity(matrixN(b)[0])), callback) as T3
+  if (len(b) === 1) {
+    return broadcast(a, array(len(a), constant(first(matrixN(b)))), operator) as T3
   }
 
   return error('Matrix could not be broadcast together.')

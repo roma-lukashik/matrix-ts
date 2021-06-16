@@ -1,7 +1,7 @@
 import * as matrix from '.'
-import { identity } from '../utils/function'
+import { constant } from '../utils/function'
 
-const one = identity(1)
+const one = constant(1)
 
 describe('matrix', () => {
   describe('#create', () => {
