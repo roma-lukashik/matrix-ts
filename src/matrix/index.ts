@@ -8,6 +8,7 @@ export type Matrix2 = number[][]
 export type Matrix3 = number[][][]
 export type Matrix4 = number[][][][]
 export type MatrixN = Array<MatrixN | number>
+export type Matrix = Matrix0 | MatrixN
 
 export type Vector1 = [number]
 export type Vector2 = [number, number]
@@ -16,14 +17,16 @@ export type Vector4 = [number, number, number, number]
 export type VectorN = number[]
 
 type MatrixBinaryOperator = <
-  T1 extends Matrix0 | MatrixN,
-  T2 extends Matrix0 | MatrixN,
+  T1 extends Matrix,
+  T2 extends Matrix,
   T3 extends (
     T1 extends MatrixN ? MatrixN :
     T2 extends MatrixN ? MatrixN :
     Matrix0
   )
 >(a: T1, b: T2) => T3
+
+type AggregateMatrixOperator = (matrix: Matrix, axes?: VectorN) => Matrix
 
 export const create = <
   T extends VectorN,
@@ -62,19 +65,26 @@ export const multiply: MatrixBinaryOperator = (matrix1, matrix2) =>
 export const divide: MatrixBinaryOperator = (matrix1, matrix2) =>
   broadcast(matrix1, matrix2, math.divide)
 
-// Takes all matrix axes by default and sum all matrix elements.
-export const sum = <T extends Matrix0 | MatrixN>(
-  matrix: T,
-  [axis, ...restAxes]: VectorN = array(ndim(matrix), identity),
-): Matrix0 | MatrixN =>
+export const sum: AggregateMatrixOperator = (matrix, axes) =>
+  aggregate(matrix, axes, add)
+
+export const max: AggregateMatrixOperator = (matrix, axes) =>
+  aggregate(matrix, axes, (m1, m2) => broadcast(m1, m2, Math.max))
+
+// Takes all matrix axes and aggregate all matrix elements by default.
+const aggregate = (
+  matrix: Matrix,
+  [axis, ...restAxes] = array(ndim(matrix), identity),
+  operator: math.BinaryOperator,
+): Matrix =>
   isMatrixN(matrix) && isDefined(axis)
-    ? sum(sumByAxis(matrix, axis), restAxes.map((x) => x > axis ? x - 1 : x))
+    ? aggregate(aggregateByAxis(matrix, axis, operator), restAxes.map((x) => x > axis ? x - 1 : x), operator)
     : matrix
 
-const sumByAxis = <T extends MatrixN>(matrix: T, axis: number): Matrix0 | MatrixN =>
+const aggregateByAxis = (matrix: MatrixN, axis: number, operator: math.BinaryOperator): Matrix =>
   axis && ndim(matrix) > 1
-    ? matrix.reduce((acc, b) => [...matrixN(acc), sumByAxis(matrixN(b), axis - 1)], [])
-    : matrix.reduce((a, b) => add(a, b))
+    ? matrix.map((x) => aggregateByAxis(matrixN(x), axis - 1, operator))
+    : matrix.reduce(operator)
 
 export const sample = <
   T extends MatrixN,
@@ -89,24 +99,24 @@ export const sample = <
   d0 ? matrix.slice(...d0).map((item) => isMatrixN(item) ? sample(item, ...rest) : item) as T : matrix
 
 // Number of rows.
-const len = (matrix: Matrix0 | MatrixN): number => isMatrixN(matrix) ? matrix.length : 0
+const len = (matrix: Matrix): number => isMatrixN(matrix) ? matrix.length : 0
 
 // Number of dimensions.
-const ndim = (matrix: Matrix0 | MatrixN): number => isMatrixN(matrix) ? shape(matrix).length : 0
+const ndim = (matrix: Matrix): number => isMatrixN(matrix) ? shape(matrix).length : 0
 
 // Typesafe casting value to MatrixN.
 const matrixN = <T extends MatrixN>(value: Matrix0 | T): T =>
   isMatrixN(value) ? value : error(`Value ${value} is not an instance of MatrixN`)
 
 // Typesafe casting value to Matrix0.
-const matrix0 = (value: Matrix0 | MatrixN): Matrix0 =>
+const matrix0 = (value: Matrix): Matrix0 =>
   isMatrixN(value) ? error(`Value is not an instance of Matrix0`) : value
 
 const isMatrixN = <T extends MatrixN>(matrix: Matrix0 | T): matrix is T => Array.isArray(matrix)
 
 const broadcast = <
-  T1 extends MatrixN | Matrix0,
-  T2 extends MatrixN | Matrix0,
+  T1 extends Matrix,
+  T2 extends Matrix,
   T3 extends (
     T1 extends MatrixN ? MatrixN :
     T2 extends MatrixN ? MatrixN :
