@@ -1,3 +1,5 @@
+export type ArrayN<T> = Array<T | ArrayN<T>>
+
 export const array = <T extends any>(length: number, fill: (index: number) => T): T[] =>
   Array.from({ length }, (_, i) => fill(i))
 

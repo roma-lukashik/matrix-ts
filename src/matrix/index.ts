@@ -1,5 +1,5 @@
 import { constant, error, identity, isDefined } from '../utils/function'
-import { array, first, zip } from '../utils/array'
+import { array, ArrayN, first, zip } from '../utils/array'
 import * as math from '../utils/math'
 
 export type Matrix0 = number
@@ -7,7 +7,7 @@ export type Matrix1 = number[]
 export type Matrix2 = number[][]
 export type Matrix3 = number[][][]
 export type Matrix4 = number[][][][]
-export type MatrixN = Array<MatrixN | number>
+export type MatrixN = ArrayN<number>
 export type Matrix = Matrix0 | MatrixN
 
 export type Vector1 = [number]
@@ -16,15 +16,16 @@ export type Vector3 = [number, number, number]
 export type Vector4 = [number, number, number, number]
 export type VectorN = number[]
 
-type MatrixBinaryOperator = <
-  T1 extends Matrix,
-  T2 extends Matrix,
-  T3 extends (
-    T1 extends MatrixN ? MatrixN :
-    T2 extends MatrixN ? MatrixN :
-    Matrix0
-  )
->(a: T1, b: T2) => T3
+type Bigger<T1 extends Matrix, T2 extends Matrix> = (
+  T1 extends Matrix0 ? T2 extends Matrix0 ? Matrix0 : T2 :
+  T1 extends Matrix1 ? T2 extends Matrix0 ? T1 : T2 :
+  T1 extends Matrix2 ? T2 extends Matrix0 | Matrix1 ? T1 : T2 :
+  T1 extends Matrix3 ? T2 extends Matrix0 | Matrix1 | Matrix2 ? T1 : T2 :
+  T1 extends Matrix4 ? T2 extends Matrix0 | Matrix1 | Matrix2 | Matrix3 ? T1 : T2 :
+  T1
+)
+
+type MatrixBinaryOperator = <T1 extends Matrix, T2 extends Matrix>(a: T1, b: T2) => Bigger<T1, T2>
 
 type AggregateMatrixOperator = (matrix: Matrix, axes?: VectorN) => Matrix
 
@@ -87,8 +88,9 @@ const aggregateByAxis = (matrix: MatrixN, axis: number, operator: math.BinaryOpe
     : matrix.reduce(operator)
 
 export const sample = <
-  T extends MatrixN,
+  T extends Matrix,
   S extends (
+    T extends Matrix0 ? [] :
     T extends Matrix1 ? [Vector2] :
     T extends Matrix2 ? [Vector2, Vector2] :
     T extends Matrix3 ? [Vector2, Vector2, Vector2] :
@@ -96,7 +98,7 @@ export const sample = <
     Vector2[]
   )
 >(matrix: T, ...[d0, ...rest]: S): T =>
-  d0 ? matrix.slice(...d0).map((item) => isMatrixN(item) ? sample(item, ...rest) : item) as T : matrix
+  d0 && isMatrixN(matrix) ? matrix.slice(...d0).map((item) => sample(item, ...rest)) as T : matrix
 
 // Number of rows.
 const len = (matrix: Matrix): number => isMatrixN(matrix) ? matrix.length : 0
@@ -117,11 +119,7 @@ const isMatrixN = <T extends MatrixN>(matrix: Matrix0 | T): matrix is T => Array
 const broadcast = <
   T1 extends Matrix,
   T2 extends Matrix,
-  T3 extends (
-    T1 extends MatrixN ? MatrixN :
-    T2 extends MatrixN ? MatrixN :
-    Matrix0
-  )
+  T3 extends Bigger<T1, T2>
 >(a: T1, b: T2, operator: math.BinaryOperator): T3 => {
   if (len(a) === 0 && len(b) === 0) {
     return operator(matrix0(a), matrix0(b)) as T3
