@@ -1,4 +1,4 @@
-import { constant, error } from '../utils/function'
+import { constant, error, identity, isDefined } from '../utils/function'
 import { array, first, zip } from '../utils/array'
 import * as math from '../utils/math'
 
@@ -53,11 +53,28 @@ export const shape = <
   ...(isMatrixN(first(matrix)) ? shape(matrixN(first(matrix))) : []),
 ] as S
 
+export const add: MatrixBinaryOperator = (matrix1, matrix2) =>
+  broadcast(matrix1, matrix2, math.add)
+
 export const multiply: MatrixBinaryOperator = (matrix1, matrix2) =>
   broadcast(matrix1, matrix2, math.multiply)
 
 export const divide: MatrixBinaryOperator = (matrix1, matrix2) =>
   broadcast(matrix1, matrix2, math.divide)
+
+// Takes all matrix axes by default and sum all matrix elements.
+export const sum = <T extends Matrix0 | MatrixN>(
+  matrix: T,
+  [axis, ...restAxes]: VectorN = array(ndim(matrix), identity),
+): Matrix0 | MatrixN =>
+  isMatrixN(matrix) && isDefined(axis)
+    ? sum(sumByAxis(matrix, axis), restAxes.map((x) => x > axis ? x - 1 : x))
+    : matrix
+
+const sumByAxis = <T extends MatrixN>(matrix: T, axis: number): Matrix0 | MatrixN =>
+  axis && ndim(matrix) > 1
+    ? matrix.reduce((acc, b) => [...matrixN(acc), sumByAxis(matrixN(b), axis - 1)], [])
+    : matrix.reduce((a, b) => add(a, b))
 
 export const sample = <
   T extends MatrixN,

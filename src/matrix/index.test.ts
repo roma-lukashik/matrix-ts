@@ -67,6 +67,20 @@ describe('matrix', () => {
     })
   })
 
+  describe('#sample', () => {
+    it('returns 2x2 sample from 3x4 matrix', () => {
+      const matrix3x4 = [
+        [1, 2, 3, 4],
+        [1, 2, 3, 4],
+        [1, 2, 3, 4],
+      ]
+      expect(matrix.sample(matrix3x4, [1, 3], [2, 4])).toEqual([
+        [3, 4],
+        [3, 4],
+      ])
+    })
+  })
+
   describe('#divide', () => {
     it('passes simple case #1', () => {
       const m = [
@@ -88,20 +102,6 @@ describe('matrix', () => {
           [3.5, 4.0, 4.5],
           [4.0, 3.5, 3.0],
         ],
-      ])
-    })
-  })
-
-  describe('#sample', () => {
-    it('returns 2x2 sample from 3x4 matrix', () => {
-      const matrix3x4 = [
-        [1, 2, 3, 4],
-        [1, 2, 3, 4],
-        [1, 2, 3, 4],
-      ]
-      expect(matrix.sample(matrix3x4, [1, 3], [2, 4])).toEqual([
-        [3, 4],
-        [3, 4],
       ])
     })
   })
@@ -238,6 +238,48 @@ describe('matrix', () => {
 
       expect(matrix.multiply(a, b)).toEqual(c)
       expect(matrix.multiply(b, a)).toEqual(c)
+    })
+  })
+
+  describe('#sum', () => {
+    it('calculates a sum of a simple matrix', () => {
+      expect(matrix.sum([0.5, 1.5])).toBe(2)
+      expect(matrix.sum([0.5, 1.5], [0])).toBe(2)
+    })
+
+    it('calculates a sum of 3x2 matrix', () => {
+      const m = [
+        [0.5, 1.5],
+        [2.0, 4.0],
+        [1.0, 3.0],
+      ]
+      expect(matrix.sum(m)).toEqual(12)
+      expect(matrix.sum(m, [0])).toEqual([3.5, 8.5])
+      expect(matrix.sum(m, [1])).toEqual([2, 6, 4])
+    })
+
+    it('calculates a sum of 2x2x2 matrix by different axis', () => {
+      const m = [
+        [
+          [0.5, 1.5],
+          [2.0, 4.0],
+        ],
+        [
+          [0.5, 2.5],
+          [2.5, 0.0],
+        ]
+      ]
+
+      expect(matrix.sum(m)).toEqual(13.5)
+      expect(matrix.sum(m, [0])).toEqual([[1, 4], [4.5, 4]])
+      expect(matrix.sum(m, [1])).toEqual([[2.5, 5.5], [3, 2.5]])
+      expect(matrix.sum(m, [2])).toEqual([[2, 6], [3, 2.5]])
+      expect(matrix.sum(m, [0, 1])).toEqual([5.5, 8])
+      expect(matrix.sum(m, [0, 2])).toEqual([5, 8.5])
+      expect(matrix.sum(m, [1, 0])).toEqual([5.5, 8])
+      expect(matrix.sum(m, [1, 2])).toEqual([8, 5.5])
+      expect(matrix.sum(m, [2, 0])).toEqual([5, 8.5])
+      expect(matrix.sum(m, [2, 1])).toEqual([8, 5.5])
     })
   })
 })
