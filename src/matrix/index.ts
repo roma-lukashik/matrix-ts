@@ -72,21 +72,6 @@ export const sum: AggregateMatrixOperator = (matrix, axes) =>
 export const max: AggregateMatrixOperator = (matrix, axes) =>
   aggregate(matrix, axes, (m1, m2) => broadcast(m1, m2, Math.max))
 
-// Takes all matrix axes and aggregate all matrix elements by default.
-const aggregate = (
-  matrix: Matrix,
-  [axis, ...restAxes] = array(ndim(matrix), identity),
-  operator: math.BinaryOperator,
-): Matrix =>
-  isMatrixN(matrix) && isDefined(axis)
-    ? aggregate(aggregateByAxis(matrix, axis, operator), restAxes.map((x) => x > axis ? x - 1 : x), operator)
-    : matrix
-
-const aggregateByAxis = (matrix: MatrixN, axis: number, operator: math.BinaryOperator): Matrix =>
-  axis && ndim(matrix) > 1
-    ? matrix.map((x) => aggregateByAxis(matrixN(x), axis - 1, operator))
-    : matrix.reduce(operator)
-
 export const sample = <
   T extends Matrix,
   S extends (
@@ -125,20 +110,41 @@ const broadcast = <
     return operator(matrix0(a), matrix0(b)) as T3
   }
   if (ndim(a) < ndim(b)) {
-    return matrixN(b).map((x) => broadcast(a, x, operator)) as T3
+    return broadcastNesting(b, a, operator) as T3
   }
   if (ndim(a) > ndim(b)) {
-    return matrixN(a).map((x) => broadcast(x, b, operator)) as T3
+    return broadcastNesting(a, b, operator) as T3
   }
   if (len(a) === len(b)) {
     return zip(matrixN(a), matrixN(b)).map(([x, y]) => broadcast(x, y, operator)) as T3
   }
   if (len(a) === 1) {
-    return broadcast(array(len(b), constant(first(matrixN(a)))), b, operator) as T3
+    return broadcastNesting(b, first(matrixN(a)), operator) as T3
   }
   if (len(b) === 1) {
-    return broadcast(a, array(len(a), constant(first(matrixN(b)))), operator) as T3
+    return broadcastNesting(a, first(matrixN(b)), operator) as T3
   }
 
   return error('Matrix could not be broadcast together.')
 }
+
+const broadcastNesting = <T1 extends Matrix, T2 extends Matrix>(a: T1, b: T2, operator: math.BinaryOperator) =>
+  matrixN(a).map((x) => broadcast(x, b, operator))
+
+// Takes all matrix axes and aggregate all matrix elements by default.
+const aggregate = (
+  matrix: Matrix,
+  [axis, ...restAxes] = array(ndim(matrix), identity),
+  operator: math.BinaryOperator,
+): Matrix =>
+  isMatrixN(matrix) && isDefined(axis)
+    ? aggregate(aggregateNesting(matrix, axis, operator), reduceAxes(restAxes, axis), operator)
+    : matrix
+
+const aggregateNesting = (matrix: MatrixN, axis: number, operator: math.BinaryOperator): Matrix =>
+  axis && ndim(matrix) > 1
+    ? matrix.map((x) => aggregateNesting(matrixN(x), axis - 1, operator))
+    : matrix.reduce(operator)
+
+const reduceAxes = <T extends VectorN>(axes: T, axis: number): T =>
+  axes.map((x) => x > axis ? x - 1 : x) as T
