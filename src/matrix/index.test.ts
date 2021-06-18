@@ -256,6 +256,8 @@ describe('matrix', () => {
       expect(matrix.sum(m)).toEqual(12)
       expect(matrix.sum(m, [0])).toEqual([3.5, 8.5])
       expect(matrix.sum(m, [1])).toEqual([2, 6, 4])
+      expect(matrix.sum(m, [0, 1])).toEqual(12)
+      expect(matrix.sum(m, [1, 0])).toEqual(12)
     })
 
     it('calculates a sum of 2x2x2 matrix', () => {
@@ -280,6 +282,11 @@ describe('matrix', () => {
       expect(matrix.sum(m, [1, 2])).toEqual([8, 5.5])
       expect(matrix.sum(m, [2, 0])).toEqual([5, 8.5])
       expect(matrix.sum(m, [2, 1])).toEqual([8, 5.5])
+      expect(matrix.sum(m, [0, 1, 2])).toEqual(13.5)
+      expect(matrix.sum(m, [1, 0, 2])).toEqual(13.5)
+      expect(matrix.sum(m, [1, 2, 0])).toEqual(13.5)
+      expect(matrix.sum(m, [2, 0, 1])).toEqual(13.5)
+      expect(matrix.sum(m, [2, 1, 0])).toEqual(13.5)
     })
   })
 
@@ -298,6 +305,8 @@ describe('matrix', () => {
       expect(matrix.max(m)).toEqual(4)
       expect(matrix.max(m, [0])).toEqual([2, 4])
       expect(matrix.max(m, [1])).toEqual([1.5, 4, 3])
+      expect(matrix.max(m, [0, 1])).toEqual(4)
+      expect(matrix.max(m, [1, 0])).toEqual(4)
     })
 
     it('calculates a max of 2x2x2 matrix', () => {
@@ -322,6 +331,12 @@ describe('matrix', () => {
       expect(matrix.max(m, [1, 2])).toEqual([4, 2.5])
       expect(matrix.max(m, [2, 0])).toEqual([2.5, 4])
       expect(matrix.max(m, [2, 1])).toEqual([4, 2.5])
+      expect(matrix.max(m, [0, 1, 2])).toEqual(4)
+      expect(matrix.max(m, [0, 2, 1])).toEqual(4)
+      expect(matrix.max(m, [1, 0, 2])).toEqual(4)
+      expect(matrix.max(m, [1, 2, 0])).toEqual(4)
+      expect(matrix.max(m, [2, 0, 1])).toEqual(4)
+      expect(matrix.max(m, [2, 1, 0])).toEqual(4)
     })
   })
 })
