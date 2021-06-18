@@ -3,11 +3,11 @@ import { array, ArrayN, first, zip } from '../utils/array'
 import * as math from '../utils/math'
 
 export type Matrix0 = number
-export type Matrix1 = number[]
-export type Matrix2 = number[][]
-export type Matrix3 = number[][][]
-export type Matrix4 = number[][][][]
-export type MatrixN = ArrayN<number>
+export type Matrix1 = Matrix0[]
+export type Matrix2 = Matrix1[]
+export type Matrix3 = Matrix2[]
+export type Matrix4 = Matrix3[]
+export type MatrixN = ArrayN<Matrix0>
 export type Matrix = Matrix0 | MatrixN
 
 export type Vector1 = [number]
@@ -16,16 +16,13 @@ export type Vector3 = [number, number, number]
 export type Vector4 = [number, number, number, number]
 export type VectorN = number[]
 
-type Bigger<T1 extends Matrix, T2 extends Matrix> = (
-  T1 extends Matrix0 ? T2 extends Matrix0 ? Matrix0 : T2 :
-  T1 extends Matrix1 ? T2 extends Matrix0 ? T1 : T2 :
-  T1 extends Matrix2 ? T2 extends Matrix0 | Matrix1 ? T1 : T2 :
-  T1 extends Matrix3 ? T2 extends Matrix0 | Matrix1 | Matrix2 ? T1 : T2 :
-  T1 extends Matrix4 ? T2 extends Matrix0 | Matrix1 | Matrix2 | Matrix3 ? T1 : T2 :
-  T1
-)
+type SmallerMatrices<T extends Matrix> =
+  T extends Matrix1 | Matrix2 | Matrix3 | Matrix4 ? T[0] | SmallerMatrices<T[0]> : T
 
-type MatrixBinaryOperator = <T1 extends Matrix, T2 extends Matrix>(a: T1, b: T2) => Bigger<T1, T2>
+type MatrixBinaryOperator = <
+  T1 extends Matrix,
+  T2 extends Matrix
+>(a: T1, b: T2) => T2 extends SmallerMatrices<T1> ? T1 : T2
 
 type AggregateMatrixOperator = (matrix: Matrix, axes?: VectorN) => Matrix
 
@@ -57,6 +54,19 @@ export const shape = <
   ...(isMatrixN(first(matrix)) ? shape(matrixN(first(matrix))) : []),
 ] as S
 
+export const partition = <
+  T extends Matrix,
+  S extends (
+    T extends Matrix0 ? [] :
+    T extends Matrix1 ? [Vector2] :
+    T extends Matrix2 ? [Vector2, Vector2] :
+    T extends Matrix3 ? [Vector2, Vector2, Vector2] :
+    T extends Matrix4 ? [Vector2, Vector2, Vector2, Vector2] :
+    Vector2[]
+  )
+>(matrix: T, ...[d0, ...rest]: S): T =>
+  d0 && isMatrixN(matrix) ? matrix.slice(...d0).map((item) => partition(item, ...rest)) as T : matrix
+
 export const add: MatrixBinaryOperator = (matrix1, matrix2) =>
   broadcast(matrix1, matrix2, math.add)
 
@@ -72,18 +82,15 @@ export const sum: AggregateMatrixOperator = (matrix, axes) =>
 export const max: AggregateMatrixOperator = (matrix, axes) =>
   aggregate(matrix, axes, (m1, m2) => broadcast(m1, m2, Math.max))
 
-export const sample = <
-  T extends Matrix,
-  S extends (
-    T extends Matrix0 ? [] :
-    T extends Matrix1 ? [Vector2] :
-    T extends Matrix2 ? [Vector2, Vector2] :
-    T extends Matrix3 ? [Vector2, Vector2, Vector2] :
-    T extends Matrix4 ? [Vector2, Vector2, Vector2, Vector2] :
-    Vector2[]
-  )
->(matrix: T, ...[d0, ...rest]: S): T =>
-  d0 && isMatrixN(matrix) ? matrix.slice(...d0).map((item) => sample(item, ...rest)) as T : matrix
+export const dot = (a: Matrix, b: Matrix): Matrix => {
+  if (len(a) === 0 || len(b) === 0) {
+    return multiply(a, b)
+  }
+  if (isMatrix1(a) && isMatrix1(b)) {
+    return zip(a, b).reduce((acc, [x, y]) => acc + x * y, 0)
+  }
+  return multiply(a, b)
+}
 
 // Number of rows.
 const len = (matrix: Matrix): number => isMatrixN(matrix) ? matrix.length : 0
@@ -91,29 +98,30 @@ const len = (matrix: Matrix): number => isMatrixN(matrix) ? matrix.length : 0
 // Number of dimensions.
 const ndim = (matrix: Matrix): number => isMatrixN(matrix) ? shape(matrix).length : 0
 
-// Typesafe casting value to MatrixN.
-const matrixN = <T extends MatrixN>(value: Matrix0 | T): T =>
-  isMatrixN(value) ? value : error(`Value ${value} is not an instance of MatrixN`)
-
 // Typesafe casting value to Matrix0.
 const matrix0 = (value: Matrix): Matrix0 =>
   isMatrixN(value) ? error(`Value is not an instance of Matrix0`) : value
 
+// Typesafe casting value to MatrixN.
+const matrixN = <T extends MatrixN>(value: Matrix0 | T): T =>
+  isMatrixN(value) ? value : error(`Value ${value} is not an instance of MatrixN`)
+
+const isMatrix1 = <T extends Matrix1>(matrix: T | Matrix): matrix is T => ndim(matrix) === 1
 const isMatrixN = <T extends MatrixN>(matrix: Matrix0 | T): matrix is T => Array.isArray(matrix)
 
 const broadcast = <
   T1 extends Matrix,
   T2 extends Matrix,
-  T3 extends Bigger<T1, T2>
+  T3 extends T2 extends SmallerMatrices<T1> ? T1 : T2
 >(a: T1, b: T2, operator: math.BinaryOperator): T3 => {
   if (len(a) === 0 && len(b) === 0) {
     return operator(matrix0(a), matrix0(b)) as T3
   }
   if (ndim(a) < ndim(b)) {
-    return broadcastNesting(b, a, operator) as T3
+    return broadcastNesting(b, a, operator) as unknown as T3
   }
   if (ndim(a) > ndim(b)) {
-    return broadcastNesting(a, b, operator) as T3
+    return broadcastNesting(a, b, operator) as unknown as T3
   }
   if (len(a) === len(b)) {
     return zip(matrixN(a), matrixN(b)).map(([x, y]) => broadcast(x, y, operator)) as T3
@@ -128,7 +136,10 @@ const broadcast = <
   return error('Matrix could not be broadcast together.')
 }
 
-const broadcastNesting = <T1 extends Matrix, T2 extends Matrix>(a: T1, b: T2, operator: math.BinaryOperator) =>
+const broadcastNesting = <
+  T1 extends Matrix,
+  T2 extends Matrix,
+>(a: T1, b: T2, operator: math.BinaryOperator) =>
   matrixN(a).map((x) => broadcast(x, b, operator))
 
 // Takes all matrix axes and aggregate all matrix elements by default.

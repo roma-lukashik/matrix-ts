@@ -74,7 +74,7 @@ describe('matrix', () => {
         [1, 2, 3, 4],
         [1, 2, 3, 4],
       ]
-      expect(matrix.sample(matrix3x4, [1, 3], [2, 4])).toEqual([
+      expect(matrix.partition(matrix3x4, [1, 3], [2, 4])).toEqual([
         [3, 4],
         [3, 4],
       ])

@@ -1,4 +1,4 @@
-import { Matrix1, Matrix3, max, sample, shape } from '../matrix'
+import { Matrix1, Matrix3, max, partition, shape } from '../matrix'
 import { range } from '../utils/array'
 import { idivide } from '../utils/math'
 
@@ -12,4 +12,4 @@ export const forward = (input: Matrix3): Matrix3 => {
 }
 
 const frame2x2xN = (input: Matrix3, i: number, j: number, n: number): Matrix3 =>
-  sample(input, [i * 2, i * 2 + 2], [j * 2, j * 2 + 2], [0, n])
+  partition(input, [i * 2, i * 2 + 2], [j * 2, j * 2 + 2], [0, n])
