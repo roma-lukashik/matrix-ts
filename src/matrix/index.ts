@@ -1,4 +1,4 @@
-import { constant, error, identity, isDefined } from '../utils/function'
+import { constant, error, identity } from '../utils/function'
 import { array, ArrayN, first, zip } from '../utils/array'
 import * as math from '../utils/math'
 
@@ -36,7 +36,7 @@ export const create = <
     MatrixN
   )
 >(fill: () => number, ...[d0, ...dn]: T): R =>
-  array(d0, () => dn.length ? create(fill, ...dn): fill()) as R
+  array(d0, () => len(dn) ? create(fill, ...dn): fill()) as R
 
 export const zeros = <T extends VectorN>(...dn: T) => create(constant(0), ...dn)
 
@@ -145,11 +145,11 @@ const broadcastNesting = <
 // Takes all matrix axes and aggregate all matrix elements by default.
 const aggregate = (
   matrix: Matrix,
-  [axis, ...restAxes] = array(ndim(matrix), identity),
+  axes = array(ndim(matrix), identity),
   operator: math.BinaryOperator,
 ): Matrix =>
-  isMatrixN(matrix) && isDefined(axis)
-    ? aggregate(aggregateNesting(matrix, axis, operator), reduceAxes(restAxes, axis), operator)
+  isMatrixN(matrix) && len(axes)
+    ? aggregate(aggregateNesting(matrix, first(axes), operator), reduceAxes(axes), operator)
     : matrix
 
 const aggregateNesting = (matrix: MatrixN, axis: number, operator: math.BinaryOperator): Matrix =>
@@ -157,5 +157,5 @@ const aggregateNesting = (matrix: MatrixN, axis: number, operator: math.BinaryOp
     ? matrix.map((x) => aggregateNesting(matrixN(x), axis - 1, operator))
     : matrix.reduce(operator)
 
-const reduceAxes = <T extends VectorN>(axes: T, axis: number): T =>
-  axes.map((x) => x > axis ? x - 1 : x) as T
+const reduceAxes = ([axis, ...axes]: VectorN): VectorN =>
+  axes.map((x) => x > axis ? x - 1 : x)
