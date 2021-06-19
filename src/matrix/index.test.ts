@@ -339,4 +339,89 @@ describe('matrix', () => {
       expect(matrix.max(m, [2, 1, 0])).toEqual(4)
     })
   })
+
+  describe('#matmul', () => {
+    describe('A=(2, 2) x B=(1)', () => {
+      const a = [[1, 2], [3, 4]]
+      const b = [2, 4]
+
+      it('AxB', ()  => {
+        expect(matrix.matmul(a, b)).toEqual([10, 22])
+      })
+
+      it('BxA', ()  => {
+        expect(matrix.matmul(b, a)).toEqual([14, 20])
+      })
+    })
+
+    describe('A=(2, 2) x B=(2, 2)', () => {
+      const a = [[1, 2], [3, 4]]
+      const b = [[5, 6], [7, 8]]
+
+      it('AxB', ()  => {
+        expect(matrix.matmul(a, b)).toEqual([[19, 22], [43, 50]])
+      })
+
+      it('BxA', ()  => {
+        expect(matrix.matmul(b, a)).toEqual([[23, 34], [31, 46]])
+      })
+    })
+
+    describe('A=(2, 2, 2) x B=(2, 2)', () => {
+      const a = [
+        [
+          [0, 1],
+          [2, 3],
+        ],
+        [
+          [4, 5],
+          [6, 7],
+        ],
+      ]
+      const b = [
+        [0, 1],
+        [2, 3],
+      ]
+
+      it('AxB', ()  => {
+        expect(matrix.matmul(a, b)).toEqual([
+          [
+            [2, 3],
+            [6, 11],
+          ],
+          [
+            [10, 19],
+            [14, 27],
+          ],
+        ])
+      })
+
+      it('BxA', ()  => {
+        expect(matrix.matmul(b, a)).toEqual([
+          [
+            [2, 3],
+            [6, 11],
+          ],
+          [
+            [6, 7],
+            [26, 31],
+          ],
+        ])
+      })
+    })
+
+    describe('throws en error', () => {
+      it('A=(2, 2) x B=(1, 2)', ()  => {
+        const a = [[1, 2], [3, 4]]
+        const b = [[2, 4]]
+        expect(() => matrix.matmul(a, b)).toThrowError('Input operand does not have enough dimensions.')
+      })
+
+      it('A=(2, 2) x B=(1, 3)', ()  => {
+        const a = [[1, 2], [3, 4]]
+        const b = [[2], [4], [5]]
+        expect(() => matrix.matmul(b, a)).toThrowError('Input operand does not have enough dimensions.')
+      })
+    })
+  })
 })
