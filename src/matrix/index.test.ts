@@ -424,4 +424,152 @@ describe('matrix', () => {
       })
     })
   })
+
+  describe('#dot', () => {
+    describe('A=(0) B=(0)', () => {
+      const a = 2
+      const b = 4
+
+      it('AxB', () => {
+        expect(matrix.dot(a, b)).toEqual(8)
+      })
+
+      it('BxA', () => {
+        expect(matrix.dot(b, a)).toEqual(8)
+      })
+    })
+
+    describe('A=(2, 2) B=(0)', () => {
+      const a = [[1, 2], [3, 4]]
+      const b = 2
+
+      it('AxB', () => {
+        expect(matrix.dot(a, b)).toEqual([[2, 4], [6, 8]])
+      })
+
+      it('BxA', () => {
+        expect(matrix.dot(b, a)).toEqual([[2, 4], [6, 8]])
+      })
+    })
+
+    describe('A=(1) B=(1)', () => {
+      const a = [1, 2]
+      const b = [3, 4]
+
+      it('AxB', () => {
+        expect(matrix.dot(a, b)).toEqual(11)
+      })
+
+      it('BxA', () => {
+        expect(matrix.dot(b, a)).toEqual(11)
+      })
+    })
+
+    describe('A=(2, 2, 2) B=(1)', () => {
+      const a = [
+        [
+          [6, 3],
+          [7, 4],
+        ],
+        [
+          [2, 6],
+          [7, 4],
+        ],
+      ]
+      const b = [2, 4]
+
+      it('AxB', () => {
+        expect(matrix.dot(a, b)).toEqual([[24, 30], [28, 30]])
+      })
+
+      it('BxA', () => {
+        expect(matrix.dot(b, a)).toEqual([[40, 22], [32, 28]])
+      })
+    })
+
+    describe('A=(2, 2) B=(2, 2)', () => {
+      const a = [[1, 2], [3, 4]]
+      const b = [[5, 6], [7, 8]]
+
+      it('AxB', ()  => {
+        expect(matrix.dot(a, b)).toEqual([[19, 22], [43, 50]])
+      })
+
+      it('BxA', ()  => {
+        expect(matrix.dot(b, a)).toEqual([[23, 34], [31, 46]])
+      })
+    })
+
+    describe('A=(2, 3, 3) B=(3, 2, 4)', () => {
+      const a = [
+        [
+          [6, 3],
+          [7, 4],
+          [6, 9],
+        ],
+        [
+          [2, 6],
+          [7, 4],
+          [3, 7],
+        ],
+      ]
+      const b = [
+        [
+          [7, 2, 5, 4],
+          [1, 7, 5, 1],
+        ],
+        [
+          [4, 0, 9, 5],
+          [8, 0, 9, 2],
+        ],
+        [
+          [6, 3, 8, 2],
+          [4, 2, 6, 4],
+        ],
+      ]
+
+      it('AxB', () => {
+        expect(matrix.dot(a, b)).toEqual([
+          [
+            [
+              [45, 33, 45, 27],
+              [48, 0, 81, 36],
+              [48, 24, 66, 24],
+            ],
+            [
+              [53, 42, 55, 32],
+              [60, 0, 99, 43],
+              [58, 29, 80, 30],
+            ],
+            [
+              [51, 75, 75, 33],
+              [96, 0, 135, 48],
+              [72, 36, 102, 48],
+            ],
+          ],
+          [
+            [
+              [20, 46, 40, 14],
+              [56, 0, 72, 22],
+              [36, 18, 52, 28],
+            ],
+            [
+              [53, 42, 55, 32],
+              [60, 0, 99, 43],
+              [58, 29, 80, 30],
+            ],
+            [
+              [28, 55, 50, 19],
+              [68, 0, 90, 29],
+              [46, 23, 66, 34],
+            ],
+          ],
+        ])
+      })
+
+      it('BxA', () => {
+        expect(() => matrix.dot(b, a)).toThrowError('Shapes (3,2,4) and (2,3,2) are not aligned.')
+      })
+    })
+  })
 })

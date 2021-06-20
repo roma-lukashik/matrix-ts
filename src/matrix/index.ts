@@ -28,47 +28,40 @@ type AggregateMatrixOperator = (matrix: Matrix, axes?: VectorN) => Matrix
 
 export const create = <
   T extends VectorN,
-  R extends (
+  U extends (
     T extends Vector1 ? Matrix1 :
     T extends Vector2 ? Matrix2 :
     T extends Vector3 ? Matrix3 :
     T extends Vector4 ? Matrix4 :
     MatrixN
   )
->(fill: () => number, ...[d0, ...dn]: T): R =>
-  array(d0, () => len(dn) ? create(fill, ...dn): fill()) as R
+>(fill: () => number, ...[d0, ...dn]: T): U =>
+  array(d0, () => len(dn) ? create(fill, ...dn): fill()) as U
 
 export const zeros = <T extends VectorN>(...dn: T) => create(constant(0), ...dn)
 
 export const shape = <
   T extends MatrixN,
-  S extends (
+  U extends (
     T extends Matrix1 ? Vector1 :
     T extends Matrix2 ? Vector2 :
     T extends Matrix3 ? Vector3 :
     T extends Matrix4 ? Vector4 :
     VectorN
   )
->(matrix: T): S => [
+>(matrix: T): U => [
   len(matrix),
   ...(isMatrixN(first(matrix)) ? shape(matrixN(first(matrix))) : []),
-] as S
+] as U
 
-export const at = <
-  T extends MatrixN,
-  R extends (
-    T extends Matrix1 ? Matrix0 :
-    T extends Matrix2 ? Matrix1 :
-    T extends Matrix3 ? Matrix2 :
-    T extends Matrix4 ? Matrix3 :
-    MatrixN
-  )
->(matrix: T, index: number): R =>
-  isDefined(matrix[index]) ? matrix[index] as R : error(`Index ${index} out of bounds [0, ${len(matrix)}]`)
+export const at = <T extends MatrixN>(matrix: T, index: number): T[0] => {
+  const i = index < 0 ? len(matrix) + index : index
+  return isDefined(matrix[i]) ? matrix[i] as T[0] : error(`Index ${i} out of bounds [0, ${len(matrix)}]`)
+}
 
 export const partition = <
   T extends Matrix,
-  S extends (
+  U extends (
     T extends Matrix0 ? [] :
     T extends Matrix1 ? [Vector2] :
     T extends Matrix2 ? [Vector2, Vector2] :
@@ -76,7 +69,7 @@ export const partition = <
     T extends Matrix4 ? [Vector2, Vector2, Vector2, Vector2] :
     Vector2[]
   )
->(matrix: T, ...[d0, ...rest]: S): T =>
+>(matrix: T, ...[d0, ...rest]: U): T =>
   d0 && isMatrixN(matrix) ? matrix.slice(...d0).map((item) => partition(item, ...rest)) as T : matrix
 
 export const add: MatrixBinaryOperator = (matrix1, matrix2) =>
@@ -99,12 +92,24 @@ export const dot = (a: Matrix, b: Matrix): Matrix => {
     return multiply(a, b)
   }
   if (isMatrix1(a) && isMatrix1(b)) {
-    return zip(a, b).reduce((acc, [x, y]) => acc + x * y, 0)
+    return sum(multiply(a, b))
   }
   if (isMatrix2(a) && isMatrix2(b)) {
     return matmul2x2(a, b)
   }
-  return error('Not implemented yet.')
+  if (isMatrix1(b)) {
+    return matrixN(a).map((x) => dot(x, b))
+  }
+  if (isMatrix1(a) && isMatrix2(b)) {
+    return matmul(a, b)
+  }
+  if (isMatrix1(a)) {
+    return matrixN(b).map((y) => dot(a, y))
+  }
+  if (at(shape(matrixN(a)), -1) === at(shape(matrixN(b)), -2)) {
+    return matrixN(a).map((x) => dot(x, b))
+  }
+  return error(`Shapes (${shape(matrixN(a))}) and (${shape(matrixN(b))}) are not aligned.`)
 }
 
 export const matmul = <
@@ -124,7 +129,10 @@ export const matmul = <
   if (isMatrix2(a)) {
     return b.map((x) => matmul(a, matrixN(x))) as T3
   }
-  return a.map((x) => matmul(matrixN(x), b)) as T3
+  if (isMatrix2(b)) {
+    return a.map((x) => matmul(matrixN(x), b)) as T3
+  }
+  return error('Not implemented yet')
 }
 
 const matmul2x2 = (a: Matrix2, b: Matrix2): Matrix2 => {

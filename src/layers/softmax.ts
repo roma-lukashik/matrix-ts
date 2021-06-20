@@ -5,8 +5,7 @@ import { randn } from '../random'
 export const forward = (input: MatrixN, length: number, nodes: number): Matrix1 => {
   const weight = divide(randn(length, nodes), length)
   const biases = zeros(nodes)
-  const flat = flatten(input)
-  const totals = add(dot(flat, weight), biases)
+  const totals = add(dot(flatten(input), weight), biases)
 }
 
 const frame2x2xN = (input: Matrix3, i: number, j: number, n: number): Matrix3 =>
