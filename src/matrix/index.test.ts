@@ -67,7 +67,7 @@ describe('matrix', () => {
     })
   })
 
-  describe('#sample', () => {
+  describe('#partition', () => {
     it('returns 2x2 sample from 3x4 matrix', () => {
       const matrix3x4 = [
         [1, 2, 3, 4],
@@ -569,6 +569,35 @@ describe('matrix', () => {
 
       it('BxA', () => {
         expect(() => matrix.dot(b, a)).toThrowError('Shapes (3,2,4) and (2,3,2) are not aligned.')
+      })
+    })
+
+    describe('A=(1) B=(3, 3, 4)', () => {
+      const a = [6, 3, 4]
+      const b = [
+        [
+          [7, 2, 5, 4],
+          [1, 7, 5, 1],
+          [1, 7, 5, 1],
+        ],
+        [
+          [4, 0, 9, 5],
+          [8, 0, 9, 2],
+          [1, 7, 5, 1],
+        ],
+        [
+          [6, 3, 8, 2],
+          [4, 2, 6, 4],
+          [1, 7, 5, 1],
+        ],
+      ]
+
+      it('AxB', () => {
+        expect(matrix.dot(a, b)).toEqual([
+          [49, 61, 65, 31],
+          [52, 28, 101, 40],
+          [52, 52, 86, 28],
+        ])
       })
     })
   })
