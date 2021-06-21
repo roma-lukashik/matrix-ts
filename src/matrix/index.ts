@@ -112,25 +112,21 @@ export const dot = (a: Matrix, b: Matrix): Matrix => {
   return error(`Shapes (${shape(matrixN(a))}) and (${shape(matrixN(b))}) are not aligned.`)
 }
 
-export const matmul = <
-  T1 extends MatrixN,
-  T2 extends MatrixN,
-  T3 extends MatrixN
->(a: T1, b: T2): T3 => {
+export const matmul = (a: MatrixN, b: MatrixN): MatrixN => {
   if (isMatrix1(a)) {
-    return matmul(array(1, constant(a)), b).flat() as T3
+    return matmul(array(1, constant(a)), b).flat()
   }
   if (isMatrix1(b)) {
-    return matmul(a, b.map((x) => [x])).flat() as T3
+    return matmul(a, b.map((x) => [x])).flat()
   }
   if (isMatrix2(a) && isMatrix2(b)) {
-    return matmul2x2(a, b) as T3
+    return matmul2x2(a, b)
   }
   if (isMatrix2(a)) {
-    return b.map((x) => matmul(a, matrixN(x))) as T3
+    return b.map((x) => matmul(a, matrixN(x)))
   }
   if (isMatrix2(b)) {
-    return a.map((x) => matmul(matrixN(x), b)) as T3
+    return a.map((x) => matmul(matrixN(x), b))
   }
   return error('Not implemented yet')
 }
@@ -192,10 +188,7 @@ const broadcast = <
   return error('Matrix could not be broadcast together.')
 }
 
-const broadcastNesting = <
-  T1 extends Matrix,
-  T2 extends Matrix,
->(a: T1, b: T2, operator: math.BinaryOperator) =>
+const broadcastNesting = (a: Matrix, b: Matrix, operator: math.BinaryOperator) =>
   matrixN(a).map((x) => broadcast(x, b, operator))
 
 // Takes all matrix axes and aggregate all matrix elements by default.
