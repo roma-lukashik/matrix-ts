@@ -53,6 +53,26 @@ describe('matrix', () => {
     })
   })
 
+  describe('#at', () => {
+    const a = [1, 2, 3, 4]
+
+    it('returns a proper element starting from the beginning', () => {
+      expect(matrix.at(a, 2)).toBe(3)
+    })
+
+    it('returns a proper element starting from the end', () => {
+      expect(matrix.at(a, -2)).toBe(3)
+    })
+
+    it('throws an error if index is out of the array bounds #1', () => {
+      expect(() => matrix.at(a, 4)).toThrowError('Index 4 out of bounds [0, 3].')
+    })
+
+    it('throws an error if index is out of the array bounds #2', () => {
+      expect(() => matrix.at(a, -5)).toThrowError('Index -1 out of bounds [0, 3].')
+    })
+  })
+
   describe('#shape', () => {
     it('returns 0 shape for the empty matrix', () => {
       expect(matrix.shape([])).toEqual([0])
@@ -77,31 +97,6 @@ describe('matrix', () => {
       expect(matrix.partition(matrix3x4, [1, 3], [2, 4])).toEqual([
         [3, 4],
         [3, 4],
-      ])
-    })
-  })
-
-  describe('#divide', () => {
-    it('passes simple case #1', () => {
-      const m = [
-        [
-          [1, 2, 3],
-          [4, 5, 6],
-        ],
-        [
-          [7, 8, 9],
-          [8, 7, 6],
-        ],
-      ]
-      expect(matrix.divide(m, 2)).toEqual([
-        [
-          [0.5, 1.0, 1.5],
-          [2.0, 2.5, 3.0],
-        ],
-        [
-          [3.5, 4.0, 4.5],
-          [4.0, 3.5, 3.0],
-        ],
       ])
     })
   })
@@ -239,6 +234,38 @@ describe('matrix', () => {
       expect(matrix.multiply(a, b)).toEqual(c)
       expect(matrix.multiply(b, a)).toEqual(c)
     })
+
+    it('throws an error if matrix cannot broadcast together', () => {
+      const a = [[1, 2, 3]]
+      const b = [[1, 2], [3, 4]]
+
+      expect(() => matrix.multiply(a, b)).toThrowError('Matrix could not be broadcast together.')
+    })
+  })
+
+  describe('#divide', () => {
+    it('passes simple case #1', () => {
+      const m = [
+        [
+          [1, 2, 3],
+          [4, 5, 6],
+        ],
+        [
+          [7, 8, 9],
+          [8, 7, 6],
+        ],
+      ]
+      expect(matrix.divide(m, 2)).toEqual([
+        [
+          [0.5, 1.0, 1.5],
+          [2.0, 2.5, 3.0],
+        ],
+        [
+          [3.5, 4.0, 4.5],
+          [4.0, 3.5, 3.0],
+        ],
+      ])
+    })
   })
 
   describe('#sum', () => {
@@ -341,7 +368,7 @@ describe('matrix', () => {
   })
 
   describe('#matmul', () => {
-    describe('A=(2, 2) x B=(1)', () => {
+    describe('A=(2, 2) B=(1)', () => {
       const a = [[1, 2], [3, 4]]
       const b = [2, 4]
 
@@ -354,7 +381,7 @@ describe('matrix', () => {
       })
     })
 
-    describe('A=(2, 2) x B=(2, 2)', () => {
+    describe('A=(2, 2) B=(2, 2)', () => {
       const a = [[1, 2], [3, 4]]
       const b = [[5, 6], [7, 8]]
 
@@ -367,7 +394,7 @@ describe('matrix', () => {
       })
     })
 
-    describe('A=(2, 2, 2) x B=(2, 2)', () => {
+    describe('A=(2, 2, 2) B=(2, 2)', () => {
       const a = [
         [
           [0, 1],
@@ -411,13 +438,13 @@ describe('matrix', () => {
     })
 
     describe('throws en error', () => {
-      it('A=(2, 2) x B=(1, 2)', ()  => {
+      it('A=(2, 2) B=(1, 2)', ()  => {
         const a = [[1, 2], [3, 4]]
         const b = [[2, 4]]
         expect(() => matrix.matmul(a, b)).toThrowError('Input operand does not have enough dimensions.')
       })
 
-      it('A=(2, 2) x B=(1, 3)', ()  => {
+      it('A=(2, 2) B=(1, 3)', ()  => {
         const a = [[1, 2], [3, 4]]
         const b = [[2], [4], [5]]
         expect(() => matrix.matmul(b, a)).toThrowError('Input operand does not have enough dimensions.')

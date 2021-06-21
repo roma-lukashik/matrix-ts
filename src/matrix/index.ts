@@ -1,4 +1,4 @@
-import { constant, error, identity, isDefined } from '../utils/function'
+import { constant, error, identity } from '../utils/function'
 import { array, ArrayN, first, zip } from '../utils/array'
 import * as math from '../utils/math'
 
@@ -26,37 +26,35 @@ type MatrixBinaryOperator = <
 
 type AggregateMatrixOperator = (matrix: Matrix, axes?: VectorN) => Matrix
 
-export const create = <
-  T extends VectorN,
-  U extends (
-    T extends Vector1 ? Matrix1 :
-    T extends Vector2 ? Matrix2 :
-    T extends Vector3 ? Matrix3 :
-    T extends Vector4 ? Matrix4 :
-    MatrixN
-  )
->(fill: () => number, ...[d0, ...dn]: T): U =>
+type Vector2Matrix<T extends VectorN> = (
+  T extends Vector1 ? Matrix1 :
+  T extends Vector2 ? Matrix2 :
+  T extends Vector3 ? Matrix3 :
+  T extends Vector4 ? Matrix4 :
+  MatrixN
+)
+
+type Matrix2Vector<T extends MatrixN> = (
+  T extends Matrix1 ? Vector1 :
+  T extends Matrix2 ? Vector2 :
+  T extends Matrix3 ? Vector3 :
+  T extends Matrix4 ? Vector4 :
+  VectorN
+)
+
+export const create = <T extends VectorN, U extends Vector2Matrix<T>>(fill: () => number, ...[d0, ...dn]: T): U =>
   array(d0, () => len(dn) ? create(fill, ...dn): fill()) as U
 
 export const zeros = <T extends VectorN>(...dn: T) => create(constant(0), ...dn)
 
-export const shape = <
-  T extends MatrixN,
-  U extends (
-    T extends Matrix1 ? Vector1 :
-    T extends Matrix2 ? Vector2 :
-    T extends Matrix3 ? Vector3 :
-    T extends Matrix4 ? Vector4 :
-    VectorN
-  )
->(matrix: T): U => [
+export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T): U => [
   len(matrix),
   ...(isMatrixN(first(matrix)) ? shape(matrixN(first(matrix))) : []),
 ] as U
 
 export const at = <T extends MatrixN>(matrix: T, index: number): T[0] => {
   const i = index < 0 ? len(matrix) + index : index
-  return isDefined(matrix[i]) ? matrix[i] as T[0] : error(`Index ${i} out of bounds [0, ${len(matrix)}]`)
+  return matrix[i] as T[0] ?? error(`Index ${i} out of bounds [0, ${len(matrix) - 1}].`)
 }
 
 export const partition = <
