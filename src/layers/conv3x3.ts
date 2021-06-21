@@ -1,5 +1,4 @@
-import { randn } from '../random'
-import { divide, Matrix1, Matrix2, Matrix3, multiply, partition, shape, sum } from '../matrix'
+import { divide, Matrix1, Matrix2, Matrix3, multiply, partition, randn, shape, sum } from '../matrix'
 import { range } from '../utils/array'
 
 export const conv3x3 = (filtersNumber: number): Matrix3 => divide(randn(filtersNumber, 3, 3), 9)

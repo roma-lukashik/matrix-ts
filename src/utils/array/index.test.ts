@@ -45,26 +45,9 @@ describe('array', () => {
       ])
     })
 
-    it('passes a case with different array sizes #1', () => {
-      expect(zip([1, 2, 3], ['A', 'B'])).toEqual([
-        [1, 'A'],
-        [2, 'B'],
-      ])
-    })
-
-    it('passes a case with different array sizes #2', () => {
-      expect(zip([1, 2], ['A', 'B', 'C'])).toEqual([
-        [1, 'A'],
-        [2, 'B'],
-      ])
-    })
-
-    it('passes a case with different array sizes #3', () => {
-      expect(zip([], ['A', 'B', 'C'])).toEqual([])
-    })
-
-    it('passes a case with different array sizes #4', () => {
-      expect(zip([1, 2], [])).toEqual([])
+    it('throws an error in case with different array sizes', () => {
+      expect(() => zip([1, 2, 3], ['A', 'B'])).toThrowError('Array(3) and Array(2) are not aligned.')
+      expect(() => zip(['A', 'B'], [1, 2, 3])).toThrowError('Array(2) and Array(3) are not aligned.')
     })
   })
 })

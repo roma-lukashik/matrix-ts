@@ -1,35 +1,6 @@
 import * as random from '.'
 
 describe('random', () => {
-  describe('#randn', () => {
-    const { randn } = random
-    beforeEach(() => {
-      spyOn(random, 'rand').and.returnValue(1)
-    })
-    afterEach(() => {
-      jest.resetAllMocks()
-    })
-
-    it('returns one dimensional array', () => {
-      expect(randn(2)).toEqual([1, 1])
-    })
-
-    it('returns two dimensional array', () => {
-      expect(randn(2, 2)).toEqual([
-        [1, 1],
-        [1, 1],
-      ])
-    })
-
-    it('returns two dimensional array', () => {
-      expect(randn(3, 2, 2)).toEqual([
-        [[1, 1], [1, 1]],
-        [[1, 1], [1, 1]],
-        [[1, 1], [1, 1]],
-      ])
-    })
-  })
-
   describe('#rand', () => {
     const { rand } = random
     afterEach(() => {

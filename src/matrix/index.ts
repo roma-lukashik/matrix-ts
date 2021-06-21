@@ -1,6 +1,7 @@
 import { constant, error, identity } from '../utils/function'
 import { array, ArrayN, first, zip } from '../utils/array'
 import * as math from '../utils/math'
+import { rand } from '../utils/random'
 
 export type Matrix0 = number
 export type Matrix1 = Matrix0[]
@@ -46,6 +47,9 @@ export const create = <T extends VectorN, U extends Vector2Matrix<T>>(fill: () =
   array(d0, () => len(dn) ? create(fill, ...dn): fill()) as U
 
 export const zeros = <T extends VectorN>(...dn: T) => create(constant(0), ...dn)
+
+// Return samples from the "standard normal" distribution.
+export const randn = <T extends VectorN>(...dn: T) => create(rand, ...dn)
 
 export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T): U => [
   len(matrix),

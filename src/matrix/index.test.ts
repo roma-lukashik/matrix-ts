@@ -1,5 +1,6 @@
 import * as matrix from '.'
 import { constant } from '../utils/function'
+import * as random from '../utils/random'
 
 const one = constant(1)
 
@@ -49,6 +50,35 @@ describe('matrix', () => {
           [matrix4x5, matrix4x5, matrix4x5],
           [matrix4x5, matrix4x5, matrix4x5],
         ],
+      ])
+    })
+  })
+
+
+  describe('#randn', () => {
+    beforeEach(() => {
+      spyOn(random, 'rand').and.returnValue(1)
+    })
+    afterEach(() => {
+      jest.resetAllMocks()
+    })
+
+    it('returns one dimensional array', () => {
+      expect(matrix.randn(2)).toEqual([1, 1])
+    })
+
+    it('returns two dimensional array', () => {
+      expect(matrix.randn(2, 2)).toEqual([
+        [1, 1],
+        [1, 1],
+      ])
+    })
+
+    it('returns two dimensional array', () => {
+      expect(matrix.randn(3, 2, 2)).toEqual([
+        [[1, 1], [1, 1]],
+        [[1, 1], [1, 1]],
+        [[1, 1], [1, 1]],
       ])
     })
   })
