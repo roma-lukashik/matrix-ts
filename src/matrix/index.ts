@@ -160,7 +160,9 @@ const matrixN = <T extends MatrixN>(value: Matrix0 | T): T =>
   isMatrixN(value) ? value : error(`Value ${value} is not an instance of MatrixN`)
 
 const isMatrix1 = (matrix: Matrix): matrix is Matrix1 => ndim(matrix) === 1
+
 const isMatrix2 = (matrix: Matrix): matrix is Matrix2 => ndim(matrix) === 2
+
 const isMatrixN = <T extends MatrixN>(matrix: Matrix0 | T): matrix is T => Array.isArray(matrix)
 
 const broadcast = <
@@ -197,19 +199,19 @@ const broadcastNesting = <
   matrixN(a).map((x) => broadcast(x, b, operator))
 
 // Takes all matrix axes and aggregate all matrix elements by default.
-const aggregate = (
-  matrix: Matrix,
-  axes = array(ndim(matrix), identity),
-  operator: math.BinaryOperator,
-): Matrix =>
-  isMatrixN(matrix) && len(axes)
-    ? aggregate(aggregateNesting(matrix, first(axes), operator), reduceAxes(axes), operator)
-    : matrix
+const aggregate = (matrix: Matrix, axes = array(ndim(matrix), identity), operator: math.BinaryOperator): Matrix => {
+  if (isMatrixN(matrix) && len(axes)) {
+    return aggregate(aggregateNesting(matrix, first(axes), operator), reduceAxes(axes), operator)
+  }
+  return matrix
+}
 
-const aggregateNesting = (matrix: MatrixN, axis: number, operator: math.BinaryOperator): Matrix =>
-  axis && ndim(matrix) > 1
-    ? matrix.map((x) => aggregateNesting(matrixN(x), axis - 1, operator))
-    : matrix.reduce(operator)
+const aggregateNesting = (matrix: MatrixN, axis: number, operator: math.BinaryOperator): Matrix => {
+  if (axis && ndim(matrix) > 1) {
+    return matrix.map((x) => aggregateNesting(matrixN(x), axis - 1, operator))
+  }
+  return matrix.reduce(operator)
+}
 
 const reduceAxes = ([axis, ...axes]: VectorN): VectorN =>
   axes.map((x) => x > axis ? x - 1 : x)
