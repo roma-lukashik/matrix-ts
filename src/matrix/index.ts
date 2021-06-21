@@ -51,6 +51,9 @@ export const zeros = <T extends VectorN>(...dn: T) => create(constant(0), ...dn)
 // Return samples from the "standard normal" distribution.
 export const randn = <T extends VectorN>(...dn: T) => create(rand, ...dn)
 
+export const exp = <T extends Matrix>(matrix: T): T =>
+  isMatrixN(matrix) ? matrix.map((x) => exp(x)) as T : Math.exp(matrix) as T
+
 export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T): U => [
   len(matrix),
   ...(isMatrixN(first(matrix)) ? shape(matrixN(first(matrix))) : []),
