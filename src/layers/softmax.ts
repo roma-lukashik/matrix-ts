@@ -6,7 +6,7 @@ export const forward = (input: Matrix3, nodes: number): Matrix1 => {
   const length = h * w * z
   const weight = divide(randn(length, nodes), length)
   const biases = zeros(nodes)
-  const totals = add(dot(flatten(input), weight), biases)
+  const totals = add(dot(flatten(input), weight), biases) as Matrix1
   const exps = exp(totals)
-  return divide(exps, sum(exps, [0])) as Matrix1
+  return divide(exps, sum(exps, [0]))
 }

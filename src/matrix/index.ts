@@ -17,15 +17,28 @@ export type Vector3 = [number, number, number]
 export type Vector4 = [number, number, number, number]
 export type VectorN = number[]
 
-type SmallerMatrices<T extends Matrix> =
-  T extends Matrix1 | Matrix2 | Matrix3 | Matrix4 ? T[0] | SmallerMatrices<T[0]> : T
+type NestedMatrix<T extends Matrix> = T extends MatrixN ? T[0] : Matrix0
+
+type NestedMatrices<T extends Matrix> =
+  T extends Matrix1 | Matrix2 | Matrix3 | Matrix4 ? T[0] | NestedMatrices<T[0]> : T
 
 type MatrixBinaryOperator = <
   T1 extends Matrix,
   T2 extends Matrix
->(a: T1, b: T2) => T2 extends SmallerMatrices<T1> ? T1 : T2
+>(a: T1, b: T2) => T2 extends NestedMatrices<T1> ? T1 : T2
 
-type AggregateMatrixOperator = (matrix: Matrix, axes?: VectorN) => Matrix
+type AggregateMatrixOperator = {
+  <T extends Matrix>(matrix: T): Matrix0;
+  <
+    T extends Matrix,
+    K extends Vector1 | Vector2 | Vector3 | Vector4 | VectorN
+  >(matrix: T, axes: K):
+    K extends Vector1 ? NestedMatrix<T> :
+    K extends Vector2 ? NestedMatrix<NestedMatrix<T>> :
+    K extends Vector3 ? NestedMatrix<NestedMatrix<NestedMatrix<T>>> :
+    K extends Vector4 ? NestedMatrix<NestedMatrix<NestedMatrix<NestedMatrix<T>>>> :
+    MatrixN;
+}
 
 type Vector2Matrix<T extends VectorN> = (
   T extends Vector1 ? Matrix1 :
@@ -52,7 +65,7 @@ export const zeros = <T extends VectorN>(...dn: T) => create(constant(0), ...dn)
 export const randn = <T extends VectorN>(...dn: T) => create(rand, ...dn)
 
 export const exp = <T extends Matrix>(matrix: T): T =>
-  isMatrixN(matrix) ? matrix.map((x) => exp(x)) as T : Math.exp(matrix) as T
+  isMatrixN(matrix) ? matrix.map(exp) as T : Math.exp(matrix) as T
 
 export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T): U => [
   len(matrix),
@@ -86,10 +99,16 @@ export const multiply: MatrixBinaryOperator = (matrix1, matrix2) =>
 export const divide: MatrixBinaryOperator = (matrix1, matrix2) =>
   broadcast(matrix1, matrix2, math.divide)
 
-export const sum: AggregateMatrixOperator = (matrix, axes) =>
+export const sum: AggregateMatrixOperator = <T extends Matrix>(
+  matrix: T,
+  axes?: Vector1 | Vector2 | Vector3 | Vector4 | VectorN,
+) =>
   aggregate(matrix, axes, add)
 
-export const max: AggregateMatrixOperator = (matrix, axes) =>
+export const max: AggregateMatrixOperator = <T extends Matrix>(
+  matrix: T,
+  axes?: Vector1 | Vector2 | Vector3 | Vector4 | VectorN,
+) =>
   aggregate(matrix, axes, (m1, m2) => broadcast(m1, m2, Math.max))
 
 export const dot = (a: Matrix, b: Matrix): Matrix => {
@@ -172,7 +191,7 @@ const isMatrixN = <T extends MatrixN>(matrix: Matrix0 | T): matrix is T => Array
 const broadcast = <
   T1 extends Matrix,
   T2 extends Matrix,
-  T3 extends T2 extends SmallerMatrices<T1> ? T1 : T2
+  T3 extends T2 extends NestedMatrices<T1> ? T1 : T2
 >(a: T1, b: T2, operator: math.BinaryOperator): T3 => {
   if (len(a) === 0 && len(b) === 0) {
     return operator(matrix0(a), matrix0(b)) as T3
@@ -192,7 +211,6 @@ const broadcast = <
   if (len(b) === 1) {
     return broadcastNesting(a, first(matrixN(b)), operator) as T3
   }
-
   return error('Matrix could not be broadcast together.')
 }
 
@@ -200,11 +218,21 @@ const broadcastNesting = (a: Matrix, b: Matrix, operator: math.BinaryOperator) =
   matrixN(a).map((x) => broadcast(x, b, operator))
 
 // Takes all matrix axes and aggregate all matrix elements by default.
-const aggregate = (matrix: Matrix, axes = array(ndim(matrix), identity), operator: math.BinaryOperator): Matrix => {
+const aggregate = <
+  T1 extends Matrix,
+  T2 extends Vector1 | Vector2 | Vector3 | Vector4 | VectorN,
+  T3 extends (
+    T2 extends Vector1 ? NestedMatrix<T1> :
+    T2 extends Vector2 ? NestedMatrix<NestedMatrix<T1>> :
+    T2 extends Vector3 ? NestedMatrix<NestedMatrix<NestedMatrix<T1>>> :
+    T2 extends Vector4 ? NestedMatrix<NestedMatrix<NestedMatrix<NestedMatrix<T1>>>> :
+    MatrixN
+  ),
+>(matrix: T1, axes = array(ndim(matrix), identity) as T2, operator: math.BinaryOperator): T3 => {
   if (isMatrixN(matrix) && len(axes)) {
-    return aggregate(aggregateNesting(matrix, first(axes), operator), reduceAxes(axes), operator)
+    return aggregate(aggregateNesting(matrix, first(axes), operator), reduceAxes(axes), operator) as T3
   }
-  return matrix
+  return matrix as unknown as T3
 }
 
 const aggregateNesting = (matrix: MatrixN, axis: number, operator: math.BinaryOperator): Matrix => {
