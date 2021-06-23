@@ -197,25 +197,29 @@ const broadcast = <
     return operator(matrix0(a), matrix0(b)) as T3
   }
   if (ndim(a) < ndim(b)) {
-    return broadcastNesting(b, a, operator) as unknown as T3
+    return broadcastNesting(b, a, operator)
   }
   if (ndim(a) > ndim(b)) {
-    return broadcastNesting(a, b, operator) as unknown as T3
+    return broadcastNesting(a, b, operator)
   }
   if (len(a) === len(b)) {
     return zip(matrixN(a), matrixN(b)).map(([x, y]) => broadcast(x, y, operator)) as T3
   }
   if (len(a) === 1) {
-    return broadcastNesting(b, first(matrixN(a)), operator) as T3
+    return broadcastNesting(b, first(matrixN(a)), operator)
   }
   if (len(b) === 1) {
-    return broadcastNesting(a, first(matrixN(b)), operator) as T3
+    return broadcastNesting(a, first(matrixN(b)), operator)
   }
   return error('Matrix could not be broadcast together.')
 }
 
-const broadcastNesting = (a: Matrix, b: Matrix, operator: math.BinaryOperator) =>
-  matrixN(a).map((x) => broadcast(x, b, operator))
+const broadcastNesting = <
+  T1 extends Matrix,
+  T2 extends Matrix,
+  T3 extends Matrix,
+>(a: T1, b: T2, operator: math.BinaryOperator): T3 =>
+  matrixN(a).map((x) => broadcast(x, b, operator)) as unknown as T3
 
 // Takes all matrix axes and aggregate all matrix elements by default.
 const aggregate = <
