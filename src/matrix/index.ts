@@ -1,4 +1,4 @@
-import { constant, error, identity } from '../utils/function'
+import { constant, error, identity, isDefined } from '../utils/function'
 import { array, ArrayN, first, zip } from '../utils/array'
 import * as math from '../utils/math'
 import { rand } from '../utils/random'
@@ -72,9 +72,22 @@ export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T):
   ...(isMatrixN(first(matrix)) ? shape(matrixN(first(matrix))) : []),
 ] as U
 
-export const at = <T extends MatrixN>(matrix: T, index: number): T[0] => {
-  const i = index < 0 ? len(matrix) + index : index
-  return matrix[i] as T[0] ?? error(`Index ${i} out of bounds [0, ${len(matrix) - 1}].`)
+export const at = <
+  T1 extends MatrixN,
+  T2 extends Vector1 | Vector2 | Vector3 | Vector4 | VectorN,
+  T3 extends (
+    T2 extends Vector1 ? NestedMatrix<T1> :
+    T2 extends Vector2 ? NestedMatrix<NestedMatrix<T1>> :
+    T2 extends Vector3 ? NestedMatrix<NestedMatrix<NestedMatrix<T1>>> :
+    T2 extends Vector4 ? NestedMatrix<NestedMatrix<NestedMatrix<NestedMatrix<T1>>>> :
+    MatrixN
+  )
+>(matrix: T1, ...[d0, ...dn]: T2): T3 => {
+  const i = d0 < 0 ? len(matrix) + d0 : d0
+  if (!isDefined(matrix[i])) {
+    return error(`Index ${i} out of bounds [0, ${len(matrix) - 1}].`)
+  }
+  return (isMatrixN(matrix[i]) && len(dn) > 0 ? at(matrixN(matrix[i]), ...dn) : matrix[i]) as T3
 }
 
 export const partition = <
@@ -164,7 +177,7 @@ const matmul2x2 = (a: Matrix2, b: Matrix2): Matrix2 => {
   }
   const columns = array(len(first(b)), identity)
   return a.map((row) =>
-    columns.map((j) => row.reduce((sum, x, i) => sum + x * at(at(b, i), j), 0))
+    columns.map((j) => row.reduce((sum, x, i) => sum + x * at(b, i, j), 0))
   )
 }
 

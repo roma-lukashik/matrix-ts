@@ -108,22 +108,43 @@ describe('matrix', () => {
   })
 
   describe('#at', () => {
-    const a = [1, 2, 3, 4]
+    describe('single case', () => {
+      const a = [1, 2, 3, 4]
 
-    it('returns a proper element starting from the beginning', () => {
-      expect(matrix.at(a, 2)).toBe(3)
+      it('returns a proper element starting from the beginning', () => {
+        expect(matrix.at(a, 2)).toBe(3)
+      })
+
+      it('returns a proper element starting from the end', () => {
+        expect(matrix.at(a, -2)).toBe(3)
+      })
+
+      it('throws an error if index is out of the array bounds #1', () => {
+        expect(() => matrix.at(a, 4)).toThrowError('Index 4 out of bounds [0, 3].')
+      })
+
+      it('throws an error if index is out of the array bounds #2', () => {
+        expect(() => matrix.at(a, -5)).toThrowError('Index -1 out of bounds [0, 3].')
+      })
     })
 
-    it('returns a proper element starting from the end', () => {
-      expect(matrix.at(a, -2)).toBe(3)
-    })
+    describe('nested case', () => {
+      const a = [
+        [[1, 2], [3, 4]],
+        [[5, 6], [7, 8]],
+      ]
 
-    it('throws an error if index is out of the array bounds #1', () => {
-      expect(() => matrix.at(a, 4)).toThrowError('Index 4 out of bounds [0, 3].')
-    })
+      it('passes case #1', () => {
+        expect(matrix.at(a, 0)).toEqual([[1, 2], [3, 4]])
+      })
 
-    it('throws an error if index is out of the array bounds #2', () => {
-      expect(() => matrix.at(a, -5)).toThrowError('Index -1 out of bounds [0, 3].')
+      it('passes case #2', () => {
+        expect(matrix.at(a, 0, 1)).toEqual([3, 4])
+      })
+
+      it('passes case #3', () => {
+        expect(matrix.at(a, 0, 1, 0)).toEqual(3)
+      })
     })
   })
 

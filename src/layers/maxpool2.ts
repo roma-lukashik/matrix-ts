@@ -24,7 +24,7 @@ export const backward = (input: Matrix3, gradient: Matrix3): Matrix3 => {
         x.forEach((y, j1) => {
           y.forEach((z, f1) => {
             if (z === at(amax, f1)) {
-              dLdInput[i * 2 + i1][j * 2 + j1][f1] = at(at(at(gradient, i), j), f1)
+              dLdInput[i * 2 + i1][j * 2 + j1][f1] = at(gradient, i, j, f1)
             }
           })
         })
