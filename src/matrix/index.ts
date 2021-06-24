@@ -31,7 +31,13 @@ type AggregateMatrixOperator = {
   <T extends Matrix>(matrix: T): Matrix0;
   <
     T extends Matrix,
-    K extends Vector1 | Vector2 | Vector3 | Vector4 | VectorN
+    K extends (
+      T extends Matrix1 ? Vector1 :
+      T extends Matrix2 ? Vector1 | Vector2 :
+      T extends Matrix3 ? Vector1 | Vector2 | Vector3 :
+      T extends Matrix4 ? Vector1 | Vector2 | Vector3 | Vector4 :
+      Vector1 | Vector2 | Vector3 | Vector4 | VectorN
+    )
   >(matrix: T, axes: K):
     K extends Vector1 ? NestedMatrix<T> :
     K extends Vector2 ? NestedMatrix<NestedMatrix<T>> :
@@ -74,7 +80,13 @@ export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T):
 
 export const at = <
   T1 extends MatrixN,
-  T2 extends Vector1 | Vector2 | Vector3 | Vector4 | VectorN,
+  T2 extends (
+    T1 extends Matrix1 ? Vector1 :
+    T1 extends Matrix2 ? Vector1 | Vector2 :
+    T1 extends Matrix3 ? Vector1 | Vector2 | Vector3 :
+    T1 extends Matrix4 ? Vector1 | Vector2 | Vector3 | Vector4 :
+    Vector1 | Vector2 | Vector3 | Vector4 | VectorN
+  ),
   T3 extends (
     T2 extends Vector1 ? NestedMatrix<T1> :
     T2 extends Vector2 ? NestedMatrix<NestedMatrix<T1>> :
@@ -87,7 +99,7 @@ export const at = <
   if (!isDefined(matrix[i])) {
     return error(`Index ${i} out of bounds [0, ${len(matrix) - 1}].`)
   }
-  return (isMatrixN(matrix[i]) && len(dn) > 0 ? at(matrixN(matrix[i]), ...dn) : matrix[i]) as T3
+  return (len(dn) > 0 ? at(matrixN(matrix[i]), ...dn) : matrix[i]) as T3
 }
 
 export const partition = <
