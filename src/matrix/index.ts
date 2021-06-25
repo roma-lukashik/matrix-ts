@@ -11,16 +11,35 @@ export type Matrix4 = Matrix3[]
 export type MatrixN = ArrayN<Matrix0>
 export type Matrix = Matrix0 | MatrixN
 
-export type Vector1 = [number]
-export type Vector2 = [number, number]
-export type Vector3 = [number, number, number]
-export type Vector4 = [number, number, number, number]
-export type VectorN = number[]
+type Vector1 = [number]
+type Vector2 = [number, number]
+type Vector3 = [number, number, number]
+type Vector4 = [number, number, number, number]
+type VectorN = number[]
 
 type NestedMatrix<T extends Matrix> = T extends MatrixN ? T[0] : Matrix0
 
 type NestedMatrices<T extends Matrix> =
   T extends Matrix1 | Matrix2 | Matrix3 | Matrix4 ? T[0] | NestedMatrices<T[0]> : T
+
+type NestedVectors<T extends VectorN> =
+  T extends [...infer Head, number] ?
+    Head extends Vector2 | Vector3 | Vector4 ? Head | NestedVectors<Head> :
+    Head extends [] ? never : Head : T
+
+type MatrixDimensions<T extends Matrix, K extends VectorN = Matrix2Vector<T>> =
+  K | (K extends Vector1 | Vector2 | Vector3 | Vector4 ? NestedVectors<K> : NestedVectors<Vector4>)
+
+type NLevelNestedMatrix<
+  T extends Matrix,
+  K extends MatrixDimensions<T>,
+> = (
+  K extends Vector1 ? NestedMatrix<T> :
+  K extends Vector2 ? NestedMatrix<NestedMatrix<T>> :
+  K extends Vector3 ? NestedMatrix<NestedMatrix<NestedMatrix<T>>> :
+  K extends Vector4 ? NestedMatrix<NestedMatrix<NestedMatrix<NestedMatrix<T>>>> :
+  MatrixN
+)
 
 type MatrixBinaryOperator = <
   T1 extends Matrix,
@@ -29,21 +48,7 @@ type MatrixBinaryOperator = <
 
 type AggregateMatrixOperator = {
   <T extends Matrix>(matrix: T): Matrix0;
-  <
-    T extends Matrix,
-    K extends (
-      T extends Matrix1 ? Vector1 :
-      T extends Matrix2 ? Vector1 | Vector2 :
-      T extends Matrix3 ? Vector1 | Vector2 | Vector3 :
-      T extends Matrix4 ? Vector1 | Vector2 | Vector3 | Vector4 :
-      Vector1 | Vector2 | Vector3 | Vector4 | VectorN
-    )
-  >(matrix: T, axes: K):
-    K extends Vector1 ? NestedMatrix<T> :
-    K extends Vector2 ? NestedMatrix<NestedMatrix<T>> :
-    K extends Vector3 ? NestedMatrix<NestedMatrix<NestedMatrix<T>>> :
-    K extends Vector4 ? NestedMatrix<NestedMatrix<NestedMatrix<NestedMatrix<T>>>> :
-    MatrixN;
+  <T extends Matrix, K extends MatrixDimensions<T>>(matrix: T, axes: K): NLevelNestedMatrix<T, K>;
 }
 
 type Vector2Matrix<T extends VectorN> = (
@@ -54,7 +59,8 @@ type Vector2Matrix<T extends VectorN> = (
   MatrixN
 )
 
-type Matrix2Vector<T extends MatrixN> = (
+type Matrix2Vector<T extends Matrix> = (
+  T extends Matrix0 ? never :
   T extends Matrix1 ? Vector1 :
   T extends Matrix2 ? Vector2 :
   T extends Matrix3 ? Vector3 :
@@ -80,20 +86,8 @@ export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T):
 
 export const at = <
   T1 extends MatrixN,
-  T2 extends (
-    T1 extends Matrix1 ? Vector1 :
-    T1 extends Matrix2 ? Vector1 | Vector2 :
-    T1 extends Matrix3 ? Vector1 | Vector2 | Vector3 :
-    T1 extends Matrix4 ? Vector1 | Vector2 | Vector3 | Vector4 :
-    Vector1 | Vector2 | Vector3 | Vector4 | VectorN
-  ),
-  T3 extends (
-    T2 extends Vector1 ? NestedMatrix<T1> :
-    T2 extends Vector2 ? NestedMatrix<NestedMatrix<T1>> :
-    T2 extends Vector3 ? NestedMatrix<NestedMatrix<NestedMatrix<T1>>> :
-    T2 extends Vector4 ? NestedMatrix<NestedMatrix<NestedMatrix<NestedMatrix<T1>>>> :
-    MatrixN
-  )
+  T2 extends MatrixDimensions<T1>,
+  T3 extends NLevelNestedMatrix<T1, T2>
 >(matrix: T1, ...[d0, ...dn]: T2): T3 => {
   const i = d0 < 0 ? len(matrix) + d0 : d0
   if (!isDefined(matrix[i])) {
@@ -126,13 +120,13 @@ export const divide: MatrixBinaryOperator = (matrix1, matrix2) =>
 
 export const sum: AggregateMatrixOperator = <T extends Matrix>(
   matrix: T,
-  axes?: Vector1 | Vector2 | Vector3 | Vector4 | VectorN,
+  axes?: MatrixDimensions<T>,
 ) =>
   aggregate(matrix, axes, add)
 
 export const max: AggregateMatrixOperator = <T extends Matrix>(
   matrix: T,
-  axes?: Vector1 | Vector2 | Vector3 | Vector4 | VectorN,
+  axes?: MatrixDimensions<T>,
 ) =>
   aggregate(matrix, axes, (m1, m2) => broadcast(m1, m2, Math.max))
 
@@ -249,14 +243,8 @@ const broadcastNesting = <
 // Takes all matrix axes and aggregate all matrix elements by default.
 const aggregate = <
   T1 extends Matrix,
-  T2 extends Vector1 | Vector2 | Vector3 | Vector4 | VectorN,
-  T3 extends (
-    T2 extends Vector1 ? NestedMatrix<T1> :
-    T2 extends Vector2 ? NestedMatrix<NestedMatrix<T1>> :
-    T2 extends Vector3 ? NestedMatrix<NestedMatrix<NestedMatrix<T1>>> :
-    T2 extends Vector4 ? NestedMatrix<NestedMatrix<NestedMatrix<NestedMatrix<T1>>>> :
-    MatrixN
-  ),
+  T2 extends MatrixDimensions<T1>,
+  T3 extends NLevelNestedMatrix<T1, T2>,
 >(matrix: T1, axes = array(ndim(matrix), identity) as T2, operator: math.BinaryOperator): T3 => {
   if (isMatrixN(matrix) && len(axes)) {
     return aggregate(aggregateNesting(matrix, first(axes), operator), reduceAxes(axes), operator) as T3
