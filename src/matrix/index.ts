@@ -1,5 +1,5 @@
 import { constant, error, identity, isDefined } from '../utils/function'
-import { array, ArrayN, first, zip } from '../utils/array'
+import { array, ArrayN, first, size, zip } from '../utils/array'
 import * as math from '../utils/math'
 import { rand } from '../utils/random'
 
@@ -199,10 +199,10 @@ const matmul2x2 = (a: Matrix2, b: Matrix2): Matrix2 => {
 }
 
 // Number of rows.
-const len = (matrix: Matrix): number => isMatrixN(matrix) ? matrix.length : 0
+const len = (matrix: Matrix): number => isMatrixN(matrix) ? size(matrix) : 0
 
 // Number of dimensions.
-const ndim = (matrix: Matrix): number => isMatrixN(matrix) ? shape(matrix).length : 0
+const ndim = (matrix: Matrix): number => isMatrixN(matrix) ? size(shape(matrix)) : 0
 
 // Typesafe casting value to Matrix0.
 const matrix0 = (value: Matrix): Matrix0 =>

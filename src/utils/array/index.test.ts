@@ -1,4 +1,4 @@
-import { array, first, range, zip } from '.'
+import { array, first, range, size, zip } from '.'
 import { constant, identity } from '../function'
 
 describe('array', () => {
@@ -23,6 +23,16 @@ describe('array', () => {
 
     it('returns an array from 1 to 10', () => {
       expect(range(1, 11)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    })
+  })
+
+  describe('#size', () => {
+    it('returns 0 for an empty array', () => {
+      expect(size([])).toBe(0)
+    })
+
+    it('returns a correct array size', () => {
+      expect(size([1, 2, 3, 4])).toBe(4)
     })
   })
 
