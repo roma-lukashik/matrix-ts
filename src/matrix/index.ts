@@ -244,12 +244,8 @@ const broadcast = <
   return error('Matrix could not be broadcast together.')
 }
 
-const broadcastNesting = <
-  T1 extends Matrix,
-  T2 extends Matrix,
-  T3 extends Matrix,
->(a: T1, b: T2, operator: math.BinaryOperator): T3 =>
-  matrixN(a).map((x) => broadcast(x, b, operator)) as unknown as T3
+const broadcastNesting = <T extends Matrix>(a: Matrix, b: Matrix, operator: math.BinaryOperator): T =>
+  matrixN(a).map((x) => broadcast(x, b, operator)) as T
 
 // Takes all matrix axes and aggregate all matrix elements by default.
 const aggregate = <
