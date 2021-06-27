@@ -96,6 +96,17 @@ export const at = <
   return (len(dn) > 0 ? at(matrixN(matrix[i]), ...dn) : matrix[i]) as T3
 }
 
+export const neach = <
+  T1 extends MatrixN,
+>(matrix: T1, callback: (x: number, ...dn: Matrix2Vector<T1>) => void): void =>
+  _neach(matrix, callback)
+
+export const _neach = <
+  T1 extends MatrixN,
+  T2 extends Matrix2Vector<T1>
+>(matrix: T1, callback: (x: number, ...dn: T2) => void, dn: number[] = []): void =>
+  matrix.forEach((x, i) => isMatrixN(x) ? _neach(x, callback, [...dn, i]) : callback(x, ...[...dn, i] as T2))
+
 export const partition = <
   T extends Matrix,
   U extends (
@@ -107,7 +118,7 @@ export const partition = <
     Vector2[]
   )
 >(matrix: T, ...[d0, ...rest]: U): T =>
-  d0 && isMatrixN(matrix) ? matrix.slice(...d0).map((item) => partition(item, ...rest)) as T : matrix
+  d0 && isMatrixN(matrix) ? matrix.slice(...d0).map((x) => partition(x, ...rest)) as T : matrix
 
 export const add: MatrixBinaryOperator = (matrix1, matrix2) =>
   broadcast(matrix1, matrix2, math.add)
@@ -128,7 +139,7 @@ export const max: AggregateMatrixOperator = <T extends Matrix>(
   matrix: T,
   axes?: MatrixDimensions<T>,
 ) =>
-  aggregate(matrix, axes, (m1, m2) => broadcast(m1, m2, Math.max))
+  aggregate(matrix, axes, (a, b) => broadcast(a, b, Math.max))
 
 export const dot = (a: Matrix, b: Matrix): Matrix => {
   if (len(a) === 0 || len(b) === 0) {
@@ -160,13 +171,13 @@ export const matmul = (a: MatrixN, b: MatrixN): MatrixN => {
     return matmul(array(1, constant(a)), b).flat()
   }
   if (isMatrix1(b)) {
-    return matmul(a, b.map((x) => [x])).flat()
+    return matmul(a, b.map((y) => [y])).flat()
   }
   if (isMatrix2(a) && isMatrix2(b)) {
     return matmul2x2(a, b)
   }
   if (isMatrix2(a)) {
-    return b.map((x) => matmul(a, matrixN(x)))
+    return b.map((y) => matmul(a, matrixN(y)))
   }
   if (isMatrix2(b)) {
     return a.map((x) => matmul(matrixN(x), b))
