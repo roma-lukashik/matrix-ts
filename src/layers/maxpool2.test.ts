@@ -4,13 +4,13 @@ import { image } from './data'
 import { forward, backward } from './maxpool2'
 
 describe('maxpool2', () => {
-  it('forward', () => {
+  it('#forward', () => {
     const output3x3 = conv3x3Forward(image, conv3x3(8))
     const output = forward(output3x3)
     expect(shape(output)).toEqual([13, 13, 8])
   })
 
-  it('backward', () => {
+  it('#backward', () => {
     const input3x3 = randn(26, 26, 8)
     const gradient = randn(13, 13, 8)
     const output = backward(input3x3, gradient)
