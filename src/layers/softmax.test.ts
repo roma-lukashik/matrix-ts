@@ -1,9 +1,17 @@
-import { forward } from './softmax'
+import { Softmax } from './softmax'
 import { randn, shape } from '../matrix'
 
 describe('softmax', () => {
+  const input = randn(13, 13, 8)
+
   it('#forward', () => {
-    const input = randn(13, 13, 8)
-    expect(shape(forward(input, 10))).toEqual([10])
+    const softmax = new Softmax(13 * 13 * 8, 10)
+    expect(shape(softmax.forward(input))).toEqual([10])
+  })
+
+  it('#backward', () => {
+    const softmax = new Softmax(13 * 13 * 8, 10)
+    const gradient = [0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+    expect(shape(softmax.backward(input, gradient, 0.005))).toEqual([13 * 13 * 8])
   })
 })

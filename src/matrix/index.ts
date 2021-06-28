@@ -123,6 +123,9 @@ export const partition = <
 export const add: MatrixBinaryOperator = (matrix1, matrix2) =>
   broadcast(matrix1, matrix2, math.add)
 
+export const subtract: MatrixBinaryOperator = (matrix1, matrix2) =>
+  broadcast(matrix1, matrix2, math.subtract)
+
 export const multiply: MatrixBinaryOperator = (matrix1, matrix2) =>
   broadcast(matrix1, matrix2, math.multiply)
 
