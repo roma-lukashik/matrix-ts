@@ -32,15 +32,18 @@ export class Softmax {
     return divide(exps, sum(exps, [0]))
   }
 
-  public backward(input: Matrix3, gradient: Matrix1, learningRate: number) {
+  public backward(input: Matrix3, output: Matrix1, learningRate: number) {
     const totals = this.totals(input)
     const exps = exp(totals)
-    const s = sum(exps)
-    const i = gradient.findIndex((x) => x !== 0)
-    const x = at(gradient, i)
+    const expsum = sum(exps)
 
-    const dOutDt = divide(multiply(-at(exps, i), exps), s ** 2)
-    dOutDt[i] = at(exps, i) * (s - at(exps, i)) / (s ** 2)
+    // Only 1 element from output should be nonzero.
+    const i = output.findIndex((x) => x !== 0)
+    const gradient = at(output, i)
+
+    // Gradients of output against totals.
+    const dOdt = divide(multiply(-at(exps, i), exps), expsum ** 2)
+    dOdt[i] = at(exps, i) * (expsum - at(exps, i)) / (expsum ** 2)
 
     // Gradients of totals against weights/biases/input.
     const dTdW = flatten(input)
@@ -48,7 +51,7 @@ export class Softmax {
     const dTdInputs = this.weight
 
     // Gradients of loss against totals.
-    const dLdT = multiply(x, dOutDt)
+    const dLdT = multiply(gradient, dOdt)
 
     // Gradients of loss against weights/biases/input.
     const dLdW = matmul(newaxis(dTdW, 1), newaxis(dLdT, 0))

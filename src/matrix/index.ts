@@ -70,7 +70,7 @@ export const create = <T extends VectorN, U extends Vector2Matrix<T>>(fill: () =
 
 export const zeros = <T extends VectorN>(...dn: T) => create(constant(0), ...dn)
 
-export const arange = (dn: number) => array(dn, identity)
+export const arange = (dn: number): Matrix1 => array(dn, identity)
 
 // Return samples from the "standard normal" distribution.
 export const randn = <T extends VectorN>(...dn: T) => create(rand, ...dn)
@@ -258,12 +258,18 @@ const aggregate = <
   T1 extends Matrix,
   T2 extends MatrixDimensions<T1>,
   T3 extends NLevelNestedMatrix<T1, T2>,
->(matrix: T1, axes = arange(ndim(matrix)) as T2, operator: math.BinaryOperator): T3 => {
-  if (isMatrixN(matrix) && len(axes)) {
-    return aggregate(aggregateNesting(matrix, first(axes), operator), reduceAxes(axes), operator) as T3
-  }
-  return matrix as unknown as T3
-}
+>(
+  matrix: T1,
+  axes = arange(ndim(matrix)) as T2,
+  operator: math.BinaryOperator,
+): T3 =>
+  isMatrixN(matrix) && len(axes) ?
+    aggregate(
+      aggregateNesting(matrix, first(axes), operator),
+      reduceAxes(axes),
+      operator,
+    ) as T3 :
+    matrix as unknown as T3
 
 const aggregateNesting = (matrix: MatrixN, axis: number, operator: math.BinaryOperator): Matrix => {
   if (axis && ndim(matrix) > 1) {
