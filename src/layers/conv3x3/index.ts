@@ -13,7 +13,7 @@ import {
   subtract,
   sum,
   zeros,
-} from '../matrix'
+} from '../../matrix'
 
 export class Conv3x3 {
   private filters: Matrix3

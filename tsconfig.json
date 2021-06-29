@@ -18,7 +18,7 @@
     "downlevelIteration": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "importHelpers": true,
+    "importHelpers": false,
     "declaration": true,
     "typeRoots": [
       "node_modules/@types"

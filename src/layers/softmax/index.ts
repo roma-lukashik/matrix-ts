@@ -14,8 +14,8 @@ import {
   subtract,
   sum,
   zeros,
-} from '../matrix'
-import { flatten } from '../utils/array'
+} from '../../matrix'
+import { flatten } from '../../utils/array'
 
 export class Softmax {
   private weight: Matrix2

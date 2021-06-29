@@ -1,7 +1,7 @@
-import { randn, shape } from '../matrix'
-import { Maxpool2 } from './maxpool2'
+import { Maxpool2 } from '.'
+import { randn, shape } from '../../matrix'
 
-describe('maxpool2', () => {
+describe('Maxpool2', () => {
   const input = randn(26, 26, 8)
 
   it('#forward', () => {

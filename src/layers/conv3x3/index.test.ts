@@ -1,7 +1,7 @@
-import { Conv3x3 } from './conv3x3'
-import { randn, shape } from '../matrix'
+import { Conv3x3 } from '.'
+import { randn, shape } from '../../matrix'
 
-describe('conv3x3', () => {
+describe('Conv3x3', () => {
   const input = randn(28, 28)
 
   it('#forward', () => {

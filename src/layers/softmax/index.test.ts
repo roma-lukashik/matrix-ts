@@ -1,7 +1,7 @@
-import { Softmax } from './softmax'
-import { randn, shape } from '../matrix'
+import { Softmax } from '.'
+import { randn, shape } from '../../matrix'
 
-describe('softmax', () => {
+describe('Softmax', () => {
   const input = randn(13, 13, 8)
 
   it('#forward', () => {

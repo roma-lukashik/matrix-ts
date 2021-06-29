@@ -1,5 +1,5 @@
-import { arange, at, Matrix3, max, neach, partition, shape, zeros } from '../matrix'
-import { idivide } from '../utils/math'
+import { arange, at, Matrix3, max, neach, partition, shape, zeros } from '../../matrix'
+import { idivide } from '../../utils/math'
 
 export class Maxpool2 {
   public forward(input: Matrix3): Matrix3 {
