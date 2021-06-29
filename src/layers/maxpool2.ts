@@ -11,6 +11,7 @@ export class Maxpool2 {
 
   public backward(input: Matrix3, gradient: Matrix3): Matrix3 {
     const dLdInput = zeros(...shape(input))
+
     this.frames(input).forEach((row, i) => {
       row.forEach((frame, j) => {
         const amax = max(frame, [0, 1])
@@ -21,6 +22,7 @@ export class Maxpool2 {
         })
       })
     })
+
     return dLdInput
   }
 

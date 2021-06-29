@@ -41,8 +41,7 @@ export class Conv3x3 {
       })
     )
 
-    this.filters = subtract(this.filters, multiply(dLdInput, learningRate))
-    return this.filters
+    return this.filters = subtract(this.filters, multiply(dLdInput, learningRate))
   }
 
   private frames(input: Matrix2) {

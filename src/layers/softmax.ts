@@ -9,6 +9,7 @@ import {
   Matrix2,
   Matrix3,
   multiply,
+  newaxis,
   randn,
   subtract,
   sum,
@@ -50,7 +51,7 @@ export class Softmax {
     const dLdT = multiply(x, dOutDt)
 
     // Gradients of loss against weights/biases/input.
-    const dLdW = matmul(dTdW.map((x) => [x]), [dLdT]) // TODO newaxis
+    const dLdW = matmul(newaxis(dTdW, 1), newaxis(dLdT, 0))
     const dLdB = multiply(dLdT, dTdB)
     const dLdInput = matmul(dTdInputs, dLdT)
 

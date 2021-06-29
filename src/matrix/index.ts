@@ -120,6 +120,9 @@ export const partition = <
 >(matrix: T, ...[d0, ...rest]: U): T =>
   d0 && isMatrixN(matrix) ? matrix.slice(...d0).map((x) => partition(x, ...rest)) as T : matrix
 
+export const newaxis = <T1 extends Matrix>(matrix: T1, axis: number): T1[] =>
+  axis === 0 || !isMatrixN(matrix) ? [matrix] : matrix.map((x) => newaxis(x, axis - 1)) as T1[]
+
 export const add: MatrixBinaryOperator = (matrix1, matrix2) =>
   broadcast(matrix1, matrix2, math.add)
 
@@ -171,10 +174,10 @@ export const dot = (a: Matrix, b: Matrix): Matrix => {
 
 export const matmul = (a: MatrixN, b: MatrixN): MatrixN => {
   if (isMatrix1(a)) {
-    return matmul(array(1, constant(a)), b).flat()
+    return matmul(newaxis(a, 0), b).flat()
   }
   if (isMatrix1(b)) {
-    return matmul(a, b.map((y) => [y])).flat()
+    return matmul(a, newaxis(b, 1)).flat()
   }
   if (isMatrix2(a) && isMatrix2(b)) {
     return matmul2x2(a, b)

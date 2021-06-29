@@ -176,6 +176,43 @@ describe('matrix', () => {
     })
   })
 
+  describe('#newaxis', () => {
+    it('returns 0x1 matrix', () => {
+      expect(matrix.newaxis(1, 0)).toEqual([1])
+    })
+
+    it('returns 1x2 matrix', () => {
+      expect(matrix.newaxis([1, 2], 0)).toEqual([[1, 2]])
+    })
+
+    it('returns 1x2x2 matrix', () => {
+      expect(matrix.newaxis([[1, 2], [3, 4]], 0)).toEqual([
+        [[1, 2], [3, 4]],
+      ])
+    })
+
+    it('returns 2x1x2 matrix', () => {
+      expect(matrix.newaxis([[1, 2], [3, 4]], 1)).toEqual([
+        [[1, 2]],
+        [[3, 4]],
+      ])
+    })
+
+    it('returns 2x2x1 matrix', () => {
+      expect(matrix.newaxis([[1, 2], [3, 4]], 2)).toEqual([
+        [[1], [2]],
+        [[3], [4]],
+      ])
+    })
+
+    it('returns 2x2x1 matrix if axis index is out of matrix dimensions', () => {
+      expect(matrix.newaxis([[1, 2], [3, 4]], 3)).toEqual([
+        [[1], [2]],
+        [[3], [4]],
+      ])
+    })
+  })
+
   describe('#multiply', () => {
     it('multiplies (3) and (3) matrix', () => {
       const a = [1, 2, 3]
