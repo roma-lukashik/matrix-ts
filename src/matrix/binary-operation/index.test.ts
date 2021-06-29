@@ -1,4 +1,4 @@
-import { divide, dot, matmul, multiply } from './binary-operation'
+import { divide, dot, matmul, multiply } from '.'
 
 describe('binary operation', () => {
   describe('#multiply', () => {

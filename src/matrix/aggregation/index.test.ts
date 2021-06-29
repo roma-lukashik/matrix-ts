@@ -1,4 +1,4 @@
-import { max, sum } from './aggregation'
+import { max, sum } from '.'
 
 describe('aggregation', () => {
   describe('#sum', () => {

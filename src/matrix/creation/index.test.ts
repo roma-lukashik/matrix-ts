@@ -1,6 +1,6 @@
-import * as random from '../utils/random'
-import { constant } from '../utils/function'
-import { arange, create, ones, randn, zeros } from './creation'
+import * as random from '../../utils/random'
+import { constant } from '../../utils/function'
+import { arange, create, ones, randn, zeros } from '.'
 
 describe('creation', () => {
   describe('#create', () => {

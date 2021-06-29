@@ -1,5 +1,5 @@
-import { isMatrixN } from './geometry'
-import { Matrix2Vector, MatrixN } from './types'
+import { isMatrixN } from '../geometry'
+import { Matrix2Vector, MatrixN } from '../utils/types'
 
 export const neach = <
   T1 extends MatrixN,

@@ -1,9 +1,9 @@
-import * as math from '../utils/math'
-import { first } from '../utils/array'
-import { Matrix, Matrix0, MatrixDimensions, MatrixN, NLevelNestedMatrix, VectorN } from './types'
-import { arange } from './creation'
-import { isMatrixN, len, matrixn, ndim } from './geometry'
-import { broadcast } from './broadcasting'
+import * as math from '../../utils/math'
+import { first } from '../../utils/array'
+import { Matrix, Matrix0, MatrixDimensions, MatrixN, NLevelNestedMatrix, VectorN } from '../utils/types'
+import { arange } from '../creation'
+import { isMatrixN, len, matrixn, ndim } from '../geometry'
+import { broadcast } from '../utils/broadcasting'
 
 type AggregateMatrixOperator = {
   <T extends Matrix>(matrix: T): Matrix0;

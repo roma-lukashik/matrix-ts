@@ -1,5 +1,5 @@
-import { at, newaxis, partition, shape } from "./geometry"
-import { ones } from './creation'
+import { at, newaxis, partition, shape } from '.'
+import { ones } from '../creation'
 
 describe('geometry', () => {
   describe('#at', () => {

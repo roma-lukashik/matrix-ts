@@ -1,11 +1,11 @@
-import { Matrix, Matrix2, MatrixN, NestedMatrices } from './types'
-import * as math from '../utils/math'
-import { first, zip } from '../utils/array'
-import { error } from '../utils/function'
-import { at, isMatrix0, isMatrix1, isMatrix2, len, matrixn, newaxis, shape } from './geometry'
-import { arange } from './creation'
-import { broadcast } from './broadcasting'
-import { sum } from './aggregation'
+import { Matrix, Matrix2, MatrixN, NestedMatrices } from '../utils/types'
+import * as math from '../../utils/math'
+import { first, zip } from '../../utils/array'
+import { error } from '../../utils/function'
+import { at, isMatrix0, isMatrix1, isMatrix2, len, matrixn, newaxis, shape } from '../geometry'
+import { arange } from '../creation'
+import { broadcast } from '../utils/broadcasting'
+import { sum } from '../aggregation'
 
 type MatrixBinaryOperator = <
   T1 extends Matrix,

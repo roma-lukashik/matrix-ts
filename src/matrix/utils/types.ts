@@ -1,4 +1,4 @@
-import { ArrayN } from '../utils/array'
+import { ArrayN } from '../../utils/array'
 
 export type Matrix0 = number
 export type Matrix1 = Matrix0[]

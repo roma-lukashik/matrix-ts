@@ -1,5 +1,5 @@
-import { first, size } from '../utils/array'
-import { error, isDefined } from '../utils/function'
+import { first, size } from '../../utils/array'
+import { error, isDefined } from '../../utils/function'
 import {
   Matrix,
   Matrix0,
@@ -12,7 +12,7 @@ import {
   MatrixN,
   NLevelNestedMatrix,
   Vector2,
-} from './types'
+} from '../utils/types'
 
 export const at = <
   T1 extends MatrixN,

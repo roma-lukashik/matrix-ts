@@ -1,8 +1,8 @@
 import { Matrix, NestedMatrices } from './types'
-import * as math from '../utils/math'
-import { isMatrix0, len, matrixn, ndim } from './geometry'
-import { first, zip } from '../utils/array'
-import { error } from '../utils/function'
+import * as math from '../../utils/math'
+import { isMatrix0, len, matrixn, ndim } from '../geometry'
+import { first, zip } from '../../utils/array'
+import { error } from '../../utils/function'
 
 export const broadcast = <
   T1 extends Matrix,
