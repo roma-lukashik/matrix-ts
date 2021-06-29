@@ -1,5 +1,6 @@
 import {
   add,
+  arange,
   at,
   divide,
   Matrix2,
@@ -13,7 +14,6 @@ import {
   sum,
   zeros,
 } from '../matrix'
-import { range } from '../utils/array'
 
 export class Conv3x3 {
   private filters: Matrix3
@@ -35,7 +35,7 @@ export class Conv3x3 {
 
     this.frames(input).forEach((row, i) =>
       row.forEach((frame, j) => {
-        neach(range(0, k), (f) => {
+        neach(arange(k), (f) => {
           dLdInput[f] = add(at(dLdInput, f), multiply(at(gradient, i, j, f), frame))
         })
       })
@@ -46,8 +46,8 @@ export class Conv3x3 {
 
   private frames(input: Matrix2) {
     const [h, w] = shape(input)
-    return range(0, h - 2).map((i) =>
-      range(0, w - 2).map((j) => this.frame3x3(input, i, j)),
+    return arange(h - 2).map((i) =>
+      arange(w - 2).map((j) => this.frame3x3(input, i, j)),
     )
   }
 

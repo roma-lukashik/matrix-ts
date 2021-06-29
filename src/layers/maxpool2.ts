@@ -1,5 +1,4 @@
-import { at, Matrix3, max, neach, partition, shape, zeros } from '../matrix'
-import { range } from '../utils/array'
+import { arange, at, Matrix3, max, neach, partition, shape, zeros } from '../matrix'
 import { idivide } from '../utils/math'
 
 export class Maxpool2 {
@@ -28,8 +27,8 @@ export class Maxpool2 {
 
   private frames(input: Matrix3) {
     const [h, w, f] = shape(input)
-    return range(0, idivide(h, 2)).map((i) =>
-      range(0, idivide(w, 2)).map((j) =>
+    return arange(idivide(h, 2)).map((i) =>
+      arange(idivide(w, 2)).map((j) =>
         this.frame2x2xN(input, i, j, f)
       ),
     )

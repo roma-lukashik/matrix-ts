@@ -54,6 +54,12 @@ describe('matrix', () => {
     })
   })
 
+  describe('#arange', () => {
+    it('returns an array from 0 to 5', () => {
+      expect(matrix.arange(6)).toEqual([0, 1, 2, 3, 4, 5])
+    })
+  })
+
   describe('#randn', () => {
     beforeEach(() => {
       spyOn(random, 'rand').and.returnValue(1)

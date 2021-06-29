@@ -5,9 +5,6 @@ export type ArrayN<T> = Array<T | ArrayN<T>>
 export const array = <T>(length: number, fill: (index: number) => T): T[] =>
   Array.from({ length }, (_, i) => fill(i))
 
-export const range = (start: number, end: number): number[] =>
-  array(end - start, (i) => i + start)
-
 export const size = (arr: any[]): number => arr.length
 
 export const first = <T>(arr: T[]): T => arr[0]
