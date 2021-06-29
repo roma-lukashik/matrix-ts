@@ -33,13 +33,12 @@ type MatrixDimensions<T extends Matrix, K extends VectorN = Matrix2Vector<T>> =
 type NLevelNestedMatrix<
   T extends Matrix,
   K extends MatrixDimensions<T>,
-> = (
+> =
   K extends Vector1 ? NestedMatrix<T> :
   K extends Vector2 ? NestedMatrix<NestedMatrix<T>> :
   K extends Vector3 ? NestedMatrix<NestedMatrix<NestedMatrix<T>>> :
   K extends Vector4 ? NestedMatrix<NestedMatrix<NestedMatrix<NestedMatrix<T>>>> :
   MatrixN
-)
 
 type MatrixBinaryOperator = <
   T1 extends Matrix,
@@ -51,22 +50,20 @@ type AggregateMatrixOperator = {
   <T extends Matrix, K extends MatrixDimensions<T>>(matrix: T, axes: K): NLevelNestedMatrix<T, K>;
 }
 
-type Vector2Matrix<T extends VectorN> = (
+type Vector2Matrix<T extends VectorN> =
   T extends Vector1 ? Matrix1 :
   T extends Vector2 ? Matrix2 :
   T extends Vector3 ? Matrix3 :
   T extends Vector4 ? Matrix4 :
   MatrixN
-)
 
-type Matrix2Vector<T extends Matrix> = (
+type Matrix2Vector<T extends Matrix> =
   T extends Matrix0 ? never :
   T extends Matrix1 ? Vector1 :
   T extends Matrix2 ? Vector2 :
   T extends Matrix3 ? Vector3 :
   T extends Matrix4 ? Vector4 :
   VectorN
-)
 
 export const create = <T extends VectorN, U extends Vector2Matrix<T>>(fill: () => number, ...[d0, ...dn]: T): U =>
   array(d0, () => len(dn) ? create(fill, ...dn): fill()) as U
@@ -81,7 +78,7 @@ export const exp = <T extends Matrix>(matrix: T): T =>
 
 export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T): U => [
   len(matrix),
-  ...(isMatrixN(first(matrix)) ? shape(matrixN(first(matrix))) : []),
+  ...(isMatrixN(first(matrix)) ? shape(matrixn(first(matrix))) : []),
 ] as U
 
 export const at = <
@@ -93,7 +90,7 @@ export const at = <
   if (!isDefined(matrix[i])) {
     return error(`Index ${i} out of bounds [0, ${len(matrix) - 1}].`)
   }
-  return (len(dn) > 0 ? at(matrixN(matrix[i]), ...dn) : matrix[i]) as T3
+  return (len(dn) > 0 ? at(matrixn(matrix[i]), ...dn) : matrix[i]) as T3
 }
 
 export const neach = <
@@ -148,7 +145,7 @@ export const max: AggregateMatrixOperator = <T extends Matrix>(
   aggregate(matrix, axes, (a, b) => broadcast(a, b, Math.max))
 
 export const dot = (a: Matrix, b: Matrix): Matrix => {
-  if (len(a) === 0 || len(b) === 0) {
+  if (isMatrix0(a) || isMatrix0(b)) {
     return multiply(a, b)
   }
   if (isMatrix1(a) && isMatrix1(b)) {
@@ -158,18 +155,18 @@ export const dot = (a: Matrix, b: Matrix): Matrix => {
     return matmul2x2(a, b)
   }
   if (isMatrix1(b)) {
-    return matrixN(a).map((x) => dot(x, b))
+    return a.map((x) => dot(x, b))
   }
   if (isMatrix1(a) && isMatrix2(b)) {
     return matmul(a, b)
   }
   if (isMatrix1(a)) {
-    return matrixN(b).map((y) => dot(a, y))
+    return b.map((y) => dot(a, y))
   }
-  if (at(shape(matrixN(a)), -1) === at(shape(matrixN(b)), -2)) {
-    return matrixN(a).map((x) => dot(x, b))
+  if (at(shape(a), -1) === at(shape(b), -2)) {
+    return a.map((x) => dot(x, b))
   }
-  return error(`Shapes (${shape(matrixN(a))}) and (${shape(matrixN(b))}) are not aligned.`)
+  return error(`Shapes (${shape(a)}) and (${shape(b)}) are not aligned.`)
 }
 
 export const matmul = (a: MatrixN, b: MatrixN): MatrixN => {
@@ -183,15 +180,15 @@ export const matmul = (a: MatrixN, b: MatrixN): MatrixN => {
     return matmul2x2(a, b)
   }
   if (isMatrix2(a)) {
-    return b.map((y) => matmul(a, matrixN(y)))
+    return b.map((y) => matmul(a, matrixn(y)))
   }
   if (isMatrix2(b)) {
-    return a.map((x) => matmul(matrixN(x), b))
+    return a.map((x) => matmul(matrixn(x), b))
   }
-  if (at(shape(matrixN(a)), -1) === at(shape(matrixN(b)), -2)) {
-    return zip(a, b).map(([x, y]) => matmul(matrixN(x), matrixN(y)))
+  if (at(shape(matrixn(a)), -1) === at(shape(matrixn(b)), -2)) {
+    return zip(a, b).map(([x, y]) => matmul(matrixn(x), matrixn(y)))
   }
-  return error(`Shapes (${shape(matrixN(a))}) and (${shape(matrixN(b))}) are not aligned.`)
+  return error(`Shapes (${shape(matrixn(a))}) and (${shape(matrixn(b))}) are not aligned.`)
 }
 
 const matmul2x2 = (a: Matrix2, b: Matrix2): Matrix2 => {
@@ -210,13 +207,14 @@ const len = (matrix: Matrix): number => isMatrixN(matrix) ? size(matrix) : 0
 // Number of dimensions.
 const ndim = (matrix: Matrix): number => isMatrixN(matrix) ? size(shape(matrix)) : 0
 
-// Typesafe casting value to Matrix0.
-const matrix0 = (value: Matrix): Matrix0 =>
+export const matrix0 = (value: Matrix): Matrix0 =>
   isMatrixN(value) ? error(`Value is not an instance of Matrix0`) : value
 
 // Typesafe casting value to MatrixN.
-const matrixN = <T extends MatrixN>(value: Matrix0 | T): T =>
+export const matrixn = <T extends MatrixN>(value: Matrix0 | T): T =>
   isMatrixN(value) ? value : error(`Value ${value} is not an instance of MatrixN`)
+
+const isMatrix0 = (matrix: Matrix): matrix is Matrix0 => len(matrix) === 0
 
 const isMatrix1 = (matrix: Matrix): matrix is Matrix1 => ndim(matrix) === 1
 
@@ -229,8 +227,8 @@ const broadcast = <
   T2 extends Matrix,
   T3 extends T2 extends NestedMatrices<T1> ? T1 : T2
 >(a: T1, b: T2, operator: math.BinaryOperator): T3 => {
-  if (len(a) === 0 && len(b) === 0) {
-    return operator(matrix0(a), matrix0(b)) as T3
+  if (isMatrix0(a) && isMatrix0(b)) {
+    return operator(a, b) as T3
   }
   if (ndim(a) < ndim(b)) {
     return broadcastNesting(b, a, operator)
@@ -239,19 +237,19 @@ const broadcast = <
     return broadcastNesting(a, b, operator)
   }
   if (len(a) === len(b)) {
-    return zip(matrixN(a), matrixN(b)).map(([x, y]) => broadcast(x, y, operator)) as T3
+    return zip(matrixn(a), matrixn(b)).map(([x, y]) => broadcast(x, y, operator)) as T3
   }
   if (len(a) === 1) {
-    return broadcastNesting(b, first(matrixN(a)), operator)
+    return broadcastNesting(b, first(matrixn(a)), operator)
   }
   if (len(b) === 1) {
-    return broadcastNesting(a, first(matrixN(b)), operator)
+    return broadcastNesting(a, first(matrixn(b)), operator)
   }
   return error('Matrix could not be broadcast together.')
 }
 
 const broadcastNesting = <T extends Matrix>(a: Matrix, b: Matrix, operator: math.BinaryOperator): T =>
-  matrixN(a).map((x) => broadcast(x, b, operator)) as T
+  matrixn(a).map((x) => broadcast(x, b, operator)) as T
 
 // Takes all matrix axes and aggregate all matrix elements by default.
 const aggregate = <
@@ -267,7 +265,7 @@ const aggregate = <
 
 const aggregateNesting = (matrix: MatrixN, axis: number, operator: math.BinaryOperator): Matrix => {
   if (axis && ndim(matrix) > 1) {
-    return matrix.map((x) => aggregateNesting(matrixN(x), axis - 1, operator))
+    return matrix.map((x) => aggregateNesting(matrixn(x), axis - 1, operator))
   }
   return matrix.reduce(operator)
 }
