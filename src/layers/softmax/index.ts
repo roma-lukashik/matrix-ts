@@ -11,6 +11,8 @@ import {
   multiply,
   newaxis,
   randn,
+  reshape,
+  shape,
   subtract,
   sum,
   zeros,
@@ -62,7 +64,7 @@ export class Softmax {
     this.weight = subtract(this.weight, multiply(dLdW, learningRate))
     this.biases = subtract(this.biases, multiply(dLdB, learningRate))
 
-    return dLdInput // TODO reshape
+    return reshape(dLdInput, shape(input))
   }
 
   private totals(input: Matrix3) {

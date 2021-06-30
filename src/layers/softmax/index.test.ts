@@ -12,6 +12,6 @@ describe('Softmax', () => {
   it('#backward', () => {
     const softmax = new Softmax(13 * 13 * 8, 10)
     const gradient = [0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
-    expect(shape(softmax.backward(input, gradient, 0.005))).toEqual([13 * 13 * 8])
+    expect(shape(softmax.backward(input, gradient, 0.005))).toEqual([13, 13, 8])
   })
 })
