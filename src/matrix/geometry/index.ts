@@ -1,4 +1,4 @@
-import { arrlen, first } from '../../utils/array'
+import { arrlen, first, flatten } from '../../utils/array'
 import { error, isDefined } from '../../utils/function'
 import {
   Matrix,
@@ -14,8 +14,9 @@ import {
   Vector2,
   VectorN,
 } from '../utils/types'
-import { zero } from '../../utils/math'
+import { nonzero, zero } from '../../utils/math'
 import { prod } from '../aggregation'
+import { arange } from '../creation'
 
 export const at = <
   T1 extends MatrixN,
@@ -33,6 +34,18 @@ export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T):
   len(matrix),
   ...(isMatrixN(first(matrix)) ? shape(matrixn(first(matrix))) : []),
 ] as U
+
+export const reshape = <
+  T extends MatrixN
+>(matrix: T, dn: VectorN) => {
+  if (size(matrix) !== prod(dn)) {
+    return error(`Incompatible shape (${dn}) for reshaping of (${shape(matrix)}) matrix.`)
+  }
+  return _reshape(flatten(matrix), dn)
+}
+
+const _reshape = (matrix: Matrix1, [d0, ...dn]: VectorN, sum = 0): MatrixN =>
+  arange(d0).map((i) => nonzero(len(dn)) ? _reshape(matrix, dn, first(dn) * i + sum) : matrix[sum + i])
 
 export const partition = <
   T extends Matrix,

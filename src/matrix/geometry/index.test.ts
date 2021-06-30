@@ -1,5 +1,5 @@
-import { at, len, ndim, newaxis, partition, shape, size } from '.'
-import { ones } from '../creation'
+import { at, len, ndim, newaxis, partition, reshape, shape, size } from '.'
+import { arange, ones } from '../creation'
 
 describe('geometry', () => {
   describe('#at', () => {
@@ -54,6 +54,44 @@ describe('geometry', () => {
 
     it('returns 4x3x2x1 shape', () => {
       expect(shape(ones(4, 3, 2, 1))).toEqual([4, 3, 2, 1])
+    })
+  })
+
+  describe('#reshape', () => {
+    it('converts (6, 0) matrix to (2, 3) matrix', () => {
+      expect(reshape(arange(6), [2, 3])).toEqual([[0, 1, 2], [3, 4, 5]])
+    })
+
+    it('converts (6, 0) matrix to (3, 2) matrix', () => {
+      expect(reshape(arange(6), [3, 2])).toEqual([[0, 1], [2, 3], [4, 5]])
+    })
+
+    it('converts (2, 3) matrix to (3, 2) matrix', () => {
+      expect(reshape([[0, 1, 2], [3, 4, 5]], [3, 2])).toEqual([[0, 1], [2, 3], [4, 5]])
+    })
+
+    it('converts (2, 2, 2, 2) matrix to (4, 4) matrix', () => {
+      const m = [
+        [
+          [[0, 1], [2, 3]],
+          [[4, 5], [6, 7]],
+        ],
+        [
+          [[8, 9], [10, 11]],
+          [[12, 13], [14, 15]],
+        ],
+      ]
+      expect(reshape(m, [4, 4])).toEqual([
+        [0, 1, 2, 3],
+        [4, 5, 6, 7],
+        [8, 9, 10, 11],
+        [12, 13, 14, 15],
+      ])
+    })
+
+    it('throws an error in case when shapes are not compatible', () => {
+      const m = [[1, 2], [3, 4]]
+      expect(() => reshape(m, [2, 3])).toThrowError('Incompatible shape (2,3) for reshaping of (2,2) matrix.')
     })
   })
 
