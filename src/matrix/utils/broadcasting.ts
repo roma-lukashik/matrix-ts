@@ -1,5 +1,5 @@
 import { Matrix, NestedMatrices } from './types'
-import * as math from '../../utils/math'
+import { BinaryOperator } from '../../utils/math'
 import { isMatrix0, len, matrixn, ndim } from '../geometry'
 import { first, zip } from '../../utils/array'
 import { error } from '../../utils/function'
@@ -8,7 +8,7 @@ export const broadcast = <
   T1 extends Matrix,
   T2 extends Matrix,
   T3 extends T2 extends NestedMatrices<T1> ? T1 : T2
->(a: T1, b: T2, operator: math.BinaryOperator): T3 => {
+>(a: T1, b: T2, operator: BinaryOperator): T3 => {
   if (isMatrix0(a) && isMatrix0(b)) {
     return operator(a, b) as T3
   }
@@ -30,5 +30,5 @@ export const broadcast = <
   return error('Matrix could not be broadcast together.')
 }
 
-const broadcastNesting = <T extends Matrix>(a: Matrix, b: Matrix, operator: math.BinaryOperator): T =>
+const broadcastNesting = <T extends Matrix>(a: Matrix, b: Matrix, operator: BinaryOperator): T =>
   matrixn(a).map((x) => broadcast(x, b, operator)) as T

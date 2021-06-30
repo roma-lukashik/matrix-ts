@@ -6,3 +6,5 @@ export const multiply: BinaryOperator = (a, b) => a * b
 export const divide: BinaryOperator = (a, b) => a / b
 export const idivide: BinaryOperator = (a, b) => Math.floor(a / b)
 
+export const zero = (x: number): boolean => x === 0
+export const nonzero = (x: number): boolean => !zero(x)

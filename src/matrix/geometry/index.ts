@@ -13,6 +13,7 @@ import {
   NLevelNestedMatrix,
   Vector2,
 } from '../utils/types'
+import { zero } from '../../utils/math'
 
 export const at = <
   T1 extends MatrixN,
@@ -23,7 +24,7 @@ export const at = <
   if (!isDefined(matrix[i])) {
     return error(`Index ${i} out of bounds [0, ${len(matrix) - 1}].`)
   }
-  return (len(dn) > 0 ? at(matrixn(matrix[i]), ...dn) : matrix[i]) as T3
+  return len(dn) > 0 ? at(matrixn(matrix[i]), ...dn) as T3 : matrix[i] as T3
 }
 
 export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T): U => [
@@ -45,7 +46,7 @@ export const partition = <
   d0 && isMatrixN(matrix) ? matrix.slice(...d0).map((x) => partition(x, ...rest)) as T : matrix
 
 export const newaxis = <T1 extends Matrix>(matrix: T1, axis: number): T1[] =>
-  axis === 0 || !isMatrixN(matrix) ? [matrix] : matrix.map((x) => newaxis(x, axis - 1)) as T1[]
+  zero(axis) || isMatrix0(matrix) ? [matrix] : matrix.map((x) => newaxis(x, axis - 1)) as T1[]
 
 // Number of rows.
 export const len = (matrix: Matrix): number => isMatrixN(matrix) ? size(matrix) : 0
@@ -60,7 +61,7 @@ export const matrix0 = (value: Matrix): Matrix0 =>
 export const matrixn = <T extends MatrixN>(value: Matrix0 | T): T =>
   isMatrixN(value) ? value : error(`Value ${value} is not an instance of MatrixN`)
 
-export const isMatrix0 = (matrix: Matrix): matrix is Matrix0 => len(matrix) === 0
+export const isMatrix0 = (matrix: Matrix): matrix is Matrix0 => zero(len(matrix))
 
 export const isMatrix1 = (matrix: Matrix): matrix is Matrix1 => ndim(matrix) === 1
 
