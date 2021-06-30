@@ -1,4 +1,4 @@
-import { array, first, size, zip } from '.'
+import { array, first, arrlen, zip } from '.'
 import { constant, identity } from '../function'
 
 describe('array', () => {
@@ -16,13 +16,13 @@ describe('array', () => {
     })
   })
 
-  describe('#size', () => {
+  describe('#arrlen', () => {
     it('returns 0 for an empty array', () => {
-      expect(size([])).toBe(0)
+      expect(arrlen([])).toBe(0)
     })
 
     it('returns a correct array size', () => {
-      expect(size([1, 2, 3, 4])).toBe(4)
+      expect(arrlen([1, 2, 3, 4])).toBe(4)
     })
   })
 

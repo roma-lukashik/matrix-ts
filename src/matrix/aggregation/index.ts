@@ -1,4 +1,4 @@
-import { add, BinaryOperator, nonzero } from '../../utils/math'
+import { add, BinaryOperator, multiply, nonzero } from '../../utils/math'
 import { first } from '../../utils/array'
 import { Matrix, Matrix0, MatrixDimensions, MatrixN, NLevelNestedMatrix, VectorN } from '../utils/types'
 import { arange } from '../creation'
@@ -15,6 +15,12 @@ export const sum: AggregateMatrixOperator = <T extends Matrix>(
   axes?: MatrixDimensions<T>,
 ) =>
   aggregate(matrix, axes, (a, b) => broadcast(a, b, add))
+
+export const prod: AggregateMatrixOperator = <T extends Matrix>(
+  matrix: T,
+  axes?: MatrixDimensions<T>,
+) =>
+  aggregate(matrix, axes, (a, b) => broadcast(a, b, multiply))
 
 export const max: AggregateMatrixOperator = <T extends Matrix>(
   matrix: T,

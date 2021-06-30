@@ -1,4 +1,4 @@
-import { at, newaxis, partition, shape } from '.'
+import { at, len, ndim, newaxis, partition, shape, size } from '.'
 import { ones } from '../creation'
 
 describe('geometry', () => {
@@ -54,6 +54,60 @@ describe('geometry', () => {
 
     it('returns 4x3x2x1 shape', () => {
       expect(shape(ones(4, 3, 2, 1))).toEqual([4, 3, 2, 1])
+    })
+  })
+
+  describe('#ndim', () => {
+    it('returns 0 for Matrix0', () => {
+      expect(ndim(3)).toEqual(0)
+    })
+
+    it('returns 1 for (1, 3) Matrix', () => {
+      expect(ndim([1, 2, 3])).toEqual(1)
+    })
+
+    it('returns 2 for (2, 3) Matrix', () => {
+      expect(ndim([[1, 2, 3], [4, 5, 6]])).toEqual(2)
+    })
+
+    it('returns 5 for (1, 1, 1, 1, 1) Matrix', () => {
+      expect(ndim([[[[[1]]]]])).toEqual(5)
+    })
+  })
+
+  describe('#len', () => {
+    it('returns 0 for Matrix0', () => {
+      expect(len(3)).toEqual(0)
+    })
+
+    it('returns 3 for (1, 3) Matrix', () => {
+      expect(len([1, 2, 3])).toEqual(3)
+    })
+
+    it('returns 2 for (2, 3) Matrix', () => {
+      expect(len([[1, 2, 3], [4, 5, 6]])).toEqual(2)
+    })
+
+    it('returns 1 for (1, 1, 1, 1, 1) Matrix', () => {
+      expect(len([[[[[1]]]]])).toEqual(1)
+    })
+  })
+
+  describe('#size', () => {
+    it('returns 1 for Matrix0', () => {
+      expect(size(4)).toEqual(1)
+    })
+
+    it('returns 3 for (1, 3) Matrix', () => {
+      expect(size([1, 2, 3])).toEqual(3)
+    })
+
+    it('returns 6 for (2, 3) Matrix', () => {
+      expect(size([[1, 2, 3], [4, 5, 6]])).toEqual(6)
+    })
+
+    it('returns 1 for (1, 1, 1, 1, 1) Matrix', () => {
+      expect(size([[[[[1]]]]])).toEqual(1)
     })
   })
 

@@ -1,4 +1,4 @@
-import { first, size } from '../../utils/array'
+import { arrlen, first } from '../../utils/array'
 import { error, isDefined } from '../../utils/function'
 import {
   Matrix,
@@ -12,8 +12,10 @@ import {
   MatrixN,
   NLevelNestedMatrix,
   Vector2,
+  VectorN,
 } from '../utils/types'
 import { zero } from '../../utils/math'
+import { prod } from '../aggregation'
 
 export const at = <
   T1 extends MatrixN,
@@ -48,11 +50,14 @@ export const partition = <
 export const newaxis = <T1 extends Matrix>(matrix: T1, axis: number): T1[] =>
   zero(axis) || isMatrix0(matrix) ? [matrix] : matrix.map((x) => newaxis(x, axis - 1)) as T1[]
 
+// Number of elements.
+export const size = (matrix: Matrix): number => isMatrixN(matrix) ? prod(shape(matrix)) : 1
+
 // Number of rows.
-export const len = (matrix: Matrix): number => isMatrixN(matrix) ? size(matrix) : 0
+export const len = (matrix: Matrix): number => isMatrixN(matrix) ? arrlen(matrix) : 0
 
 // Number of dimensions.
-export const ndim = (matrix: Matrix): number => isMatrixN(matrix) ? size(shape(matrix)) : 0
+export const ndim = (matrix: Matrix): number => isMatrixN(matrix) ? arrlen(shape(matrix)) : 0
 
 export const matrix0 = (value: Matrix): Matrix0 =>
   isMatrixN(value) ? error(`Value is not an instance of Matrix0`) : value
