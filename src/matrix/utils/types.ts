@@ -13,6 +13,7 @@ export type Vector2 = [number, number]
 export type Vector3 = [number, number, number]
 export type Vector4 = [number, number, number, number]
 export type VectorN = number[]
+export type Vector = NestedVectors<Vector4> | VectorN
 
 export type Vector2Matrix<T extends VectorN> =
   T extends Vector1 ? Matrix1 :
