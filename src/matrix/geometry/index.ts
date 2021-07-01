@@ -10,12 +10,10 @@ import {
   Matrix4,
   MatrixDimensions,
   MatrixN,
-  NestedVectors,
   NLevelNestedMatrix,
+  Vector,
   Vector2,
   Vector2Matrix,
-  Vector4,
-  VectorN,
 } from '../utils/types'
 import { nonzero, zero } from '../../utils/math'
 import { prod } from '../aggregation'
@@ -40,7 +38,7 @@ export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T):
 
 export const reshape = <
   T extends MatrixN,
-  K extends NestedVectors<Vector4>,
+  K extends Vector,
 >(matrix: T, dn: K): Vector2Matrix<K> => {
   if (size(matrix) === prod(dn)) {
     return reshapeNested(flatten(matrix), dn)
@@ -49,7 +47,7 @@ export const reshape = <
 }
 
 const reshapeNested = <
-  U extends VectorN,
+  U extends Vector,
   V extends Vector2Matrix<U>
 >(matrix: Matrix1, [d0, ...dn]: U, sum = 0): V =>
   arange(d0).map((i) => nonzero(len(dn)) ? reshapeNested(matrix, dn, first(dn) * i + sum) : at(matrix, sum + i)) as V
