@@ -42,17 +42,17 @@ export const reshape = <
   T extends MatrixN,
   K extends NestedVectors<Vector4>,
 >(matrix: T, dn: K): Vector2Matrix<K> => {
-  if (size(matrix) !== prod(dn)) {
-    return error(`Incompatible shape (${dn}) for reshaping of (${shape(matrix)}) matrix.`)
+  if (size(matrix) === prod(dn)) {
+    return reshapeNested(flatten(matrix), dn)
   }
-  return _reshape(flatten(matrix), dn)
+  return error(`Incompatible shape (${dn}) for reshaping of (${shape(matrix)}) matrix.`)
 }
 
-const _reshape = <
+const reshapeNested = <
   U extends VectorN,
   V extends Vector2Matrix<U>
 >(matrix: Matrix1, [d0, ...dn]: U, sum = 0): V =>
-  arange(d0).map((i) => nonzero(len(dn)) ? _reshape(matrix, dn, first(dn) * i + sum) : matrix[sum + i]) as V
+  arange(d0).map((i) => nonzero(len(dn)) ? reshapeNested(matrix, dn, first(dn) * i + sum) : at(matrix, sum + i)) as V
 
 export const partition = <
   T extends Matrix,

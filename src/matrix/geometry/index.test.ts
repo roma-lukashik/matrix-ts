@@ -70,6 +70,10 @@ describe('geometry', () => {
       expect(reshape([[0, 1, 2], [3, 4, 5]], [3, 2])).toEqual([[0, 1], [2, 3], [4, 5]])
     })
 
+    it('converts (2, 3) matrix to (6, 0) matrix', () => {
+      expect(reshape([[0, 1, 2], [3, 4, 5]], [6])).toEqual([0, 1, 2, 3, 4, 5])
+    })
+
     it('converts (2, 2, 2, 2) matrix to (4, 4) matrix', () => {
       const m = [
         [
