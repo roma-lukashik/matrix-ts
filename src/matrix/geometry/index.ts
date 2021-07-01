@@ -10,8 +10,11 @@ import {
   Matrix4,
   MatrixDimensions,
   MatrixN,
+  NestedVectors,
   NLevelNestedMatrix,
   Vector2,
+  Vector2Matrix,
+  Vector4,
   VectorN,
 } from '../utils/types'
 import { nonzero, zero } from '../../utils/math'
@@ -36,16 +39,20 @@ export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T):
 ] as U
 
 export const reshape = <
-  T extends MatrixN
->(matrix: T, dn: VectorN) => {
+  T extends MatrixN,
+  K extends NestedVectors<Vector4>,
+>(matrix: T, dn: K): Vector2Matrix<K> => {
   if (size(matrix) !== prod(dn)) {
     return error(`Incompatible shape (${dn}) for reshaping of (${shape(matrix)}) matrix.`)
   }
   return _reshape(flatten(matrix), dn)
 }
 
-const _reshape = (matrix: Matrix1, [d0, ...dn]: VectorN, sum = 0): MatrixN =>
-  arange(d0).map((i) => nonzero(len(dn)) ? _reshape(matrix, dn, first(dn) * i + sum) : matrix[sum + i])
+const _reshape = <
+  U extends VectorN,
+  V extends Vector2Matrix<U>
+>(matrix: Matrix1, [d0, ...dn]: U, sum = 0): V =>
+  arange(d0).map((i) => nonzero(len(dn)) ? _reshape(matrix, dn, first(dn) * i + sum) : matrix[sum + i]) as V
 
 export const partition = <
   T extends Matrix,

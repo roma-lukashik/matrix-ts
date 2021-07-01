@@ -44,7 +44,7 @@ export type NLevelNestedMatrix<
   K extends Vector4 ? NestedMatrix<NestedMatrix<NestedMatrix<NestedMatrix<T>>>> :
   MatrixN
 
-type NestedVectors<T extends VectorN> =
+export type NestedVectors<T extends VectorN> =
   T extends [...infer Head, number] ?
   Head extends Vector2 | Vector3 | Vector4 ? Head | NestedVectors<Head> :
   Head extends [] ? never : Head : T
