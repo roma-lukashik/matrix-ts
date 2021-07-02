@@ -35,7 +35,7 @@ export class Conv3x3 {
 
     this.frames(input).forEach((row, i) =>
       row.forEach((frame, j) => {
-        neach(arange(k), (f) => {
+        neach(arange(h), (f) => {
           dLdInput[f] = add(at(dLdInput, f), multiply(at(gradient, i, j, f), frame))
         })
       })
