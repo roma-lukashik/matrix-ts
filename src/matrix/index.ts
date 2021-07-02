@@ -3,6 +3,7 @@ export * from './binary-operation'
 export * from './creation'
 export * from './geometry'
 export * from './iteration'
+export * from './linalg'
 export * from './transformation'
 export type {
   Matrix,
