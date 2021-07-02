@@ -65,10 +65,10 @@ export const matmul = (a: MatrixN, b: MatrixN): MatrixN => {
   if (isMatrix2(b)) {
     return a.map((x) => matmul(matrixn(x), b))
   }
-  if (at(shape(matrixn(a)), -1) === at(shape(matrixn(b)), -2)) {
+  if (at(shape(a), -1) === at(shape(b), -2)) {
     return zip(a, b).map(([x, y]) => matmul(matrixn(x), matrixn(y)))
   }
-  return error(`Shapes (${shape(matrixn(a))}) and (${shape(matrixn(b))}) are not aligned.`)
+  return error(`Shapes (${shape(a)}) and (${shape(b)}) are not aligned.`)
 }
 
 const matmul2x2 = (a: Matrix2, b: Matrix2): Matrix2 => {
