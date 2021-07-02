@@ -49,8 +49,8 @@ export const reshape = <
 const reshapeNested = <
   U extends Vector,
   V extends Vector2Matrix<U>
->(matrix: Matrix1, [d0, ...dn]: U, sum = 0): V =>
-  arange(d0).map((i) => nonzero(len(dn)) ? reshapeNested(matrix, dn, prod(dn) * i + sum) : at(matrix, sum + i)) as V
+>(matrix: Matrix1, [d0, ...dn]: U, skip = 0): V =>
+  arange(d0).map((i) => nonzero(len(dn)) ? reshapeNested(matrix, dn, prod(dn) * i + skip) : at(matrix, skip + i)) as V
 
 export const partition = <
   T extends Matrix,
