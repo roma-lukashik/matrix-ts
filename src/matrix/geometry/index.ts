@@ -1,4 +1,4 @@
-import { arrlen, first, flatten } from '../../utils/array'
+import { arrlen, empty, first, flatten } from '../../utils/array'
 import { error, isDefined } from '../../utils/function'
 import {
   Matrix,
@@ -15,7 +15,7 @@ import {
   Vector2,
   Vector2Matrix,
 } from '../utils/types'
-import { nonzero, zero } from '../../utils/math'
+import { zero } from '../../utils/math'
 import { prod } from '../aggregation'
 import { arange } from '../creation'
 
@@ -50,7 +50,7 @@ const reshapeNested = <
   U extends Vector,
   V extends Vector2Matrix<U>
 >(matrix: Matrix1, [d0, ...dn]: U, skip = 0): V =>
-  arange(d0).map((i) => nonzero(len(dn)) ? reshapeNested(matrix, dn, prod(dn) * i + skip) : at(matrix, skip + i)) as V
+  arange(d0).map((i) => empty(dn) ? at(matrix, skip + i) : reshapeNested(matrix, dn, prod(dn) * i + skip)) as V
 
 export const partition = <
   T extends Matrix,

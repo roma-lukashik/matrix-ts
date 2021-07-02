@@ -1,12 +1,10 @@
-import { array } from '../../utils/array'
+import { array, empty } from '../../utils/array'
 import { constant, identity } from '../../utils/function'
 import { rand } from '../../utils/random'
-import { len } from '../geometry'
 import { Matrix1, Vector2Matrix, VectorN } from '../utils/types'
-import { nonzero } from '../../utils/math'
 
 export const create = <T extends VectorN, U extends Vector2Matrix<T>>(fill: () => number, ...[d0, ...dn]: T): U =>
-  array(d0, () => nonzero(len(dn)) ? create(fill, ...dn): fill()) as U
+  array(d0, () => empty(dn) ? fill() : create(fill, ...dn)) as U
 
 export const zeros = <T extends VectorN>(...dn: T) => create(constant(0), ...dn)
 

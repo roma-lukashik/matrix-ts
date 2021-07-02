@@ -1,4 +1,5 @@
 import { error } from '../function'
+import { zero } from '../math'
 
 export type ArrayN<T> = Array<T | ArrayN<T>>
 
@@ -6,6 +7,8 @@ export const array = <T>(length: number, fill: (index: number) => T): T[] =>
   Array.from({ length }, (_, i) => fill(i))
 
 export const arrlen = (arr: any[]): number => arr.length
+
+export const empty = (arr: any[]): boolean => zero(arrlen(arr))
 
 export const first = <T>(arr: T[]): T => arr[0]
 

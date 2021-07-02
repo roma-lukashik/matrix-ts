@@ -23,7 +23,7 @@ export type Vector2Matrix<T extends VectorN> =
   MatrixN
 
 export type Matrix2Vector<T extends Matrix> =
-  T extends Matrix0 ? never :
+  T extends Matrix0 ? [] :
   T extends Matrix1 ? Vector1 :
   T extends Matrix2 ? Vector2 :
   T extends Matrix3 ? Vector3 :
