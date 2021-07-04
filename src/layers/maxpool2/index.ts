@@ -28,9 +28,7 @@ export class Maxpool2 {
   private frames(input: Matrix3) {
     const [h, w, f] = shape(input)
     return arange(idivide(h, 2)).map((i) =>
-      arange(idivide(w, 2)).map((j) =>
-        this.frame2x2xN(input, i, j, f)
-      ),
+      arange(idivide(w, 2)).map((j) => this.frame2x2xN(input, i, j, f)),
     )
   }
 
