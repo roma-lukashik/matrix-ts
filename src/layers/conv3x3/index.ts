@@ -2,25 +2,34 @@ import {
   add,
   arange,
   at,
+  create,
   divide,
   Matrix2,
   Matrix3,
   multiply,
   neach,
   partition,
-  randn,
   shape,
   subtract,
   sum,
   zeros,
 } from '../../matrix'
+import { normal } from '../../utils/random'
+
+type Options = {
+  filters: number;
+  weightInitializer?: () => number;
+}
 
 export class Conv3x3 {
   private filters: Matrix3
 
-  constructor(filtersNumber: number) {
+  constructor({
+    filters,
+    weightInitializer = normal,
+  }: Options) {
     // Divides by 9 to reduce the variance of our initial values.
-    this.filters = divide(randn(filtersNumber, 3, 3), 9)
+    this.filters = divide(create(weightInitializer, filters, 3, 3), 9)
   }
 
   public forward(input: Matrix2): Matrix3 {

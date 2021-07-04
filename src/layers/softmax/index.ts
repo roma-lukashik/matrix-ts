@@ -1,6 +1,7 @@
 import {
   add,
   at,
+  create,
   divide,
   dot,
   exp,
@@ -10,7 +11,6 @@ import {
   Matrix3,
   multiply,
   newaxis,
-  randn,
   reshape,
   shape,
   subtract,
@@ -18,14 +18,25 @@ import {
   zeros,
 } from '../../matrix'
 import { flatten } from '../../utils/array'
+import { normal } from '../../utils/random'
+
+type Options = {
+  inputLength: number;
+  outputLength: number;
+  weightInitializer?: () => number;
+}
 
 export class Softmax {
   private weight: Matrix2
   private biases: Matrix1
 
-  constructor(inputLength: number, nodes: number) {
-    this.weight = divide(randn(inputLength, nodes), inputLength)
-    this.biases = zeros(nodes)
+  constructor({
+    inputLength,
+    outputLength,
+    weightInitializer = normal,
+  }: Options) {
+    this.weight = divide(create(weightInitializer, inputLength, outputLength), inputLength)
+    this.biases = zeros(outputLength)
   }
 
   public forward(input: Matrix3): Matrix1 {

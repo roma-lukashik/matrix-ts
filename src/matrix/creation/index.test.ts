@@ -1,6 +1,5 @@
-import * as random from '../../utils/random'
 import { constant } from '../../utils/function'
-import { arange, create, ones, randn, zeros } from '.'
+import { arange, create, ones, zeros } from '.'
 
 describe('creation', () => {
   describe('#create', () => {
@@ -76,34 +75,6 @@ describe('creation', () => {
   describe('#arange', () => {
     it('returns an array from 0 to 5', () => {
       expect(arange(6)).toEqual([0, 1, 2, 3, 4, 5])
-    })
-  })
-
-  describe('#randn', () => {
-    beforeEach(() => {
-      spyOn(random, 'rand').and.returnValue(1)
-    })
-    afterEach(() => {
-      jest.resetAllMocks()
-    })
-
-    it('returns one dimensional array', () => {
-      expect(randn(2)).toEqual([1, 1])
-    })
-
-    it('returns two dimensional array', () => {
-      expect(randn(2, 2)).toEqual([
-        [1, 1],
-        [1, 1],
-      ])
-    })
-
-    it('returns two dimensional array', () => {
-      expect(randn(3, 2, 2)).toEqual([
-        [[1, 1], [1, 1]],
-        [[1, 1], [1, 1]],
-        [[1, 1], [1, 1]],
-      ])
     })
   })
 })
