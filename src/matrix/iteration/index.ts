@@ -1,25 +1,20 @@
 import { isMatrixN } from '../geometry'
-import { Matrix, Matrix2Vector, MatrixN } from '../utils/types'
+import { Matrix, Matrix0, Matrix2Vector, MatrixN } from '../utils/types'
 
 export const neach = <
-  T1 extends MatrixN,
->(matrix: T1, callback: (x: number, ...dn: Matrix2Vector<T1>) => void): void =>
+  T extends MatrixN,
+>(matrix: T, callback: (x: Matrix0, ...dn: Matrix2Vector<T>) => void): void =>
   _neach(matrix, callback)
 
-const _neach = <
-  T1 extends MatrixN,
-  T2 extends Matrix2Vector<T1>
->(matrix: T1, callback: (x: number, ...dn: T2) => void, dn: number[] = []): void =>
-  matrix.forEach((x, i) => isMatrixN(x) ? _neach(x, callback, [...dn, i]) : callback(x, ...[...dn, i] as T2))
+const _neach = (matrix: MatrixN, callback: (x: Matrix0, ...dn: number[]) => void, ...dn: number[]): void =>
+  matrix.forEach((x, i) => isMatrixN(x) ? _neach(x, callback, ...dn, i) : callback(x, ...dn, i))
 
-// TODO
 export const nmap = <
   T extends Matrix
->(matrix: T, callback: (x: number, ...dn: number[]) => number): T =>
-  isMatrixN(matrix) ? _nmap(matrix, callback) : callback(matrix) as T
+>(matrix: T, callback: (x: Matrix0, ...dn: Matrix2Vector<T>) => Matrix0): T =>
+  isMatrixN(matrix) ? _nmap(matrix, callback) : callback(matrix, ...[] as Matrix2Vector<T>) as T
 
 const _nmap= <
-  T1 extends MatrixN,
-  T2 extends Matrix2Vector<T1>
->(matrix: T1, callback: (x: number, ...dn: T2) => number, dn: number[] = []): T1 =>
-  matrix.map((x, i) => isMatrixN(x) ? _nmap(x, callback, [...dn, i]) : callback(x, ...[...dn, i] as T2)) as T1
+  T1 extends MatrixN
+>(matrix: T1, callback: (x: Matrix0, ...dn: number[]) => Matrix0, ...dn: number[]): T1 =>
+  matrix.map((x, i) => isMatrixN(x) ? _nmap(x, callback, ...dn, i) : callback(x, ...dn, i)) as T1

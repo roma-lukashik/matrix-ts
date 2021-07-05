@@ -51,4 +51,4 @@ export type NestedVectors<T extends VectorN> =
   Head extends [] ? never : Head : T
 
 export type MatrixDimensions<T extends Matrix, K extends VectorN = Matrix2Vector<T>> =
-  K | (K extends Vector1 | Vector2 | Vector3 | Vector4 ? NestedVectors<K> : NestedVectors<Vector4>)
+  K | (K extends Vector1 | Vector2 | Vector3 | Vector4 ? NestedVectors<K> : Vector4 | NestedVectors<Vector4>)
