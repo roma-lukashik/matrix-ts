@@ -16,34 +16,36 @@ import {
 import { normal } from '../../utils/random'
 
 type Options = {
-  filters: number;
+  filtersNumber: number;
   weightInitializer?: () => number;
 }
 
 export class Conv3x3 {
   private filters: Matrix3
+  private input: Matrix2
 
   constructor({
-    filters,
+    filtersNumber,
     weightInitializer = normal,
   }: Options) {
     // Divides by 9 to reduce the variance of our initial values.
-    this.filters = divide(create(weightInitializer, filters, 3, 3), 9)
+    this.filters = divide(create(weightInitializer, filtersNumber, 3, 3), 9)
   }
 
   public forward(input: Matrix2): Matrix3 {
+    this.input = input
     return this.frames(input).map((row) =>
       row.map((frame) => sum(multiply(frame, this.filters), [1, 2])),
     )
   }
 
-  public backward(input: Matrix2, gradient: Matrix3, learningRate: number): Matrix3 {
+  public backward(dLdOut: Matrix3, learningRate: number): Matrix3 {
     const dLdInput = zeros(...shape(this.filters))
 
-    this.frames(input).forEach((row, i) =>
+    this.frames(this.input).forEach((row, i) =>
       row.forEach((frame, j) => {
         dLdInput.forEach((filter, f) => {
-          dLdInput[f] = add(filter, multiply(at(gradient, i, j, f), frame))
+          dLdInput[f] = add(filter, multiply(at(dLdOut, i, j, f), frame))
         })
       })
     )

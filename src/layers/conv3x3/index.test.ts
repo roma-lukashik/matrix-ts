@@ -2,13 +2,13 @@ import { Conv3x3 } from '.'
 import { arange, reshape } from '../../matrix'
 
 describe('Conv3x3', () => {
-  const filters = 4
+  const filtersNumber = 4
   const input = reshape(arange(5 * 5), [5, 5])
   const gradient = reshape(arange(3 * 3 * 4), [3, 3, 4])
   const inc = (start: number) => () => start++
 
   it('#forward', () => {
-    const conv3x3 = new Conv3x3({ filters, weightInitializer: inc(0) })
+    const conv3x3 = new Conv3x3({ filtersNumber, weightInitializer: inc(0) })
     const output = conv3x3.forward(input)
     expect(output).toEqualMatrix([
       [
@@ -30,8 +30,9 @@ describe('Conv3x3', () => {
   })
 
   it('#backward', () => {
-    const conv3x3 = new Conv3x3({ filters, weightInitializer: inc(0) })
-    const output = conv3x3.backward(input, gradient, 0.05)
+    const conv3x3 = new Conv3x3({ filtersNumber, weightInitializer: inc(0) })
+    conv3x3.forward(input)
+    const output = conv3x3.backward(gradient, 0.05)
     expect(output).toEqualMatrix([
       [
         [-62.400, -69.489, -76.578],

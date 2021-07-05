@@ -2,21 +2,24 @@ import { arange, at, Matrix3, max, neach, partition, shape, zeros } from '../../
 import { idivide } from '../../utils/math'
 
 export class Maxpool2 {
+  private input: Matrix3
+
   public forward(input: Matrix3): Matrix3 {
+    this.input = input
     return this.frames(input).map((row) =>
       row.map((frame) => max(frame, [0, 1])),
     )
   }
 
-  public backward(input: Matrix3, gradient: Matrix3): Matrix3 {
-    const dLdInput = zeros(...shape(input))
+  public backward(gradient: Matrix3): Matrix3 {
+    const dLdInput = zeros(...shape(this.input))
 
-    this.frames(input).forEach((row, i) => {
+    this.frames(this.input).forEach((row, i) => {
       row.forEach((frame, j) => {
         const amax = max(frame, [0, 1])
-        neach(frame, (x, k, l, m) => {
-          if (x === at(amax, m)) {
-            dLdInput[i * 2 + k][j * 2 + l][m] = at(gradient, i, j, m)
+        neach(frame, (x, k, l, f) => {
+          if (x === at(amax, f)) {
+            dLdInput[i * 2 + k][j * 2 + l][f] = at(gradient, i, j, f)
           }
         })
       })

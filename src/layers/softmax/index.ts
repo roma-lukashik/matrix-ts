@@ -29,6 +29,7 @@ type Options = {
 export class Softmax {
   private weight: Matrix2
   private biases: Matrix1
+  private input: Matrix3
 
   constructor({
     inputLength,
@@ -40,13 +41,14 @@ export class Softmax {
   }
 
   public forward(input: Matrix3): Matrix1 {
+    this.input = input
     const totals = this.totals(input)
     const exps = exp(totals)
     return divide(exps, sum(exps, [0]))
   }
 
-  public backward(input: Matrix3, output: Matrix1, learningRate: number): Matrix3 {
-    const totals = this.totals(input)
+  public backward(output: Matrix1, learningRate: number): Matrix3 {
+    const totals = this.totals(this.input)
     const exps = exp(totals)
     const expsum = sum(exps)
 
@@ -59,7 +61,7 @@ export class Softmax {
     dOdt[i] = at(exps, i) * (expsum - at(exps, i)) / (expsum ** 2)
 
     // Gradients of totals against weights/biases/input.
-    const dTdW = flatten(input)
+    const dTdW = flatten(this.input)
     const dTdB = 1
     const dTdInputs = this.weight
 
@@ -75,7 +77,7 @@ export class Softmax {
     this.weight = subtract(this.weight, multiply(dLdW, learningRate))
     this.biases = subtract(this.biases, multiply(dLdB, learningRate))
 
-    return reshape(dLdInput, shape(input))
+    return reshape(dLdInput, shape(this.input))
   }
 
   private totals(input: Matrix3) {

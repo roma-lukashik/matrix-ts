@@ -26,7 +26,8 @@ describe('Softmax', () => {
       weightInitializer: inc(0),
     })
     const gradient = [0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
-    expect(softmax.backward(input, gradient, 0.005)).toEqualMatrix([
+    softmax.forward(input)
+    expect(softmax.backward(gradient, 0.005)).toEqualMatrix([
       [
         [-0.00031895, -0.00031895, -0.00031895, -0.00031895],
         [-0.00031895, -0.00031895, -0.00031895, -0.00031895],

@@ -22,7 +22,8 @@ describe('Maxpool2', () => {
 
   it('#backward', () => {
     const maxpool2 = new Maxpool2()
-    const output = maxpool2.backward(input, gradient)
+    maxpool2.forward(input)
+    const output = maxpool2.backward(gradient)
     expect(output).toEqual([
       [
         [0, 0, 0, 0],
