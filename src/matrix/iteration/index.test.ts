@@ -2,6 +2,12 @@ import { neach } from '.'
 
 describe('iteration', () => {
   describe('neach', () => {
+    it('iterates over Matrix0', () => {
+      const args: [number][] = []
+      neach(1, (...arg) => args.push(arg))
+      expect(args).toEqual([[1]])
+    })
+
     it('iterates over all matrix elements in a proper way', () => {
       const m = [
         [[0, 1], [2, 3]],
