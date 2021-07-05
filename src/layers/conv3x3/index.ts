@@ -7,7 +7,6 @@ import {
   Matrix2,
   Matrix3,
   multiply,
-  neach,
   partition,
   shape,
   subtract,
@@ -39,13 +38,12 @@ export class Conv3x3 {
   }
 
   public backward(input: Matrix2, gradient: Matrix3, learningRate: number): Matrix3 {
-    const [h, w, k] = shape(this.filters)
-    const dLdInput = zeros(h, w, k)
+    const dLdInput = zeros(...shape(this.filters))
 
     this.frames(input).forEach((row, i) =>
       row.forEach((frame, j) => {
-        neach(arange(h), (f) => {
-          dLdInput[f] = add(at(dLdInput, f), multiply(at(gradient, i, j, f), frame))
+        dLdInput.forEach((filter, f) => {
+          dLdInput[f] = add(filter, multiply(at(gradient, i, j, f), frame))
         })
       })
     )
