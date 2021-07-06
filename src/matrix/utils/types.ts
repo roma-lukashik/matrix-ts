@@ -30,7 +30,7 @@ export type Matrix2Vector<T extends Matrix> =
   T extends Matrix4 ? Vector4 :
   VectorN
 
-type NestedMatrix<T extends Matrix> = T extends MatrixN ? T[0] : Matrix0
+export type NestedMatrix<T extends Matrix> = T extends MatrixN ? T[0] : Matrix0
 
 export type NestedMatrices<T extends Matrix> =
   T extends Matrix1 | Matrix2 | Matrix3 | Matrix4 ? T[0] | NestedMatrices<T[0]> : T

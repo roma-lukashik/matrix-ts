@@ -81,6 +81,6 @@ export class Softmax {
   }
 
   private totals(input: Matrix3) {
-    return add(dot(flatten(input), this.weight), this.biases) as Matrix1
+    return add(dot(flatten(input), this.weight), this.biases)
   }
 }
