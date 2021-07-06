@@ -13,7 +13,7 @@ export type Vector2 = [number, number]
 export type Vector3 = [number, number, number]
 export type Vector4 = [number, number, number, number]
 export type VectorN = number[]
-export type Vector = NestedVectors<Vector4> | VectorN
+export type Vector = Vector1 | Vector2 | Vector3 | Vector4 | VectorN
 
 export type Vector2Matrix<T extends VectorN> =
   T extends Vector1 ? Matrix1 :
@@ -45,10 +45,11 @@ export type NLevelNestedMatrix<
   K extends Vector4 ? NestedMatrix<NestedMatrix<NestedMatrix<NestedMatrix<T>>>> :
   MatrixN
 
+export type NestedVector<T extends VectorN> = T extends [...infer Head, number] ? Head extends VectorN ? Head : never : T
+
 export type NestedVectors<T extends VectorN> =
-  T extends [...infer Head, number] ?
-  Head extends Vector2 | Vector3 | Vector4 ? Head | NestedVectors<Head> :
-  Head extends [] ? never : Head : T
+  T extends Vector1 ? never :
+  T extends Vector2 | Vector3 | Vector4 ? NestedVector<T> | NestedVectors<NestedVector<T>> : NestedVector<T>
 
 export type MatrixDimensions<T extends Matrix, K extends VectorN = Matrix2Vector<T>> =
-  K | (K extends Vector1 | Vector2 | Vector3 | Vector4 ? NestedVectors<K> : Vector4 | NestedVectors<Vector4>)
+  K extends Vector1 | Vector2 | Vector3 | Vector4 ? K | NestedVectors<K> : K
