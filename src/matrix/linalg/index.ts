@@ -1,4 +1,14 @@
-import { Matrix, Matrix0, Matrix1, Matrix2, Matrix3, Matrix4, MatrixN, NestedMatrix } from '../utils/types'
+import {
+  Matrix,
+  Matrix0,
+  Matrix1,
+  Matrix2,
+  Matrix3,
+  Matrix4,
+  MatrixN,
+  NestedMatrices,
+  NestedMatrix,
+} from '../utils/types'
 import { at, isMatrix0, isMatrix1, isMatrix2, len, matrixn, newaxis, shape } from '../geometry'
 import { sum } from '../aggregation'
 import { error } from '../../utils/function'
@@ -48,24 +58,36 @@ export const dot = <
   return error(`Shapes (${shape(a)}) and (${shape(b)}) are not aligned.`)
 }
 
-export const matmul = (a: MatrixN, b: MatrixN): MatrixN => {
+type MatmulResult<
+  T1 extends MatrixN,
+  T2 extends MatrixN
+> =
+  T1 extends Matrix1 ? NestedMatrix<T2> :
+  T2 extends Matrix1 ? NestedMatrix<T1> :
+  T2 extends NestedMatrices<T1> ? T1 : T2
+
+export const matmul = <
+  T1 extends MatrixN,
+  T2 extends MatrixN,
+  T3 extends MatmulResult<T1, T2>
+>(a: T1, b: T2): T3 => {
   if (isMatrix1(a)) {
-    return matmul(newaxis(a, 0), b).flat()
+    return matrixn(matmul(newaxis(a, 0), b)).flat() as unknown as T3
   }
   if (isMatrix1(b)) {
-    return matmul(a, newaxis(b, 1)).flat()
+    return matrixn(matmul(a, newaxis(b, 1))).flat() as unknown as T3
   }
   if (isMatrix2(a) && isMatrix2(b)) {
-    return matmul2x2(a, b)
+    return matmul2x2(a, b) as T3
   }
   if (isMatrix2(a)) {
-    return b.map((y) => matmul(a, matrixn(y)))
+    return b.map((y) => matmul(a, matrixn(y))) as unknown as T3
   }
   if (isMatrix2(b)) {
-    return a.map((x) => matmul(matrixn(x), b))
+    return a.map((x) => matmul(matrixn(x), b)) as unknown as T3
   }
-  if (at(shape(a), -1) === at(shape(b), -2)) {
-    return zip(a, b).map(([x, y]) => matmul(matrixn(x), matrixn(y)))
+  if (at(shape(a as MatrixN), -1) === at(shape(b as MatrixN), -2)) {
+    return zip(a, b).map(([x, y]) => matmul(matrixn(x), matrixn(y))) as T3
   }
   return error(`Shapes (${shape(a)}) and (${shape(b)}) are not aligned.`)
 }

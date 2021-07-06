@@ -26,7 +26,7 @@ export const broadcast = <
   T1 extends Matrix,
   T2 extends Matrix,
   T3 extends T2 extends NestedMatrices<T1> ? T1 : T2
-  >(a: T1, b: T2, operator: BinaryOperator): T3 => {
+>(a: T1, b: T2, operator: BinaryOperator): T3 => {
   if (isMatrix0(a) && isMatrix0(b)) {
     return operator(a, b) as T3
   }
