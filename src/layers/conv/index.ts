@@ -17,19 +17,23 @@ import { normal } from '../../utils/random'
 
 type Options = {
   filtersNumber: number;
+  frameSize: number;
   weightInitializer?: () => number;
 }
 
-export class Conv3x3 {
+export class Conv {
   private filters: Matrix3
   private input: Matrix2
+  private readonly frameSize: number
 
   constructor({
     filtersNumber,
+    frameSize,
     weightInitializer = normal,
   }: Options) {
+    this.frameSize = frameSize
     // Divides by 9 to reduce the variance of our initial values.
-    this.filters = divide(create(weightInitializer, filtersNumber, 3, 3), 9)
+    this.filters = divide(create(weightInitializer, filtersNumber, frameSize, frameSize), 9)
   }
 
   public forward(input: Matrix2): Matrix3 {
@@ -55,12 +59,12 @@ export class Conv3x3 {
 
   private frames(input: Matrix2) {
     const [h, w] = shape(input)
-    return arange(h - 2).map((i) =>
-      arange(w - 2).map((j) => this.frame3x3(input, i, j)),
+    return arange(h - this.frameSize + 1).map((i) =>
+      arange(w - this.frameSize + 1).map((j) => this.frame3x3(input, i, j)),
     )
   }
 
   private frame3x3(input: Matrix2, i: number, j: number) {
-    return partition(input, [i, i + 3], [j, j + 3])
+    return partition(input, [i, i + this.frameSize], [j, j + this.frameSize])
   }
 }

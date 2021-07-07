@@ -12,8 +12,8 @@ const equal = (a: Matrix, b: Matrix): boolean =>
     false
 
 export const toEqualMatrix: jest.CustomMatcher = (received: Matrix, expected: Matrix) => {
-  const r = nmap(received, (x) => round(x, eps))
-  const e = nmap(expected, (x) => round(x, eps))
+  const r = nmap(received, (x: number) => round(x, eps))
+  const e = nmap(expected, (x: number) => round(x, eps))
   const pass = equal(r, e)
   return {
     pass,
