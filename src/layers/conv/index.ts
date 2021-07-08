@@ -39,7 +39,7 @@ export class Conv {
   public forward(input: Matrix2): Matrix3 {
     this.input = input
     return this.frames(input).map((row) =>
-      row.map((frame) => sum(multiply(frame, this.filters), [1, 2])),
+      row.map((frame) => sum(multiply(frame, this.filters), 1, 2)),
     )
   }
 

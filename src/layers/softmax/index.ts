@@ -44,7 +44,7 @@ export class Softmax {
     this.input = input
     const totals = this.totals(input)
     const exps = exp(totals)
-    return divide(exps, sum(exps, [0]))
+    return divide(exps, sum(exps, 0))
   }
 
   public backward(output: Matrix1, learningRate: number): Matrix3 {

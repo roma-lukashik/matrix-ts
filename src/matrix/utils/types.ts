@@ -39,6 +39,7 @@ export type NLevelNestedMatrix<
   T extends Matrix,
   K extends MatrixDimensions<T>,
 > =
+  K extends [] ? Matrix0 :
   K extends Vector1 ? NestedMatrix<T> :
   K extends Vector2 ? NestedMatrix<NestedMatrix<T>> :
   K extends Vector3 ? NestedMatrix<NestedMatrix<NestedMatrix<T>>> :

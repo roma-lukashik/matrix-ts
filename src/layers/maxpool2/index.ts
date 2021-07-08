@@ -7,7 +7,7 @@ export class Maxpool2 {
   public forward(input: Matrix3): Matrix3 {
     this.input = input
     return this.frames(input).map((row) =>
-      row.map((frame) => max(frame, [0, 1])),
+      row.map((frame) => max(frame, 0, 1)),
     )
   }
 
@@ -16,7 +16,7 @@ export class Maxpool2 {
 
     this.frames(this.input).forEach((row, i) => {
       row.forEach((frame, j) => {
-        const amax = max(frame, [0, 1])
+        const amax = max(frame, 0, 1)
         neach(frame, (x, k, l, f) => {
           if (x === at(amax, f)) {
             dLdInput[i * 2 + k][j * 2 + l][f] = at(gradient, i, j, f)

@@ -5,22 +5,21 @@ import { isMatrix0, len, matrixn, ndim } from '../geometry'
 import { first, zip } from '../../utils/array'
 import { error } from '../../utils/function'
 
-type MatrixBinaryOperator = <
+export type MatrixBinaryOperator = <
   T1 extends Matrix,
   T2 extends Matrix
 >(a: T1, b: T2) => T2 extends NestedMatrices<T1> ? T1 : T2
 
-export const add: MatrixBinaryOperator = (matrix1, matrix2) =>
-  broadcast(matrix1, matrix2, math.add)
+const operator = (fn: math.BinaryOperator): MatrixBinaryOperator =>
+  (matrix1, matrix2) => broadcast(matrix1, matrix2, fn)
 
-export const subtract: MatrixBinaryOperator = (matrix1, matrix2) =>
-  broadcast(matrix1, matrix2, math.subtract)
+export const add = operator(math.add)
 
-export const multiply: MatrixBinaryOperator = (matrix1, matrix2) =>
-  broadcast(matrix1, matrix2, math.multiply)
+export const subtract = operator(math.subtract)
 
-export const divide: MatrixBinaryOperator = (matrix1, matrix2) =>
-  broadcast(matrix1, matrix2, math.divide)
+export const multiply = operator(math.multiply)
+
+export const divide = operator(math.divide)
 
 export const broadcast = <
   T1 extends Matrix,

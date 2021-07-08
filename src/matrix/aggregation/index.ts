@@ -1,43 +1,35 @@
-import { BinaryOperator, nonzero } from '../../utils/math'
-import { empty, first } from '../../utils/array'
+import { nonzero } from '../../utils/math'
+import { arrlen, empty, first } from '../../utils/array'
 import { Matrix, Matrix0, MatrixDimensions, MatrixN, NLevelNestedMatrix, VectorN } from '../utils/types'
 import { arange } from '../creation'
 import { isMatrix0, matrixn, ndim } from '../geometry'
-import { add, broadcast, multiply } from '../binary-operation'
+import { add, broadcast, MatrixBinaryOperator, multiply } from '../binary-operation'
 
 type AggregateMatrixOperator = {
-  <T extends Matrix>(matrix: T): Matrix0;
-  <T extends Matrix, K extends MatrixDimensions<T>>(matrix: T, axes: K): NLevelNestedMatrix<T, K>;
+  <T extends Matrix>(matrix: T): Matrix0
+  <T extends Matrix, K extends MatrixDimensions<T>>(matrix: T, ...axes: K): NLevelNestedMatrix<T, K>
 }
 
-export const sum: AggregateMatrixOperator = <T extends Matrix>(
-  matrix: T,
-  axes?: MatrixDimensions<T>,
-) =>
-  aggregate(matrix, axes, add)
+const aggregator = (fn: MatrixBinaryOperator): AggregateMatrixOperator => <
+  T extends Matrix,
+  K extends MatrixDimensions<T>
+>(matrix: T, ...axes: K) =>
+  aggregate(matrix, arrlen(axes) ? axes : arange(ndim(matrix)) as K, fn)
 
-export const prod: AggregateMatrixOperator = <T extends Matrix>(
-  matrix: T,
-  axes?: MatrixDimensions<T>,
-) =>
-  aggregate(matrix, axes, multiply)
+export const sum = aggregator(add)
 
-export const max: AggregateMatrixOperator = <T extends Matrix>(
-  matrix: T,
-  axes?: MatrixDimensions<T>,
-) =>
-  aggregate(matrix, axes, (a, b) => broadcast(a, b, Math.max))
+export const prod = aggregator(multiply)
+
+export const max = aggregator((a, b) => broadcast(a, b, Math.max))
+
+export const min = aggregator((a, b) => broadcast(a, b, Math.min))
 
 // Takes all matrix axes and aggregate all matrix elements by default.
 const aggregate = <
   T1 extends Matrix,
   T2 extends MatrixDimensions<T1>,
   T3 extends NLevelNestedMatrix<T1, T2>,
->(
-  matrix: T1,
-  axes = arange(ndim(matrix)) as T2,
-  operator: BinaryOperator,
-): T3 => {
+>(matrix: T1, axes: T2, operator: MatrixBinaryOperator): T3 => {
   if (isMatrix0(matrix) || empty(axes)) {
     return matrix as unknown as T3
   }
@@ -48,7 +40,7 @@ const aggregate = <
   ) as T3
 }
 
-const aggregateNesting = (matrix: MatrixN, axis: number, operator: BinaryOperator): Matrix =>
+const aggregateNesting = (matrix: MatrixN, axis: number, operator: MatrixBinaryOperator): Matrix =>
   nonzero(axis) && ndim(matrix) > 1 ?
     matrix.map((x) => aggregateNesting(matrixn(x), axis - 1, operator)) :
     matrix.reduce(operator)
