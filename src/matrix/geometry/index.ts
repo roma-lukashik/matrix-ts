@@ -14,10 +14,12 @@ import {
   Vector,
   Vector2,
   Vector2Matrix,
+  VectorN,
 } from '../utils/types'
 import { zero } from '../../utils/math'
 import { prod } from '../aggregation'
-import { arange } from '../creation'
+import { arange, zeros } from '../creation'
+import { nmap } from '../iteration'
 
 export const at = <
   T1 extends MatrixN,
@@ -51,6 +53,29 @@ const reshapeNested = <
   V extends Vector2Matrix<U>
 >(matrix: Matrix1, [d0, ...dn]: U, skip = 0): V =>
   arange(d0).map((i) => empty(dn) ? at(matrix, skip + i) : reshapeNested(matrix, dn, prod(dn) * i + skip)) as V
+
+type TransposeFn = {
+  <T1 extends MatrixN>(matrix: T1): T1
+  <T1 extends MatrixN, T2 extends Matrix2Vector<T1>>(matrix: T1, ...dn: T2): T1
+}
+
+export const transpose: TransposeFn = <
+  T1 extends MatrixN,
+  T2 extends Matrix2Vector<T1>
+>(matrix: T1, ...order: T2): T1 => {
+  const forward = len(order) ? order : arange(ndim(matrix)).reverse()
+  const backward = value2index(forward)
+  const transposed = zeros(...shuffle(shape(matrix), forward)) as T1
+  return nmap(transposed, (_, ...dn) => matrix0(at(matrix, ...shuffle(dn, backward) as MatrixDimensions<T1>)))
+}
+
+const shuffle = <T extends MatrixN>(matrix: T, order: VectorN) => order.map((i) => matrix[i]) as T
+
+const value2index = (order: VectorN): VectorN => {
+  const arr: VectorN = []
+  order.forEach((x, i) => arr[x] = i)
+  return arr
+}
 
 export const partition = <
   T extends Matrix,
