@@ -64,18 +64,12 @@ export const transpose: TransposeFn = <
   T2 extends Matrix2Vector<T1>
 >(matrix: T1, ...order: T2): T1 => {
   const forward = len(order) ? order : arange(ndim(matrix)).reverse()
-  const backward = value2index(forward)
+  const backward = forward.map((x, i) => [x, i]).sort(([a], [b]) => a - b).map((x) => x[1])
   const transposed = zeros(...shuffle(shape(matrix), forward)) as T1
   return nmap(transposed, (_, ...dn) => matrix0(at(matrix, ...shuffle(dn, backward) as MatrixDimensions<T1>)))
 }
 
 const shuffle = <T extends MatrixN>(matrix: T, order: VectorN) => order.map((i) => matrix[i]) as T
-
-const value2index = (order: VectorN): VectorN => {
-  const arr: VectorN = []
-  order.forEach((x, i) => arr[x] = i)
-  return arr
-}
 
 export const partition = <
   T extends Matrix,
