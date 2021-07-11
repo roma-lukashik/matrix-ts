@@ -1,4 +1,4 @@
-import { max, min, sum } from '.'
+import { max, min, prod, sum } from '.'
 
 describe('aggregation', () => {
   describe('#sum', () => {
@@ -50,6 +50,52 @@ describe('aggregation', () => {
       expect(sum(m, 1, 2, 0)).toEqual(13.5)
       expect(sum(m, 2, 0, 1)).toEqual(13.5)
       expect(sum(m, 2, 1, 0)).toEqual(13.5)
+    })
+  })
+
+  describe('#prod', () => {
+    it('calculates a prod of 0x2 matrix', () => {
+      const m = [0.5, 1.5]
+
+      expect(prod(m)).toBe(0.75)
+      expect(prod(m, 0)).toBe(0.75)
+    })
+
+    it('calculates a prod of 3x2 matrix', () => {
+      const m = [
+        [0.5, 1.5],
+        [2.0, 4.0],
+        [1.0, 3.0],
+      ]
+
+      expect(prod(m)).toEqual(18)
+      expect(prod(m, 0)).toEqual([1, 18])
+      expect(prod(m, 1)).toEqual([0.75, 8, 3])
+      expect(prod(m, 0, 1)).toEqual(18)
+      expect(prod(m, 1, 0)).toEqual(18)
+    })
+
+    it('calculates a prod of 2x2x2 matrix', () => {
+      const m = [
+        [[1, 2], [3, 4]],
+        [[5, 6], [7, 8]]
+      ]
+
+      expect(prod(m)).toEqual(40320)
+      expect(prod(m, 0)).toEqual([[5, 12], [21, 32]])
+      expect(prod(m, 1)).toEqual([[3, 8], [35, 48]])
+      expect(prod(m, 2)).toEqual([[2, 12], [30, 56]])
+      expect(prod(m, 0, 1)).toEqual([105, 384])
+      expect(prod(m, 0, 2)).toEqual([60, 672])
+      expect(prod(m, 1, 0)).toEqual([105, 384])
+      expect(prod(m, 1, 2)).toEqual([24, 1680])
+      expect(prod(m, 2, 0)).toEqual([60, 672])
+      expect(prod(m, 2, 1)).toEqual([24, 1680])
+      expect(prod(m, 0, 1, 2)).toEqual(40320)
+      expect(prod(m, 1, 0, 2)).toEqual(40320)
+      expect(prod(m, 1, 2, 0)).toEqual(40320)
+      expect(prod(m, 2, 0, 1)).toEqual(40320)
+      expect(prod(m, 2, 1, 0)).toEqual(40320)
     })
   })
 
