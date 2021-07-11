@@ -33,10 +33,15 @@ export const at = <
   return len(dn) > 0 ? at(matrixn(matrix[i]), ...dn) as T3 : matrix[i] as T3
 }
 
-export const shape = <T extends MatrixN, U extends Matrix2Vector<T>>(matrix: T): U => [
-  len(matrix),
-  ...(isMatrixN(first(matrix)) ? shape(matrixn(first(matrix))) : []),
-] as U
+export const shape = <
+  T extends Matrix,
+  U extends T extends Matrix0 ? number : Matrix2Vector<T>
+>(matrix: T): U => {
+  if (isMatrix0(matrix)) {
+    return 1 as U
+  }
+  return [len(matrix), ...(isMatrixN(first(matrix)) ? shape(matrixn(first(matrix))) : [])] as U
+}
 
 export const reshape = <
   T extends MatrixN,
@@ -103,7 +108,7 @@ export const matrix0 = (value: Matrix): Matrix0 =>
 export const matrixn = <T extends MatrixN>(value: Matrix0 | T): T =>
   isMatrixN(value) ? value : error(`Value ${value} is not an instance of MatrixN`)
 
-export const isMatrix0 = (matrix: Matrix): matrix is Matrix0 => zero(len(matrix))
+export const isMatrix0 = (matrix: Matrix): matrix is Matrix0 => !isMatrixN(matrix)
 
 export const isMatrix1 = (matrix: Matrix): matrix is Matrix1 => ndim(matrix) === 1
 

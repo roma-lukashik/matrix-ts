@@ -44,6 +44,10 @@ describe('geometry', () => {
   })
 
   describe('#shape', () => {
+    it('returns 1 for the Matrix0', () => {
+      expect(shape(4)).toEqual(1)
+    })
+
     it('returns 0 shape for the empty matrix', () => {
       expect(shape([])).toEqual([0])
     })
