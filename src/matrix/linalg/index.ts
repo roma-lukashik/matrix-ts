@@ -52,7 +52,7 @@ export const dot = <
   if (isMatrix1(a)) {
     return b.map((y) => dot(a, y)) as T3
   }
-  if (at(shape(a), -1) === at(shape(b), -2)) {
+  if (at(shape(a as MatrixN), -1) === at(shape(b as MatrixN), -2)) {
     return a.map((x) => dot(x, b)) as T3
   }
   return error(`Shapes (${shape(a)}) and (${shape(b)}) are not aligned.`)

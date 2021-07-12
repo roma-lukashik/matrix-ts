@@ -19,3 +19,5 @@ export const zip = <T1, T2>(arr1: T1[], arr2: T2[]): Array<[T1, T2]> =>
 
 export const flatten = <T>(arr: ArrayN<T>): T[] =>
   Array.isArray(arr) ? arr.flatMap(flatten) : arr
+
+export const copy = <T>(arr: T[]): T[] => [...arr]
