@@ -1,5 +1,5 @@
 import { arrlen, empty, first, flatten } from '../../utils/array'
-import { error, isDefined } from '../../utils/function'
+import { error, nullish } from '../../utils/function'
 import {
   Matrix,
   Matrix0,
@@ -27,7 +27,7 @@ export const at = <
   T3 extends NLevelNestedMatrix<T1, T2>
 >(matrix: T1, ...[d0, ...dn]: T2): T3 => {
   const i = d0 < 0 ? len(matrix) + d0 : d0
-  if (!isDefined(matrix[i])) {
+  if (nullish(matrix[i])) {
     return error(`Index ${i} out of bounds [0, ${len(matrix) - 1}].`)
   }
   return len(dn) > 0 ? at(matrixn(matrix[i]), ...dn) as T3 : matrix[i] as T3

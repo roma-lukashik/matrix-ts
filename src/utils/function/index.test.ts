@@ -1,4 +1,4 @@
-import { constant, error, identity, isDefined } from '.'
+import { constant, defined, error, identity, nullish } from '.'
 
 describe('function', () => {
   describe('#identity', () => {
@@ -24,19 +24,35 @@ describe('function', () => {
     })
   })
 
-  describe('#isDefined', () => {
+  describe('#defined', () => {
+    it('returns false', () => {
+      expect(defined(null)).toBe(false)
+      expect(defined(undefined)).toBe(false)
+    })
+
     it('returns true', () => {
-      expect(isDefined(0)).toBe(true)
-      expect(isDefined([])).toBe(true)
-      expect(isDefined({})).toBe(true)
-      expect(isDefined('')).toBe(true)
-      expect(isDefined(false)).toBe(true)
-      expect(isDefined(NaN)).toBe(true)
+      expect(defined(0)).toBe(true)
+      expect(defined([])).toBe(true)
+      expect(defined({})).toBe(true)
+      expect(defined('')).toBe(true)
+      expect(defined(false)).toBe(true)
+      expect(defined(NaN)).toBe(true)
+    })
+  })
+
+  describe('#nullish', () => {
+    it('returns true', () => {
+      expect(nullish(null)).toBe(true)
+      expect(nullish(undefined)).toBe(true)
     })
 
     it('returns false', () => {
-      expect(isDefined(null)).toBe(false)
-      expect(isDefined(undefined)).toBe(false)
+      expect(nullish(0)).toBe(false)
+      expect(nullish([])).toBe(false)
+      expect(nullish({})).toBe(false)
+      expect(nullish('')).toBe(false)
+      expect(nullish(false)).toBe(false)
+      expect(nullish(NaN)).toBe(false)
     })
   })
 })

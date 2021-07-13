@@ -1,6 +1,6 @@
 import { exp } from '.'
 
-describe('transformation', () => {
+describe('math', () => {
   describe('#exp', () => {
     it('passes a basic case', () => {
       const a = [

@@ -7,9 +7,9 @@ import { round } from '../../src/utils/math'
 const eps = 1e-3
 
 const equal = (a: Matrix, b: Matrix): boolean =>
-  isMatrixN(a) && isMatrixN(b) && len(a) === len(b) ?
-    zip(a, b).every(([x, y]) => isMatrix0(x) && isMatrix0(y) ? x === y : equal(x, y)) :
-    false
+  isMatrixN(a) && isMatrixN(b) ?
+    len(a) === len(b) && zip(a, b).every(([x, y]) => isMatrix0(x) && isMatrix0(y) ? x === y : equal(x, y)) :
+    a === b
 
 export const toEqualMatrix: jest.CustomMatcher = (received: Matrix, expected: Matrix) => {
   const r = nmap(received, (x: number) => round(x, eps))
