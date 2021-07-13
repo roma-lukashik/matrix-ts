@@ -25,11 +25,11 @@ const aggregator = (fn: MatrixBinaryOperator): AggregateMatrixOperator => <
 
 const sort = <T extends VectorN>(arr: T): T => copy(arr).sort((a, b) => b - a) as T
 
-const keepdim = (operator: AggregateMatrixOperator): KeepdimAggregateMatrixOperator => <
+const keepdim = (fn: AggregateMatrixOperator): KeepdimAggregateMatrixOperator => <
   T extends Matrix,
   K extends MatrixDimensions<T>
 >(matrix: T, ...axes: K) =>
-  _keepdim(operator(matrix, ...axes), matrix, axes)
+  _keepdim(fn(matrix, ...axes), matrix, axes)
 
 const _keepdim = (matrix: Matrix, original: Matrix, axes: VectorN) =>
   isMatrixN(matrix) ? reshape(matrix, shape(matrixn(original)).map((x, i) => axes.includes(i) ? 1 : x)) : matrix
