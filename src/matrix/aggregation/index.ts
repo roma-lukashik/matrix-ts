@@ -12,6 +12,11 @@ type AggregateMatrixOperator = {
   <T extends Matrix, K extends MatrixDimensions<T>>(matrix: T, ...axes: K): NLevelNestedMatrix<T, K>
 }
 
+type KeepdimAggregateMatrixOperator = {
+  <T extends Matrix>(matrix: T): T
+  <T extends Matrix, K extends MatrixDimensions<T>>(matrix: T, ...axes: K): T
+}
+
 const aggregator = (fn: MatrixBinaryOperator): AggregateMatrixOperator => <
   T extends Matrix,
   K extends MatrixDimensions<T>
@@ -19,6 +24,15 @@ const aggregator = (fn: MatrixBinaryOperator): AggregateMatrixOperator => <
   aggregate(matrix, sort(nonzero(arrlen(axes)) ? axes : arange(ndim(matrix))) as K, fn)
 
 const sort = <T extends VectorN>(arr: T): T => copy(arr).sort((a, b) => b - a) as T
+
+const keepdim = (operator: AggregateMatrixOperator): KeepdimAggregateMatrixOperator => <
+  T extends Matrix,
+  K extends MatrixDimensions<T>
+>(matrix: T, ...axes: K) =>
+  _keepdim(operator(matrix, ...axes), matrix, axes)
+
+const _keepdim = (matrix: Matrix, original: Matrix, axes: VectorN) =>
+  isMatrixN(matrix) ? reshape(matrix, shape(matrixn(original)).map((x, i) => axes.includes(i) ? 1 : x)) : matrix
 
 export const sum = aggregator(add)
 
@@ -37,17 +51,15 @@ export const mean: AggregateMatrixOperator = <
 const _mean = (original: Matrix, reduced: Matrix) =>
   divide(reduced, divide(size(original), size(reduced)))
 
+export const meankeepdim = keepdim(mean)
+
 // The standard deviation is the square root of the average of the squared deviations from the mean, i.e.,
 // std = sqrt(mean(x)), where x = (a - a.mean())**2.
 export const std: AggregateMatrixOperator = <
   T extends Matrix,
   K extends MatrixDimensions<T>
 >(matrix: T, ...axes: K) =>
-  sqrt(mean(pow2(subtract(matrix, keepdim(matrix, mean(matrix, ...axes), axes))) as T, ...axes))
-
-// TODO: Use keepdim option to preserve number of dimensions.
-const keepdim = (m1: Matrix, m2: Matrix, axes: VectorN) =>
-  isMatrixN(m2) ? reshape(m2, shape(matrixn(m1)).map((x, i) => axes.includes(i) ? 1 : x)) : m2
+  sqrt(mean(pow2(subtract(matrix, meankeepdim(matrix, ...axes))) as T, ...axes))
 
 // Takes all matrix axes and aggregate all matrix elements by default.
 const aggregate = <
