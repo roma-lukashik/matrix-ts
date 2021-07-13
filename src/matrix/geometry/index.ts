@@ -15,7 +15,7 @@ import {
   Vector2,
   Vector2Matrix,
   VectorN,
-} from '../utils/types'
+} from '../types'
 import { zero } from '../../utils/math'
 import { prod } from '../aggregation'
 import { arange, zeros } from '../creation'

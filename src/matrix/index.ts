@@ -13,4 +13,4 @@ export type {
   Matrix3,
   Matrix4,
   MatrixN
-} from './utils/types'
+} from './types'

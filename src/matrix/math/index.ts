@@ -1,4 +1,4 @@
-import { Matrix, Matrix0 } from '../utils/types'
+import { Matrix, Matrix0 } from '../types'
 import { isMatrix0 } from '../geometry'
 
 const operator = (fn: (x: Matrix0) => Matrix0) =>

@@ -8,7 +8,7 @@ import {
   MatrixN,
   NestedMatrices,
   NestedMatrix,
-} from '../utils/types'
+} from '../types'
 import { at, isMatrix0, isMatrix1, isMatrix2, len, matrixn, newaxis, shape } from '../geometry'
 import { sum } from '../aggregation'
 import { error } from '../../utils/function'

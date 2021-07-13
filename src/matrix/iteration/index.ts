@@ -1,5 +1,5 @@
 import { isMatrixN } from '../geometry'
-import { Matrix, Matrix0, Matrix2Vector, MatrixN } from '../utils/types'
+import { Matrix, Matrix0, Matrix2Vector, MatrixN } from '../types'
 
 type Fn<T extends Matrix, U> = T extends Matrix0 ? {
   (x: Matrix0): U;

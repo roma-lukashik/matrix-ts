@@ -1,6 +1,6 @@
 import { nonzero } from '../../utils/math'
 import { arrlen, copy } from '../../utils/array'
-import { Matrix, Matrix0, MatrixDimensions, MatrixN, NLevelNestedMatrix, VectorN } from '../utils/types'
+import { Matrix, Matrix0, MatrixDimensions, MatrixN, NLevelNestedMatrix, VectorN } from '../types'
 import { arange } from '../creation'
 import { isMatrixN, matrixn, ndim, reshape, shape, size } from '../geometry'
 import { add, broadcast, divide, MatrixBinaryOperator, multiply, subtract } from '../binary-operation'
@@ -48,8 +48,8 @@ export const mean: AggregateMatrixOperator = <
 >(matrix: T, ...axes: K) =>
   _mean(matrix, sum(matrix, ...axes))
 
-const _mean = (original: Matrix, reduced: Matrix) =>
-  divide(reduced, divide(size(original), size(reduced)))
+const _mean = (matrix: Matrix, sum: Matrix) =>
+  divide(sum, divide(size(matrix), size(sum)))
 
 export const meankeepdim = keepdim(mean)
 

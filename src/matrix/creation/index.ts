@@ -1,6 +1,6 @@
 import { array, empty } from '../../utils/array'
 import { constant, identity } from '../../utils/function'
-import { Matrix1, Vector2Matrix, VectorN } from '../utils/types'
+import { Matrix1, Vector2Matrix, VectorN } from '../types'
 
 export const create = <T extends VectorN, U extends Vector2Matrix<T>>(fill: () => number, ...[d0, ...dn]: T): U =>
   array(d0, () => empty(dn) ? fill() : create(fill, ...dn)) as U

@@ -1,4 +1,4 @@
-import { Matrix, NestedMatrices } from '../utils/types'
+import { Matrix, NestedMatrices } from '../types'
 import * as math from '../../utils/math'
 import { BinaryOperator } from '../../utils/math'
 import { isMatrix0, len, matrixn, ndim } from '../geometry'
