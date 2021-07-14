@@ -42,6 +42,12 @@ export const max = aggregator((a, b) => broadcast(a, b, Math.max))
 
 export const min = aggregator((a, b) => broadcast(a, b, Math.min))
 
+export const ptp: AggregateMatrixOperator = <
+  T extends Matrix,
+  K extends MatrixDimensions<T>
+>(matrix: T, ...axes: K): NLevelNestedMatrix<T, K> =>
+  subtract(max(matrix, ...axes), min(matrix, ...axes))
+
 export const mean: AggregateMatrixOperator = <
   T extends Matrix,
   K extends MatrixDimensions<T>
