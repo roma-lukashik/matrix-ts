@@ -23,6 +23,7 @@ export type Vector2Matrix<T extends VectorN> =
   MatrixN
 
 export type Matrix2Vector<T extends Matrix> =
+  T extends Matrix0 ? [] :
   T extends Matrix1 ? Vector1 :
   T extends Matrix2 ? Vector2 :
   T extends Matrix3 ? Vector3 :
@@ -52,4 +53,4 @@ type NestedVectors<T extends VectorN> =
   T extends Vector2 | Vector3 | Vector4 ? NestedVector<T> | NestedVectors<NestedVector<T>> : NestedVector<T>
 
 export type MatrixDimensions<T extends Matrix, K = Matrix2Vector<T>> =
-  K extends Vector1 | Vector2 | Vector3 | Vector4 ? K | NestedVectors<K> : K
+  K extends Vector1 | Vector2 | Vector3 | Vector4 ? K | NestedVectors<K> : K extends [] ? never : K

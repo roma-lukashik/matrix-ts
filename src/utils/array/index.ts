@@ -17,7 +17,4 @@ export const zip = <T1, T2>(arr1: T1[], arr2: T2[]): Array<[T1, T2]> =>
     ? arr1.map<[T1, T2]>((x, i) => [x, arr2[i]])
     : error(`Array(${arrlen(arr1)}) and Array(${arrlen(arr2)}) are not aligned.`)
 
-export const flatten = <T>(arr: ArrayN<T>): T[] =>
-  Array.isArray(arr) ? arr.flatMap(flatten) : arr
-
 export const copy = <T>(arr: T[]): T[] => [...arr]

@@ -44,8 +44,8 @@ describe('geometry', () => {
   })
 
   describe('#shape', () => {
-    it('returns 1 for the Matrix0', () => {
-      expect(shape(4)).toEqual(1)
+    it('returns [] for the Matrix0', () => {
+      expect(shape(4)).toEqual([])
     })
 
     it('returns 0 shape for the empty matrix', () => {
@@ -62,6 +62,10 @@ describe('geometry', () => {
   })
 
   describe('#reshape', () => {
+    it('converts (0) matrix to (1, 1) matrix', () => {
+      expect(reshape(4, [1, 1])).toEqual([[4]])
+    })
+
     it('converts (6, 0) matrix to (2, 3) matrix', () => {
       expect(reshape(arange(6), [2, 3])).toEqual([[0, 1, 2], [3, 4, 5]])
     })

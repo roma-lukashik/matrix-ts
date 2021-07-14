@@ -1,4 +1,4 @@
-import { arrlen, empty, first, flatten } from '../../utils/array'
+import { arrlen, empty, first } from '../../utils/array'
 import { error, nullish } from '../../utils/function'
 import {
   Matrix,
@@ -35,16 +35,12 @@ export const at = <
 
 export const shape = <
   T extends Matrix,
-  U extends T extends Matrix0 ? number : Matrix2Vector<T>
->(matrix: T): U => {
-  if (isMatrix0(matrix)) {
-    return 1 as U
-  }
-  return [len(matrix), ...(isMatrixN(first(matrix)) ? shape(matrixn(first(matrix))) : [])] as U
-}
+  U extends Matrix2Vector<T>
+>(matrix: T): U =>
+  isMatrixN(matrix) ? [len(matrix), ...shape(first(matrix))] as U : [] as U
 
 export const reshape = <
-  T extends MatrixN,
+  T extends Matrix,
   K extends Vector,
 >(matrix: T, dn: K): Vector2Matrix<K> => {
   if (size(matrix) === prod(dn)) {
@@ -76,6 +72,9 @@ export const transpose: TransposeFn = <
 
 const shuffle = <T extends MatrixN>(matrix: T, order: VectorN) => order.map((i) => matrix[i]) as T
 
+export const flatten = <T extends Matrix>(matrix: T): Matrix1 =>
+  isMatrixN(matrix) ? matrix.flatMap(flatten) : [matrix]
+
 export const partition = <
   T extends Matrix,
   U extends (
@@ -99,7 +98,7 @@ export const size = (matrix: Matrix): number => isMatrixN(matrix) ? prod(shape(m
 export const len = (matrix: Matrix): number => isMatrixN(matrix) ? arrlen(matrix) : 0
 
 // Number of dimensions.
-export const ndim = (matrix: Matrix): number => isMatrixN(matrix) ? arrlen(shape(matrix)) : 0
+export const ndim = (matrix: Matrix): number => arrlen(shape(matrix))
 
 export const matrix0 = (value: Matrix): Matrix0 =>
   isMatrixN(value) ? error(`Value is not an instance of Matrix0`) : value

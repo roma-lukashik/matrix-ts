@@ -5,6 +5,7 @@ import {
   divide,
   dot,
   exp,
+  flatten,
   matmul,
   Matrix1,
   Matrix2,
@@ -17,7 +18,6 @@ import {
   sum,
   zeros,
 } from '../../matrix'
-import { flatten } from '../../utils/array'
 import { normal } from '../../utils/random'
 
 type Options = {

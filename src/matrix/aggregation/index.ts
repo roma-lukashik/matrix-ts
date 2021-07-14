@@ -32,7 +32,7 @@ const keepdim = (fn: AggregateMatrixOperator): KeepdimAggregateMatrixOperator =>
   _keepdim(fn(matrix, ...axes), matrix, axes)
 
 const _keepdim = (matrix: Matrix, original: Matrix, axes: VectorN) =>
-  isMatrixN(matrix) ? reshape(matrix, shape(matrixn(original)).map((x, i) => axes.includes(i) ? 1 : x)) : matrix
+  isMatrixN(matrix) ? reshape(matrix, shape(original).map((x, i) => axes.includes(i) ? 1 : x)) : matrix
 
 export const sum = aggregator(add)
 
