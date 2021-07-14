@@ -1,4 +1,4 @@
-import { constant, defined, error, identity, nullish } from '.'
+import { constant, notnullish, error, identity, nullish } from '.'
 
 describe('function', () => {
   describe('#identity', () => {
@@ -24,19 +24,19 @@ describe('function', () => {
     })
   })
 
-  describe('#defined', () => {
+  describe('#notnullish', () => {
     it('returns false', () => {
-      expect(defined(null)).toBe(false)
-      expect(defined(undefined)).toBe(false)
+      expect(notnullish(null)).toBe(false)
+      expect(notnullish(undefined)).toBe(false)
     })
 
     it('returns true', () => {
-      expect(defined(0)).toBe(true)
-      expect(defined([])).toBe(true)
-      expect(defined({})).toBe(true)
-      expect(defined('')).toBe(true)
-      expect(defined(false)).toBe(true)
-      expect(defined(NaN)).toBe(true)
+      expect(notnullish(0)).toBe(true)
+      expect(notnullish([])).toBe(true)
+      expect(notnullish({})).toBe(true)
+      expect(notnullish('')).toBe(true)
+      expect(notnullish(false)).toBe(true)
+      expect(notnullish(NaN)).toBe(true)
     })
   })
 

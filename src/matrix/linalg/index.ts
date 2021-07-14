@@ -9,7 +9,7 @@ import {
   NestedMatrices,
   NestedMatrix,
 } from '../types'
-import { at, isMatrix0, isMatrix1, isMatrix2, len, matrixn, newaxis, shape } from '../geometry'
+import { at, isMatrix0, isMatrix1, isMatrix2, len, matrix1, matrixn, newaxis, shape } from '../geometry'
 import { sum } from '../aggregation'
 import { error } from '../../utils/function'
 import { first, zip } from '../../utils/array'
@@ -52,7 +52,7 @@ export const dot = <
   if (isMatrix1(a)) {
     return b.map((y) => dot(a, y)) as T3
   }
-  if (at(shape(a as MatrixN), -1) === at(shape(b as MatrixN), -2)) {
+  if (at(matrix1(shape(a)), -1) === at(matrix1(shape(b)), -2)) {
     return a.map((x) => dot(x, b)) as T3
   }
   return error(`Shapes (${shape(a)}) and (${shape(b)}) are not aligned.`)
@@ -86,7 +86,7 @@ export const matmul = <
   if (isMatrix2(b)) {
     return a.map((x) => matmul(matrixn(x), b)) as unknown as T3
   }
-  if (at(shape(a as MatrixN), -1) === at(shape(b as MatrixN), -2)) {
+  if (at(matrix1(shape(a)), -1) === at(matrix1(shape(b)), -2)) {
     return zip(a, b).map(([x, y]) => matmul(matrixn(x), matrixn(y))) as T3
   }
   return error(`Shapes (${shape(a)}) and (${shape(b)}) are not aligned.`)

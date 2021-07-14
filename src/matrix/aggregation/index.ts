@@ -4,7 +4,7 @@ import { Matrix, Matrix0, MatrixDimensions, MatrixN, NLevelNestedMatrix, VectorN
 import { arange } from '../creation'
 import { isMatrixN, matrixn, ndim, reshape, shape, size } from '../geometry'
 import { add, broadcast, divide, MatrixBinaryOperator, multiply, subtract } from '../binary-operation'
-import { defined } from '../../utils/function'
+import { notnullish } from '../../utils/function'
 import { pow2, sqrt } from '../math'
 
 type AggregateMatrixOperator = {
@@ -17,6 +17,7 @@ type KeepdimAggregateMatrixOperator = {
   <T extends Matrix, K extends MatrixDimensions<T>>(matrix: T, ...axes: K): T
 }
 
+// Takes all matrix axes and aggregate all matrix elements by default.
 const aggregator = (fn: MatrixBinaryOperator): AggregateMatrixOperator => <
   T extends Matrix,
   K extends MatrixDimensions<T>
@@ -67,13 +68,12 @@ export const std: AggregateMatrixOperator = <
 >(matrix: T, ...axes: K) =>
   sqrt(mean(pow2(subtract(matrix, meankeepdim(matrix, ...axes))) as T, ...axes))
 
-// Takes all matrix axes and aggregate all matrix elements by default.
 const aggregate = <
   T1 extends Matrix,
   T2 extends MatrixDimensions<T1>,
   T3 extends NLevelNestedMatrix<T1, T2>,
 >(matrix: T1, [d0, ...dn]: T2, operator: MatrixBinaryOperator): T3 => {
-  if (isMatrixN(matrix) && defined(d0)) {
+  if (isMatrixN(matrix) && notnullish(d0)) {
     return aggregate(aggregateNesting(matrix, d0, operator), dn, operator) as T3
   }
   return matrix as unknown as T3

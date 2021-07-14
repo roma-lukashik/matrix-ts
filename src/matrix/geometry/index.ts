@@ -44,16 +44,16 @@ export const reshape = <
   K extends Vector,
 >(matrix: T, dn: K): Vector2Matrix<K> => {
   if (size(matrix) === prod(dn)) {
-    return reshapeNested(flatten(matrix), dn)
+    return _reshape(flatten(matrix), dn)
   }
   return error(`Incompatible shape (${dn}) for reshaping of (${shape(matrix)}) matrix.`)
 }
 
-const reshapeNested = <
+const _reshape = <
   U extends Vector,
   V extends Vector2Matrix<U>
 >(matrix: Matrix1, [d0, ...dn]: U, skip = 0): V =>
-  arange(d0).map((i) => empty(dn) ? at(matrix, skip + i) : reshapeNested(matrix, dn, prod(dn) * i + skip)) as V
+  arange(d0).map((i) => empty(dn) ? at(matrix, skip + i) : _reshape(matrix, dn, prod(dn) * i + skip)) as V
 
 type TransposeFn = {
   <T1 extends MatrixN>(matrix: T1): T1
@@ -102,6 +102,9 @@ export const ndim = (matrix: Matrix): number => arrlen(shape(matrix))
 
 export const matrix0 = (value: Matrix): Matrix0 =>
   isMatrixN(value) ? error(`Value is not an instance of Matrix0`) : value
+
+export const matrix1 = (value: Matrix): Matrix1 =>
+  isMatrix1(value) ? value : error(`Value is not an instance of Matrix1`)
 
 // Typesafe casting value to MatrixN.
 export const matrixn = <T extends MatrixN>(value: Matrix0 | T): T =>
