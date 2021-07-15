@@ -1,10 +1,10 @@
 import { isMatrixN } from '../geometry'
-import { Matrix, Matrix0, Matrix2Vector, MatrixN } from '../types'
+import { Matrix, Matrix0, MatrixSize, MatrixN } from '../types'
 
 type Fn<T extends Matrix, U> = T extends Matrix0 ? {
   (x: Matrix0): U;
 } : {
-  (x: Matrix0, ...dn: Matrix2Vector<T>): U;
+  (x: Matrix0, ...dn: MatrixSize<T>): U;
 }
 
 export const neach = <T extends Matrix>(matrix: T, fn: Fn<T, void>): void =>

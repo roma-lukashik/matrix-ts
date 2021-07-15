@@ -5,12 +5,12 @@ import {
   Matrix0,
   Matrix1,
   Matrix2,
-  Matrix2Vector,
+  MatrixSize,
   Matrix3,
   Matrix4,
-  MatrixDimensions,
+  MatrixAxes,
   MatrixN,
-  NLevelNestedMatrix,
+  SubMatrix,
   Vector,
   Vector2,
   Vector2Matrix,
@@ -23,8 +23,8 @@ import { nmap } from '../iteration'
 
 export const at = <
   T1 extends MatrixN,
-  T2 extends MatrixDimensions<T1>,
-  T3 extends NLevelNestedMatrix<T1, T2>
+  T2 extends MatrixAxes<T1>,
+  T3 extends SubMatrix<T1, T2>
 >(matrix: T1, ...[d0, ...dn]: T2): T3 => {
   const i = d0 < 0 ? len(matrix) + d0 : d0
   if (nullish(matrix[i])) {
@@ -35,9 +35,8 @@ export const at = <
 
 export const shape = <
   T extends Matrix,
-  U extends Matrix2Vector<T>
->(matrix: T): U =>
-  isMatrixN(matrix) ? [len(matrix), ...shape(first(matrix))] as U : [] as U
+>(matrix: T): MatrixSize<T> =>
+  isMatrixN(matrix) ? [len(matrix), ...shape(first(matrix))] as MatrixSize<T> : [] as MatrixSize<T>
 
 export const reshape = <
   T extends Matrix,
@@ -57,17 +56,17 @@ const _reshape = <
 
 type TransposeFn = {
   <T1 extends MatrixN>(matrix: T1): T1
-  <T1 extends MatrixN, T2 extends Matrix2Vector<T1>>(matrix: T1, ...dn: T2): T1
+  <T1 extends MatrixN, T2 extends MatrixSize<T1>>(matrix: T1, ...dn: T2): T1
 }
 
 export const transpose: TransposeFn = <
   T1 extends MatrixN,
-  T2 extends Matrix2Vector<T1>
+  T2 extends MatrixSize<T1>
 >(matrix: T1, ...order: T2): T1 => {
   const forward = len(order) ? order : arange(ndim(matrix)).reverse()
   const backward = forward.map((x, i) => [x, i]).sort(([a], [b]) => a - b).map((x) => x[1])
   const transposed = zeros(...shuffle(shape(matrix), forward)) as T1
-  return nmap(transposed, (_, ...dn) => matrix0(at(matrix, ...shuffle(dn, backward) as MatrixDimensions<T1>)))
+  return nmap(transposed, (_, ...dn) => matrix0(at(matrix, ...shuffle(dn, backward) as MatrixAxes<T1>)))
 }
 
 const shuffle = <T extends MatrixN>(matrix: T, order: VectorN) => order.map((i) => matrix[i]) as T

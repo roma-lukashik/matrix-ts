@@ -7,6 +7,7 @@ export type Matrix3 = Matrix2[]
 export type Matrix4 = Matrix3[]
 export type MatrixN = ArrayN<Matrix0>
 export type Matrix = Matrix0 | MatrixN
+export type Matrix1to4 = Matrix1 | Matrix2 | Matrix3 | Matrix4
 
 export type Vector1 = [number]
 export type Vector2 = [number, number]
@@ -22,22 +23,18 @@ export type Vector2Matrix<T extends VectorN> =
   T extends Vector4 ? Matrix4 :
   MatrixN
 
-export type Matrix2Vector<T extends Matrix> =
-  T extends Matrix0 ? [] :
-  T extends Matrix1 ? Vector1 :
-  T extends Matrix2 ? Vector2 :
-  T extends Matrix3 ? Vector3 :
-  T extends Matrix4 ? Vector4 :
-  VectorN
-
 export type NestedMatrix<T extends Matrix> = T extends MatrixN ? T[0] : Matrix0
 
 export type NestedMatrices<T extends Matrix> =
-  T extends Matrix1 | Matrix2 | Matrix3 | Matrix4 ? T[0] | NestedMatrices<T[0]> : T extends Matrix0 ? never : T
+  T extends Matrix1to4 ? T[0] | NestedMatrices<T[0]> : T extends Matrix0 ? never : T
 
-export type NLevelNestedMatrix<
+export type MatrixSize<T extends Matrix> =
+  T extends Matrix0 ? [] :
+  T extends Matrix1to4 ? [number, ...MatrixSize<NestedMatrix<T>>] : number[]
+
+export type SubMatrix<
   T extends Matrix,
-  K extends MatrixDimensions<T>,
+  K extends VectorN,
 > =
   K extends [] ? Matrix0 :
   K extends Vector1 ? NestedMatrix<T> :
@@ -46,11 +43,7 @@ export type NLevelNestedMatrix<
   K extends Vector4 ? NestedMatrix<NestedMatrix<NestedMatrix<NestedMatrix<T>>>> :
   MatrixN
 
-type NestedVector<T extends VectorN> =
-  T extends [...infer Head, number] ? Head extends [] ? never : Head extends MatrixN ? Head : never : T
-
-type NestedVectors<T extends VectorN> =
-  T extends Vector2 | Vector3 | Vector4 ? NestedVector<T> | NestedVectors<NestedVector<T>> : NestedVector<T>
-
-export type MatrixDimensions<T extends Matrix, K = Matrix2Vector<T>> =
-  K extends Vector1 | Vector2 | Vector3 | Vector4 ? K | NestedVectors<K> : K extends [] ? never : K
+export type MatrixAxes<T extends Matrix> =
+  T extends Matrix0 ? never :
+  T extends Matrix1to4 ? MatrixSize<T> | MatrixAxes<NestedMatrix<T>> :
+  MatrixSize<T>
