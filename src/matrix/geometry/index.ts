@@ -12,9 +12,7 @@ import {
   MatrixN,
   SubMatrix,
   Vector,
-  Vector2,
   Size2Matrix,
-  VectorN,
 } from '../types'
 import { zero } from '../../utils/math'
 import { prod } from '../aggregation'
@@ -48,7 +46,7 @@ export const reshape = <
 }
 
 const _reshape = <
-  U extends Vector,
+  U extends number[],
   V extends Size2Matrix<U>
 >(matrix: Matrix1, [d0, ...dn]: U, skip = 0): V =>
   arange(d0).map((i) => empty(dn) ? at(matrix, skip + i) : _reshape(matrix, dn, prod(dn) * i + skip)) as V
@@ -68,7 +66,7 @@ export const transpose: TransposeFn = <
   return nmap(transposed, (_, ...dn) => matrix0(at(matrix, ...shuffle(dn, backward) as MatrixAxes<T1>)))
 }
 
-const shuffle = <T extends MatrixN>(matrix: T, order: VectorN) => order.map((i) => matrix[i]) as T
+const shuffle = <T extends MatrixN>(matrix: T, order: number[]) => order.map((i) => matrix[i]) as T
 
 export const flatten = (matrix: Matrix): Matrix1 =>
   isMatrixN(matrix) ? matrix.flatMap(flatten) : [matrix]
@@ -77,11 +75,11 @@ export const partition = <
   T extends Matrix,
   U extends (
     T extends Matrix0 ? [] :
-    T extends Matrix1 ? [Vector2] :
-    T extends Matrix2 ? [Vector2, Vector2] :
-    T extends Matrix3 ? [Vector2, Vector2, Vector2] :
-    T extends Matrix4 ? [Vector2, Vector2, Vector2, Vector2] :
-    Vector2[]
+    T extends Matrix1 ? [[number, number]] :
+    T extends Matrix2 ? [[number, number], [number, number]] :
+    T extends Matrix3 ? [[number, number], [number, number], [number, number]] :
+    T extends Matrix4 ? [[number, number], [number, number], [number, number], [number, number]] :
+    [number, number][]
   )
 >(matrix: T, ...[d0, ...rest]: U): T =>
   d0 && isMatrixN(matrix) ? matrix.slice(...d0).map((x) => partition(x, ...rest)) as T : matrix

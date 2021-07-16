@@ -1,6 +1,6 @@
 import { nonzero } from '../../utils/math'
 import { arrlen, copy } from '../../utils/array'
-import { Matrix, Matrix0, MatrixAxes, MatrixN, SubMatrix, VectorN } from '../types'
+import { Matrix, Matrix0, MatrixAxes, MatrixN, SubMatrix } from '../types'
 import { arange } from '../creation'
 import { isMatrixN, matrixn, ndim, reshape, shape, size } from '../geometry'
 import { add, broadcast, divide, MatrixBinaryOperator, multiply, subtract } from '../binary-operation'
@@ -24,7 +24,7 @@ const aggregator = (fn: MatrixBinaryOperator): AggregateMatrixOperator => <
 >(matrix: T, ...axes: K) =>
   aggregate(matrix, sort(nonzero(arrlen(axes)) ? axes : arange(ndim(matrix))) as K, fn)
 
-const sort = <T extends VectorN>(arr: T): T => copy(arr).sort((a, b) => b - a) as T
+const sort = <T extends number[]>(arr: T): T => copy(arr).sort((a, b) => b - a) as T
 
 const keepdim = (fn: AggregateMatrixOperator): KeepdimAggregateMatrixOperator => <
   T extends Matrix,
@@ -32,7 +32,7 @@ const keepdim = (fn: AggregateMatrixOperator): KeepdimAggregateMatrixOperator =>
 >(matrix: T, ...axes: K) =>
   _keepdim(fn(matrix, ...axes), matrix, axes)
 
-const _keepdim = (matrix: Matrix, original: Matrix, axes: VectorN) =>
+const _keepdim = (matrix: Matrix, original: Matrix, axes: number[]) =>
   isMatrixN(matrix) ? reshape(matrix, shape(original).map((x, i) => axes.includes(i) ? 1 : x)) : matrix
 
 export const sum = aggregator(add)
