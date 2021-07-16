@@ -13,7 +13,7 @@ import {
   SubMatrix,
   Vector,
   Vector2,
-  Vector2Matrix,
+  Size2Matrix,
   VectorN,
 } from '../types'
 import { zero } from '../../utils/math'
@@ -39,9 +39,8 @@ export const shape = <
   isMatrixN(matrix) ? [len(matrix), ...shape(first(matrix))] as MatrixSize<T> : [] as MatrixSize<T>
 
 export const reshape = <
-  T extends Matrix,
-  K extends Vector,
->(matrix: T, dn: K): Vector2Matrix<K> => {
+  T extends Vector
+>(matrix: Matrix, dn: T): Size2Matrix<T> => {
   if (size(matrix) === prod(dn)) {
     return _reshape(flatten(matrix), dn)
   }
@@ -50,7 +49,7 @@ export const reshape = <
 
 const _reshape = <
   U extends Vector,
-  V extends Vector2Matrix<U>
+  V extends Size2Matrix<U>
 >(matrix: Matrix1, [d0, ...dn]: U, skip = 0): V =>
   arange(d0).map((i) => empty(dn) ? at(matrix, skip + i) : _reshape(matrix, dn, prod(dn) * i + skip)) as V
 
@@ -65,13 +64,13 @@ export const transpose: TransposeFn = <
 >(matrix: T1, ...order: T2): T1 => {
   const forward = len(order) ? order : arange(ndim(matrix)).reverse()
   const backward = forward.map((x, i) => [x, i]).sort(([a], [b]) => a - b).map((x) => x[1])
-  const transposed = zeros(...shuffle(shape(matrix), forward)) as T1
+  const transposed = zeros(...shuffle(shape(matrix), forward)) as unknown as T1
   return nmap(transposed, (_, ...dn) => matrix0(at(matrix, ...shuffle(dn, backward) as MatrixAxes<T1>)))
 }
 
 const shuffle = <T extends MatrixN>(matrix: T, order: VectorN) => order.map((i) => matrix[i]) as T
 
-export const flatten = <T extends Matrix>(matrix: T): Matrix1 =>
+export const flatten = (matrix: Matrix): Matrix1 =>
   isMatrixN(matrix) ? matrix.flatMap(flatten) : [matrix]
 
 export const partition = <
@@ -87,8 +86,8 @@ export const partition = <
 >(matrix: T, ...[d0, ...rest]: U): T =>
   d0 && isMatrixN(matrix) ? matrix.slice(...d0).map((x) => partition(x, ...rest)) as T : matrix
 
-export const newaxis = <T1 extends Matrix>(matrix: T1, axis: number): T1[] =>
-  zero(axis) || isMatrix0(matrix) ? [matrix] : matrix.map((x) => newaxis(x, axis - 1)) as T1[]
+export const newaxis = <T extends Matrix>(matrix: T, axis: number): T[] =>
+  zero(axis) || isMatrix0(matrix) ? [matrix] : matrix.map((x) => newaxis(x, axis - 1)) as T[]
 
 // Number of elements.
 export const size = (matrix: Matrix): number => isMatrixN(matrix) ? prod(shape(matrix)) : 1
