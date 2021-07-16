@@ -35,12 +35,11 @@ export type SubMatrix<
   K extends VectorN,
 > =
   K extends [] ? Matrix0 :
-  K extends Vector1 ? NestedMatrix<T> :
-  K extends Vector2 ? NestedMatrix<NestedMatrix<T>> :
-  K extends Vector3 ? NestedMatrix<NestedMatrix<NestedMatrix<T>>> :
-  K extends Vector4 ? NestedMatrix<NestedMatrix<NestedMatrix<NestedMatrix<T>>>> :
-  MatrixN
+  K extends [number] ? NestedMatrix<T> :
+  K extends [number, ...number[]] ? SubMatrix<NestedMatrix<T>, Tail<K>> : MatrixN
 
 export type Size2Matrix<T extends number[]> =
-  T extends [number, ...infer Tail] ? Tail extends number[] ? Array<Size2Matrix<Tail>> : never :
-  T extends [] ? Matrix0 : MatrixN
+  T extends [] ? Matrix0 :
+  T extends [number, ...number[]] ? Array<Size2Matrix<Tail<T>>> : MatrixN
+
+type Tail<T extends number[]> = T extends [number, ...infer K] ? K extends number[] ? K : never : never
