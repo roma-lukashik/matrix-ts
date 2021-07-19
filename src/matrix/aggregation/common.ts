@@ -14,10 +14,15 @@ export type AggregateMatrixOperator = <
 export const aggregator = (fn: MatrixBinaryOperator): AggregateMatrixOperator => (matrix, ...axes) =>
   aggregate(matrix, dimensions(matrix, axes), fn)
 
-const dimensions = <T extends number[]>(matrix: Matrix, axes: T): T =>
-  sort(nonzero(arrlen(axes)) ? axes : arange(ndim(matrix))) as T
+const dimensions = <T extends Matrix>(matrix: T, axes: MatrixAxes<T>): MatrixAxes<T> =>
+  desc(allAxesByDefault(matrix, axes))
 
-const sort = <T extends number[]>(arr: T): T => copy(arr).sort((a, b) => b - a) as T
+const allAxesByDefault = <T extends Matrix>(matrix: T, axes: MatrixAxes<T>): MatrixAxes<T> =>
+  nonzero(arrlen(axes)) ? axes : allaxes(matrix)
+
+const allaxes = <T extends Matrix>(matrix: T): MatrixAxes<T> => arange(ndim(matrix)) as MatrixAxes<T>
+
+const desc = <T extends number[]>(arr: T): T => copy(arr).sort((a, b) => b - a) as T
 
 const aggregate = <
   T1 extends Matrix,
@@ -27,7 +32,7 @@ const aggregate = <
   if (isMatrixN(matrix) && notnullish(d0)) {
     return aggregate(broadcast(matrix, d0, operator), dn, operator) as T3
   }
-  return matrix as unknown as T3
+  return matrix as T3
 }
 
 const broadcast = (matrix: MatrixN, axis: number, operator: MatrixBinaryOperator): Matrix => {

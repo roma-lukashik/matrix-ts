@@ -5,8 +5,7 @@ import { ones } from '../creation'
 
 export type KeepdimAggregateMatrixOperator = <
   T extends Matrix,
-  K extends MatrixAxes<T>
->(matrix: T, ...axes: K) => T
+>(matrix: T, ...axes: MatrixAxes<T>) => T
 
 export const keepdim = (fn: AggregateMatrixOperator): KeepdimAggregateMatrixOperator => (matrix, ...axes) =>
   _keepdim(fn(matrix, ...axes), matrix, axes)
