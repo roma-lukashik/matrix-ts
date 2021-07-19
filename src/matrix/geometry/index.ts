@@ -19,16 +19,17 @@ import { prod } from '../aggregation'
 import { arange, zeros } from '../creation'
 import { nmap } from '../iteration'
 
-export const at = <
-  T1 extends MatrixN,
-  T2 extends MatrixAxes<T1>,
-  T3 extends SubMatrix<T1, T2>
->(matrix: T1, ...[d0, ...dn]: T2): T3 => {
+type At = <
+  T extends MatrixN,
+  K extends MatrixAxes<T>
+>(matrix: T, ...axes: K) => SubMatrix<T, K>
+
+export const at: At = (matrix, ...[d0, ...dn]) => {
   const i = d0 < 0 ? len(matrix) + d0 : d0
   if (nullish(matrix[i])) {
     return error(`Index ${i} out of bounds [0, ${len(matrix) - 1}].`)
   }
-  return len(dn) > 0 ? at(matrixn(matrix[i]), ...dn) as T3 : matrix[i] as T3
+  return len(dn) > 0 ? at(matrixn(matrix[i]), ...dn) as any : matrix[i]
 }
 
 export const shape = <
@@ -39,7 +40,7 @@ export const shape = <
 export const reshape = <
   T extends Vector
 >(matrix: Matrix, dn: T): Size2Matrix<T> => {
-  if (size(matrix) === prod(dn)) {
+  if (size(matrix) === prod(matrix1(dn))) {
     return _reshape(flatten(matrix), dn)
   }
   return error(`Incompatible shape (${dn}) for reshaping of (${shape(matrix)}) matrix.`)

@@ -38,7 +38,7 @@ export const dot = <
     return multiply(a, b) as unknown as T3
   }
   if (isMatrix1(a) && isMatrix1(b)) {
-    return sum(multiply(a, b)) as T3
+    return sum(matrix1(multiply(a, b))) as T3
   }
   if (isMatrix2(a) && isMatrix2(b)) {
     return matmul2x2(a, b) as T3

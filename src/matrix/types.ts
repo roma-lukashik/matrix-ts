@@ -15,16 +15,14 @@ export type Vector = MeasurableVector | number[]
 export type NestedMatrix<T extends Matrix> = T extends MatrixN ? T[0] : Matrix0
 
 export type NestedMatrices<T extends Matrix> =
-  T extends Matrix0 ? never :
+  T extends Matrix0 ? T :
   T extends MeasurableMatrix ? T[0] | NestedMatrices<T[0]> : T
 
 export type MatrixSize<T extends Matrix> =
   T extends Matrix0 ? [] :
   T extends MeasurableMatrix ? [number, ...MatrixSize<NestedMatrix<T>>] : number[]
 
-export type MatrixAxes<T extends Matrix> =
-  T extends Matrix0 ? never :
-  T extends MeasurableMatrix ? MatrixSize<T> | MatrixAxes<NestedMatrix<T>> : MatrixSize<T>
+export type MatrixAxes<T extends Matrix> = OptionalVector<MatrixSize<T>>
 
 export type SubMatrix<
   T extends Matrix,
@@ -39,3 +37,8 @@ export type Size2Matrix<T extends number[]> =
   T extends MeasurableVector ? Array<Size2Matrix<Tail<T>>> : MatrixN
 
 type Tail<T extends number[]> = T extends [number, ...infer K] ? K extends number[] ? K : never : never
+
+type OptionalVector<T extends number[]> =
+  T extends [] ? never :
+  T extends [number] ? [number?] :
+  T extends MeasurableVector ? [number?, ...OptionalVector<Tail<T>>] : number[]
