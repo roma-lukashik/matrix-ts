@@ -1,9 +1,9 @@
 import { Matrix, NestedMatrices } from '../types'
-import * as math from '../../utils/math'
-import { BinaryOperator } from '../../utils/math'
+import * as math from '../utils/math'
+import { BinaryOperator } from '../utils/math'
 import { isMatrix0, len, matrixn, ndim } from '../geometry'
-import { first, zip } from '../../utils/array'
-import { error } from '../../utils/function'
+import { first, zip } from '../utils/array'
+import { error } from '../utils/function'
 
 export type MatrixBinaryOperator = <
   T1 extends Matrix,

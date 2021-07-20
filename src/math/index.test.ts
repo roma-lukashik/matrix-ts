@@ -1,4 +1,4 @@
-import { exp } from '.'
+import { exp } from './index'
 
 describe('math', () => {
   describe('#exp', () => {

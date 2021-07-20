@@ -1,6 +1,6 @@
 import { Matrix1 } from '../types'
-import { array } from '../../utils/array'
-import { error, nullish } from '../../utils/function'
+import { array } from '../utils/array'
+import { error, nullish } from '../utils/function'
 
 export const arange = (start: number, end?: number): Matrix1 =>
   _arange(boundaries(start, end))

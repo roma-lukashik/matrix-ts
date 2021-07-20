@@ -1,6 +1,6 @@
 import { diff } from 'jest-diff'
 import { matcherHint } from 'jest-matcher-utils'
-import { isMatrix0, isMatrixN, len, Matrix, nmap } from '../../src/matrix'
+import { isMatrix0, isMatrixN, len, Matrix, nmap } from '../../src'
 import { zip } from '../../src/utils/array'
 import { round } from '../../src/utils/math'
 

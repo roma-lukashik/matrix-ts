@@ -1,4 +1,4 @@
-import { dot, matmul } from '.'
+import { dot, matmul } from './index'
 
 describe('linalg', () => {
   describe('#matmul', () => {

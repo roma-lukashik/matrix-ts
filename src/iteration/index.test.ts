@@ -1,4 +1,4 @@
-import { neach } from '.'
+import { neach } from './index'
 
 describe('iteration', () => {
   describe('neach', () => {

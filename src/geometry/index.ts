@@ -1,5 +1,5 @@
-import { arrlen, empty, first } from '../../utils/array'
-import { error, nullish } from '../../utils/function'
+import { arrlen, empty, first } from '../utils/array'
+import { error, nullish } from '../utils/function'
 import {
   Matrix,
   Matrix0,
@@ -14,7 +14,7 @@ import {
   Vector,
   Size2Matrix,
 } from '../types'
-import { zero } from '../../utils/math'
+import { zero } from '../utils/math'
 import { prod } from '../aggregation'
 import { arange, zeros } from '../creation'
 import { nmap } from '../iteration'

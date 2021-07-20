@@ -1,4 +1,4 @@
-import { at, len, ndim, newaxis, partition, reshape, shape, size, transpose } from '.'
+import { at, len, ndim, newaxis, partition, reshape, shape, size, transpose } from './index'
 import { arange, ones } from '../creation'
 
 describe('geometry', () => {

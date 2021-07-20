@@ -1,10 +1,10 @@
-import { nonzero } from '../../utils/math'
-import { arrlen, copy } from '../../utils/array'
+import { nonzero } from '../utils/math'
+import { arrlen, copy } from '../utils/array'
 import { Matrix, MatrixAxes, MatrixN, SubMatrix } from '../types'
 import { arange } from '../creation'
 import { isMatrixN, matrixn, ndim } from '../geometry'
 import { MatrixBinaryOperator } from '../binary-operation'
-import { notnullish } from '../../utils/function'
+import { notnullish } from '../utils/function'
 
 export type AggregateMatrixOperator = <
   T extends Matrix,
@@ -20,9 +20,11 @@ const dimensions = <T extends Matrix>(matrix: T, axes: MatrixAxes<T>): MatrixAxe
 const allAxesByDefault = <T extends Matrix>(matrix: T, axes: MatrixAxes<T>): MatrixAxes<T> =>
   nonzero(arrlen(axes)) ? axes : allaxes(matrix)
 
-const allaxes = <T extends Matrix>(matrix: T): MatrixAxes<T> => arange(ndim(matrix)) as MatrixAxes<T>
+const allaxes = <T extends Matrix>(matrix: T): MatrixAxes<T> =>
+  arange(ndim(matrix)) as MatrixAxes<T>
 
-const desc = <T extends number[]>(arr: T): T => copy(arr).sort((a, b) => b - a) as T
+const desc = <T extends number[]>(arr: T): T =>
+  copy(arr).sort((a, b) => b - a) as T
 
 const aggregate = <
   T1 extends Matrix,

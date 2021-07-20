@@ -1,5 +1,5 @@
 import { create } from './create'
-import { constant } from '../../utils/function'
+import { constant } from '../utils/function'
 
 export const ones = <
   T extends number[]

@@ -1,4 +1,4 @@
-import { Matrix } from './src/matrix'
+import { Matrix } from './src'
 
 declare global {
   namespace jest {

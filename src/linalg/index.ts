@@ -11,8 +11,8 @@ import {
 } from '../types'
 import { at, isMatrix0, isMatrix1, isMatrix2, len, matrix1, matrixn, newaxis, shape } from '../geometry'
 import { sum } from '../aggregation'
-import { error } from '../../utils/function'
-import { first, zip } from '../../utils/array'
+import { error } from '../utils/function'
+import { first, zip } from '../utils/array'
 import { arange } from '../creation'
 import { multiply } from '../binary-operation'
 

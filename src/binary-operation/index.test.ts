@@ -1,4 +1,4 @@
-import { divide, multiply } from '.'
+import { divide, multiply } from './index'
 
 describe('binary operation', () => {
   describe('#multiply', () => {

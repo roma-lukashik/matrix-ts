@@ -1,5 +1,5 @@
 import { Size2Matrix } from '../types'
-import { array, empty } from '../../utils/array'
+import { array, empty } from '../utils/array'
 
 export const create = <
   T extends number[]
