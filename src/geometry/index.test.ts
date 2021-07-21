@@ -1,4 +1,4 @@
-import { at, newaxis, partition, reshape, shape, size, transpose } from './index'
+import { at, newaxis, partition, reshape, shape, transpose } from './index'
 import { arange } from '../creation/arange'
 import { ones } from '../creation/ones'
 
@@ -189,24 +189,6 @@ describe('geometry', () => {
           ],
         ],
       ])
-    })
-  })
-
-  describe('#size', () => {
-    it('returns 1 for Matrix0', () => {
-      expect(size(4)).toEqual(1)
-    })
-
-    it('returns 3 for (1, 3) Matrix', () => {
-      expect(size([1, 2, 3])).toEqual(3)
-    })
-
-    it('returns 6 for (2, 3) Matrix', () => {
-      expect(size([[1, 2, 3], [4, 5, 6]])).toEqual(6)
-    })
-
-    it('returns 1 for (1, 1, 1, 1, 1) Matrix', () => {
-      expect(size([[[[[1]]]]])).toEqual(1)
     })
   })
 

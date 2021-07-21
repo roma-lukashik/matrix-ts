@@ -26,6 +26,7 @@ import { matrix0 } from '../core/matrix0'
 import { matrix1 } from '../core/matrix1'
 import { matrixn } from '../core/matrixn'
 import { is0dim } from '../core/is0dim'
+import { size } from '../core/size'
 
 type At = <
   T extends MatrixN,
@@ -96,5 +97,3 @@ export const partition = <
 export const newaxis = <T extends Matrix>(matrix: T, axis: number): T[] =>
   zero(axis) || is0dim(matrix) ? [matrix] : matrix.map((x) => newaxis(x, axis - 1)) as T[]
 
-// Number of elements.
-export const size = (matrix: Matrix): number => isNdim(matrix) ? prod(shape(matrix)) : 1

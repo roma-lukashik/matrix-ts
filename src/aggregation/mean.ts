@@ -2,7 +2,7 @@ import { AggregateMatrixOperator } from './common'
 import { sum } from './sum'
 import { Matrix } from '../types'
 import { divide } from '../binary-operation/divide'
-import { size } from '../geometry'
+import { size } from '../core/size'
 
 export const mean: AggregateMatrixOperator = (matrix, ...axes) =>
   _mean(matrix, sum(matrix, ...axes))
