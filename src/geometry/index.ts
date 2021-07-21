@@ -15,8 +15,9 @@ import {
   Size2Matrix,
 } from '../types'
 import { zero } from '../utils/math'
-import { prod } from '../aggregation'
-import { arange, zeros } from '../creation'
+import { prod } from '../aggregation/prod'
+import { arange } from '../creation/arange'
+import { zeros } from '../creation/zeros'
 import { nmap } from '../iteration'
 import { isNdim } from '../core/isndim'
 import { len } from '../core/len'

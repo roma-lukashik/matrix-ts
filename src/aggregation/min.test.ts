@@ -1,5 +1,5 @@
 import { min } from './min'
-import { arange } from '../creation'
+import { arange } from '../creation/arange'
 import { reshape } from '../geometry'
 
 describe('min', () => {

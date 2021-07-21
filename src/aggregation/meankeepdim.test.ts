@@ -1,5 +1,5 @@
 import { meankeepdim } from './meankeepdim'
-import { arange } from '../creation'
+import { arange } from '../creation/arange'
 import { reshape } from '../geometry'
 
 describe('meankeepdim', () => {

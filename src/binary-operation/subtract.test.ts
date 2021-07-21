@@ -1,5 +1,5 @@
 import { subtract } from './subtract'
-import { arange } from '../creation'
+import { arange } from '../creation/arange'
 import { reshape } from '../geometry'
 
 describe('subtract', () => {

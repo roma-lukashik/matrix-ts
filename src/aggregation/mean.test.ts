@@ -1,5 +1,5 @@
 import { mean } from './mean'
-import { arange } from '../creation'
+import { arange } from '../creation/arange'
 import { reshape } from '../geometry'
 
 describe('mean', () => {

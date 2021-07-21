@@ -2,7 +2,7 @@ import { AggregateMatrixOperator } from './common'
 import { mean } from './mean'
 import { meankeepdim } from './meankeepdim'
 import { pow2, sqrt } from '../math'
-import { subtract } from '../binary-operation'
+import { subtract } from '../binary-operation/subtract'
 
 /**
  * The standard deviation is the square root of the average of the squared deviations from the mean, i.e

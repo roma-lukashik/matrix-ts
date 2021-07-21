@@ -1,5 +1,6 @@
 import { at, newaxis, partition, reshape, shape, size, transpose } from './index'
-import { arange, ones } from '../creation'
+import { arange } from '../creation/arange'
+import { ones } from '../creation/ones'
 import { ndim } from '../core/ndim'
 import { len } from '../core/len'
 

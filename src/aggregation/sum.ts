@@ -1,5 +1,5 @@
 import { aggregator } from './common'
-import { add } from '../binary-operation'
+import { add } from '../binary-operation/add'
 
 /**
  * Sum of array elements over a given axis.

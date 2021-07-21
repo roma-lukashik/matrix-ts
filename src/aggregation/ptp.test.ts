@@ -1,5 +1,5 @@
 import { ptp } from './ptp'
-import { arange } from '../creation'
+import { arange } from '../creation/arange'
 import { reshape } from '../geometry'
 
 describe('ptp', () => {

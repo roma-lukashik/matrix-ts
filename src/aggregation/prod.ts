@@ -1,5 +1,5 @@
 import { aggregator } from './common'
-import { multiply } from '../binary-operation'
+import { multiply } from '../binary-operation/multiply'
 
 /**
  * Return the product of array elements over a given axis.

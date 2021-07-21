@@ -1,5 +1,5 @@
 import { multiply } from './multiply'
-import { arange } from '../creation'
+import { arange } from '../creation/arange'
 import { reshape } from '../geometry'
 
 describe('multiply', () => {

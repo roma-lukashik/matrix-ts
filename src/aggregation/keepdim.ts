@@ -1,7 +1,7 @@
 import { AggregateMatrixOperator } from './common'
 import { Matrix, MatrixAxes } from '../types'
 import { reshape, shape } from '../geometry'
-import { ones } from '../creation'
+import { ones } from '../creation/ones'
 import { isNdim } from '../core/isndim'
 import { ndim } from '../core/ndim'
 
