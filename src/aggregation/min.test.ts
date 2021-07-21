@@ -1,6 +1,6 @@
 import { min } from './min'
 import { arange } from '../creation/arange'
-import { reshape } from '../geometry'
+import { reshape } from '../geometry/reshape'
 
 describe('min', () => {
   it('0x2 matrix', () => {

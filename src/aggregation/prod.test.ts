@@ -1,6 +1,6 @@
 import { prod } from './prod'
 import { arange } from '../creation/arange'
-import { reshape } from '../geometry'
+import { reshape } from '../geometry/reshape'
 
 describe('prod', () => {
   it('0x2 matrix', () => {

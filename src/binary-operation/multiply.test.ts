@@ -1,6 +1,6 @@
 import { multiply } from './multiply'
 import { arange } from '../creation/arange'
-import { reshape } from '../geometry'
+import { reshape } from '../geometry/reshape'
 
 describe('multiply', () => {
   it('multiplies scalars', () => {

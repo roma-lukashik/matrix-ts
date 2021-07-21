@@ -9,7 +9,7 @@ import {
   NestedMatrices,
   NestedMatrix,
 } from '../types'
-import { at, newaxis, shape } from '../geometry'
+import { at, newaxis } from '../geometry'
 import { sum } from '../aggregation/sum'
 import { error } from '../utils/function'
 import { first, zip } from '../utils/array'
@@ -21,6 +21,7 @@ import { matrix1 } from '../core/matrix1'
 import { is2dim } from '../core/is2dim'
 import { matrixn } from '../core/matrixn'
 import { len } from '../core/len'
+import { shape } from '../geometry/shape'
 
 type DotResult <
   T1 extends Matrix,

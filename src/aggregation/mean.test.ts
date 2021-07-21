@@ -1,6 +1,6 @@
 import { mean } from './mean'
 import { arange } from '../creation/arange'
-import { reshape } from '../geometry'
+import { reshape } from '../geometry/reshape'
 
 describe('mean', () => {
   it('0x2 matrix', () => {

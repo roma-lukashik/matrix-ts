@@ -1,6 +1,6 @@
 import { sum } from './sum'
 import { arange } from '../creation/arange'
-import { reshape } from '../geometry'
+import { reshape } from '../geometry/reshape'
 
 describe('sum', () => {
   it('0x2 matrix', () => {

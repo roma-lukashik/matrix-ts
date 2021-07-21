@@ -1,6 +1,6 @@
 import { std } from './std'
 import { arange } from '../creation/arange'
-import { reshape } from '../geometry'
+import { reshape } from '../geometry/reshape'
 
 describe('std', () => {
   it('0x2 matrix', () => {

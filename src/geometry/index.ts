@@ -1,4 +1,3 @@
-import { empty, first } from '../utils/array'
 import { error, nullish } from '../utils/function'
 import {
   Matrix,
@@ -11,11 +10,8 @@ import {
   MatrixAxes,
   MatrixN,
   SubMatrix,
-  Vector,
-  Size2Matrix,
 } from '../types'
 import { zero } from '../utils/math'
-import { prod } from '../aggregation/prod'
 import { arange } from '../creation/arange'
 import { zeros } from '../creation/zeros'
 import { nmap } from '../iteration'
@@ -23,10 +19,9 @@ import { isNdim } from '../core/isndim'
 import { len } from '../core/len'
 import { ndim } from '../core/ndim'
 import { matrix0 } from '../core/matrix0'
-import { matrix1 } from '../core/matrix1'
 import { matrixn } from '../core/matrixn'
 import { is0dim } from '../core/is0dim'
-import { size } from '../core/size'
+import { shape } from './shape'
 
 type At = <
   T extends MatrixN,
@@ -40,26 +35,6 @@ export const at: At = (matrix, ...[d0, ...dn]) => {
   }
   return len(dn) > 0 ? at(matrixn(matrix[i]), ...dn) as any : matrix[i]
 }
-
-export const shape = <
-  T extends Matrix,
->(matrix: T): MatrixSize<T> =>
-  isNdim(matrix) ? [len(matrix), ...shape(first(matrix))] as MatrixSize<T> : [] as MatrixSize<T>
-
-export const reshape = <
-  T extends Vector
->(matrix: Matrix, dn: T): Size2Matrix<T> => {
-  if (size(matrix) === prod(matrix1(dn))) {
-    return _reshape(flatten(matrix), dn)
-  }
-  return error(`Incompatible shape (${dn}) for reshaping of (${shape(matrix)}) matrix.`)
-}
-
-const _reshape = <
-  U extends number[],
-  V extends Size2Matrix<U>
->(matrix: Matrix1, [d0, ...dn]: U, skip = 0): V =>
-  arange(d0).map((i) => empty(dn) ? at(matrix, skip + i) : _reshape(matrix, dn, prod(dn) * i + skip)) as V
 
 type TransposeFn = {
   <T1 extends MatrixN>(matrix: T1): T1
@@ -77,9 +52,6 @@ export const transpose: TransposeFn = <
 }
 
 const shuffle = <T extends MatrixN>(matrix: T, order: number[]) => order.map((i) => matrix[i]) as T
-
-export const flatten = (matrix: Matrix): Matrix1 =>
-  isNdim(matrix) ? matrix.flatMap(flatten) : [matrix]
 
 export const partition = <
   T extends Matrix,

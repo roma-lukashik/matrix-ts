@@ -1,6 +1,6 @@
 import { max } from './max'
 import { arange } from '../creation/arange'
-import { reshape } from '../geometry'
+import { reshape } from '../geometry/reshape'
 
 describe('max', () => {
   it('0x2 matrix', () => {

@@ -1,9 +1,10 @@
 import { AggregateMatrixOperator } from './common'
 import { Matrix, MatrixAxes } from '../types'
-import { reshape, shape } from '../geometry'
+import { reshape } from '../geometry/reshape'
 import { ones } from '../creation/ones'
 import { isNdim } from '../core/isndim'
 import { ndim } from '../core/ndim'
+import { shape } from '../geometry/shape'
 
 export type KeepdimAggregateMatrixOperator = <
   T extends Matrix,

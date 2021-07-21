@@ -1,6 +1,8 @@
-import { at, newaxis, partition, reshape, shape, transpose } from './index'
+import { at, newaxis, partition, transpose } from './index'
 import { arange } from '../creation/arange'
 import { ones } from '../creation/ones'
+import { reshape } from './reshape'
+import { shape } from './shape'
 
 describe('geometry', () => {
   describe('#at', () => {
@@ -41,85 +43,6 @@ describe('geometry', () => {
       it('passes case #3', () => {
         expect(at(a, 0, 1, 0)).toEqual(3)
       })
-    })
-  })
-
-  describe('#shape', () => {
-    it('returns [] for the Matrix0', () => {
-      expect(shape(4)).toEqual([])
-    })
-
-    it('returns 0 shape for the empty matrix', () => {
-      expect(shape([])).toEqual([0])
-    })
-
-    it('returns 2x2 shape', () => {
-      expect(shape(ones(2, 2))).toEqual([2, 2])
-    })
-
-    it('returns 4x3x2x1 shape', () => {
-      expect(shape(ones(4, 3, 2, 1))).toEqual([4, 3, 2, 1])
-    })
-  })
-
-  describe('#reshape', () => {
-    it('converts (0) matrix to (1, 1) matrix', () => {
-      expect(reshape(4, [1, 1])).toEqual([[4]])
-    })
-
-    it('converts (6, 0) matrix to (2, 3) matrix', () => {
-      expect(reshape(arange(6), [2, 3])).toEqual([[0, 1, 2], [3, 4, 5]])
-    })
-
-    it('converts (6, 0) matrix to (3, 2) matrix', () => {
-      expect(reshape(arange(6), [3, 2])).toEqual([[0, 1], [2, 3], [4, 5]])
-    })
-
-    it('converts (2, 3) matrix to (3, 2) matrix', () => {
-      expect(reshape([[0, 1, 2], [3, 4, 5]], [3, 2])).toEqual([[0, 1], [2, 3], [4, 5]])
-    })
-
-    it('converts (2, 3) matrix to (6, 0) matrix', () => {
-      expect(reshape([[0, 1, 2], [3, 4, 5]], [6])).toEqual([0, 1, 2, 3, 4, 5])
-    })
-
-    it('converts (2, 2, 2, 2) matrix to (4, 4) matrix', () => {
-      const m = [
-        [
-          [[0, 1], [2, 3]],
-          [[4, 5], [6, 7]],
-        ],
-        [
-          [[8, 9], [10, 11]],
-          [[12, 13], [14, 15]],
-        ],
-      ]
-      expect(reshape(m, [4, 4])).toEqual([
-        [0, 1, 2, 3],
-        [4, 5, 6, 7],
-        [8, 9, 10, 11],
-        [12, 13, 14, 15],
-      ])
-    })
-
-    it('converts (24, 0) matrix to (2, 3, 2, 2) matrix', () => {
-      expect(reshape(arange(24), [2, 3, 2, 2])).toEqual([
-        [
-          [[0, 1], [2, 3]],
-          [[4, 5], [6, 7]],
-          [[8, 9], [10, 11]],
-        ],
-        [
-          [[12, 13], [14, 15]],
-          [[16, 17], [18, 19]],
-          [[20, 21], [22, 23]],
-        ],
-      ])
-    })
-
-    it('throws an error in case when shapes are not compatible', () => {
-      const m = [[1, 2], [3, 4]]
-      expect(() => reshape(m, [2, 3])).toThrowError('Incompatible shape (2,3) for reshaping of (2,2) matrix.')
     })
   })
 

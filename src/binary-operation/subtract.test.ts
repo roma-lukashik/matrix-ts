@@ -1,6 +1,6 @@
 import { subtract } from './subtract'
 import { arange } from '../creation/arange'
-import { reshape } from '../geometry'
+import { reshape } from '../geometry/reshape'
 
 describe('subtract', () => {
   it('subtracts scalars', () => {

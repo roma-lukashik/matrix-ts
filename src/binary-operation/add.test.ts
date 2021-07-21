@@ -1,6 +1,6 @@
 import { add } from './add'
 import { arange } from '../creation/arange'
-import { reshape } from '../geometry'
+import { reshape } from '../geometry/reshape'
 
 describe('add', () => {
   it('adds scalars', () => {
