@@ -1,16 +1,19 @@
 {
-  "name": "neural-engine",
+  "name": "matrix-ts",
   "version": "0.0.1",
   "private": false,
-  "description": "The neural engine working on browser side",
+  "description": "Fully typed library to work with multidimensional matrices.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "keywords": [
-    "neural engine",
-    "neural network",
-    "machine learning",
-    "deap learning",
-    "cnn ",
+    "matrix",
+    "tensor",
+    "array",
+    "multidimensional",
+    "dimensional",
+    "linear",
+    "algebra",
+    "numpy",
     "typescript",
     "javascript"
   ],
@@ -29,10 +32,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/roma-lukashik/neural-engine.git"
+    "url": "https://github.com/roma-lukashik/matrix-ts.git"
   },
   "license": "MIT",
-  "homepage": "https://github.com/roma-lukashik/neural-engine",
+  "homepage": "https://github.com/roma-lukashik/matrix-ts",
   "devDependencies": {
     "@types/jest": "^26.0.23",
     "jest": "^26.6.3",
