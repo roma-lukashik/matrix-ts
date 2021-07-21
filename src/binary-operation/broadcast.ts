@@ -1,8 +1,11 @@
 import { Matrix, NestedMatrices } from '../types'
 import { BinaryOperator } from '../utils/math'
-import { isMatrix0, len, matrixn, ndim } from '../geometry'
 import { first, zip } from '../utils/array'
 import { error } from '../utils/function'
+import { is0dim } from '../core/is0dim'
+import { ndim } from '../core/ndim'
+import { matrixn } from '../core/matrixn'
+import { len } from '../core/len'
 
 /**
  * When operating on two arrays, it compares their shapes element-wise.
@@ -16,7 +19,7 @@ export const broadcast = <
   T2 extends Matrix,
   T3 extends T2 extends NestedMatrices<T1> ? T1 : T2
 >(a: T1, b: T2, operator: BinaryOperator): T3 => {
-  if (isMatrix0(a) && isMatrix0(b)) {
+  if (is0dim(a) && is0dim(b)) {
     return operator(a, b) as T3
   }
   if (ndim(a) < ndim(b)) {

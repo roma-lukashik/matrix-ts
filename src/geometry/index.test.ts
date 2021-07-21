@@ -1,5 +1,7 @@
-import { at, len, ndim, newaxis, partition, reshape, shape, size, transpose } from './index'
+import { at, newaxis, partition, reshape, shape, size, transpose } from './index'
 import { arange, ones } from '../creation'
+import { ndim } from '../core/ndim'
+import { len } from '../core/len'
 
 describe('geometry', () => {
   describe('#at', () => {

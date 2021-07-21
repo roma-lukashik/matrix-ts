@@ -1,14 +1,17 @@
 import { diff } from 'jest-diff'
 import { matcherHint } from 'jest-matcher-utils'
-import { isMatrix0, isMatrixN, len, Matrix, nmap } from '../../src'
+import { Matrix, nmap } from '../../src'
+import { is0dim } from '../../src/core/is0dim'
+import { isNdim } from '../../src/core/isndim'
+import { len } from '../../src/core/len'
 import { zip } from '../../src/utils/array'
 import { round } from '../../src/utils/math'
 
 const eps = 1e-3
 
 const equal = (a: Matrix, b: Matrix): boolean =>
-  isMatrixN(a) && isMatrixN(b) ?
-    len(a) === len(b) && zip(a, b).every(([x, y]) => isMatrix0(x) && isMatrix0(y) ? x === y : equal(x, y)) :
+  isNdim(a) && isNdim(b) ?
+    len(a) === len(b) && zip(a, b).every(([x, y]) => is0dim(x) && is0dim(y) ? x === y : equal(x, y)) :
     a === b
 
 export const toEqualMatrix: jest.CustomMatcher = (received: Matrix, expected: Matrix) => {

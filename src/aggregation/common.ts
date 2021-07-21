@@ -2,8 +2,10 @@ import { nonzero } from '../utils/math'
 import { arrlen, copy } from '../utils/array'
 import { Matrix, MatrixAxes, MatrixN, SubMatrix } from '../types'
 import { arange } from '../creation'
-import { isMatrixN, matrixn, ndim } from '../geometry'
 import { notnullish } from '../utils/function'
+import { ndim } from '../core/ndim'
+import { isNdim } from '../core/isndim'
+import { matrixn } from '../core/matrixn'
 
 export type AggregateMatrixOperator = <
   T extends Matrix,
@@ -32,7 +34,7 @@ const aggregate = <
   T2 extends MatrixAxes<T1>,
   T3 extends SubMatrix<T1, T2>,
 >(matrix: T1, [d0, ...dn]: T2, operator: Fn): T3 => {
-  if (isMatrixN(matrix) && notnullish(d0)) {
+  if (isNdim(matrix) && notnullish(d0)) {
     return aggregate(broadcast(matrix, d0, operator), dn, operator)
   }
   return matrix as T3

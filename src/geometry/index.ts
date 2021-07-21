@@ -1,4 +1,4 @@
-import { arrlen, empty, first } from '../utils/array'
+import { empty, first } from '../utils/array'
 import { error, nullish } from '../utils/function'
 import {
   Matrix,
@@ -18,6 +18,13 @@ import { zero } from '../utils/math'
 import { prod } from '../aggregation'
 import { arange, zeros } from '../creation'
 import { nmap } from '../iteration'
+import { isNdim } from '../core/isndim'
+import { len } from '../core/len'
+import { ndim } from '../core/ndim'
+import { matrix0 } from '../core/matrix0'
+import { matrix1 } from '../core/matrix1'
+import { matrixn } from '../core/matrixn'
+import { is0dim } from '../core/is0dim'
 
 type At = <
   T extends MatrixN,
@@ -35,7 +42,7 @@ export const at: At = (matrix, ...[d0, ...dn]) => {
 export const shape = <
   T extends Matrix,
 >(matrix: T): MatrixSize<T> =>
-  isMatrixN(matrix) ? [len(matrix), ...shape(first(matrix))] as MatrixSize<T> : [] as MatrixSize<T>
+  isNdim(matrix) ? [len(matrix), ...shape(first(matrix))] as MatrixSize<T> : [] as MatrixSize<T>
 
 export const reshape = <
   T extends Vector
@@ -70,7 +77,7 @@ export const transpose: TransposeFn = <
 const shuffle = <T extends MatrixN>(matrix: T, order: number[]) => order.map((i) => matrix[i]) as T
 
 export const flatten = (matrix: Matrix): Matrix1 =>
-  isMatrixN(matrix) ? matrix.flatMap(flatten) : [matrix]
+  isNdim(matrix) ? matrix.flatMap(flatten) : [matrix]
 
 export const partition = <
   T extends Matrix,
@@ -83,34 +90,10 @@ export const partition = <
     [number, number][]
   )
 >(matrix: T, ...[d0, ...rest]: U): T =>
-  d0 && isMatrixN(matrix) ? matrix.slice(...d0).map((x) => partition(x, ...rest)) as T : matrix
+  d0 && isNdim(matrix) ? matrix.slice(...d0).map((x) => partition(x, ...rest)) as T : matrix
 
 export const newaxis = <T extends Matrix>(matrix: T, axis: number): T[] =>
-  zero(axis) || isMatrix0(matrix) ? [matrix] : matrix.map((x) => newaxis(x, axis - 1)) as T[]
+  zero(axis) || is0dim(matrix) ? [matrix] : matrix.map((x) => newaxis(x, axis - 1)) as T[]
 
 // Number of elements.
-export const size = (matrix: Matrix): number => isMatrixN(matrix) ? prod(shape(matrix)) : 1
-
-// Number of rows.
-export const len = (matrix: Matrix): number => isMatrixN(matrix) ? arrlen(matrix) : 0
-
-// Number of dimensions.
-export const ndim = (matrix: Matrix): number => arrlen(shape(matrix))
-
-export const matrix0 = (value: Matrix): Matrix0 =>
-  isMatrixN(value) ? error(`Value is not an instance of Matrix0`) : value
-
-export const matrix1 = (value: Matrix): Matrix1 =>
-  isMatrix1(value) ? value : error(`Value is not an instance of Matrix1`)
-
-// Typesafe casting value to MatrixN.
-export const matrixn = <T extends MatrixN>(value: Matrix0 | T): T =>
-  isMatrixN(value) ? value : error(`Value ${value} is not an instance of MatrixN`)
-
-export const isMatrix0 = (matrix: Matrix): matrix is Matrix0 => !isMatrixN(matrix)
-
-export const isMatrix1 = (matrix: Matrix): matrix is Matrix1 => ndim(matrix) === 1
-
-export const isMatrix2 = (matrix: Matrix): matrix is Matrix2 => ndim(matrix) === 2
-
-export const isMatrixN = <T extends MatrixN>(matrix: Matrix0 | T): matrix is T => Array.isArray(matrix)
+export const size = (matrix: Matrix): number => isNdim(matrix) ? prod(shape(matrix)) : 1
