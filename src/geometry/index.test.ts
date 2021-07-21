@@ -1,8 +1,6 @@
 import { at, newaxis, partition, reshape, shape, size, transpose } from './index'
 import { arange } from '../creation/arange'
 import { ones } from '../creation/ones'
-import { ndim } from '../core/ndim'
-import { len } from '../core/len'
 
 describe('geometry', () => {
   describe('#at', () => {
@@ -191,42 +189,6 @@ describe('geometry', () => {
           ],
         ],
       ])
-    })
-  })
-
-  describe('#ndim', () => {
-    it('returns 0 for Matrix0', () => {
-      expect(ndim(3)).toEqual(0)
-    })
-
-    it('returns 1 for (1, 3) Matrix', () => {
-      expect(ndim([1, 2, 3])).toEqual(1)
-    })
-
-    it('returns 2 for (2, 3) Matrix', () => {
-      expect(ndim([[1, 2, 3], [4, 5, 6]])).toEqual(2)
-    })
-
-    it('returns 5 for (1, 1, 1, 1, 1) Matrix', () => {
-      expect(ndim([[[[[1]]]]])).toEqual(5)
-    })
-  })
-
-  describe('#len', () => {
-    it('returns 0 for Matrix0', () => {
-      expect(len(3)).toEqual(0)
-    })
-
-    it('returns 3 for (1, 3) Matrix', () => {
-      expect(len([1, 2, 3])).toEqual(3)
-    })
-
-    it('returns 2 for (2, 3) Matrix', () => {
-      expect(len([[1, 2, 3], [4, 5, 6]])).toEqual(2)
-    })
-
-    it('returns 1 for (1, 1, 1, 1, 1) Matrix', () => {
-      expect(len([[[[[1]]]]])).toEqual(1)
     })
   })
 
