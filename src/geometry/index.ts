@@ -1,4 +1,3 @@
-import { error, nullish } from '../utils/function'
 import {
   Matrix,
   Matrix0,
@@ -9,9 +8,7 @@ import {
   Matrix4,
   MatrixAxes,
   MatrixN,
-  SubMatrix,
 } from '../types'
-import { zero } from '../utils/math'
 import { arange } from '../creation/arange'
 import { zeros } from '../creation/zeros'
 import { nmap } from '../iteration'
@@ -19,22 +16,8 @@ import { isNdim } from '../core/isndim'
 import { len } from '../core/len'
 import { ndim } from '../core/ndim'
 import { matrix0 } from '../core/matrix0'
-import { matrixn } from '../core/matrixn'
-import { is0dim } from '../core/is0dim'
+import { at } from '../core/at'
 import { shape } from './shape'
-
-type At = <
-  T extends MatrixN,
-  K extends MatrixAxes<T>
->(matrix: T, ...axes: K) => SubMatrix<T, K>
-
-export const at: At = (matrix, ...[d0, ...dn]) => {
-  const i = d0 < 0 ? len(matrix) + d0 : d0
-  if (nullish(matrix[i])) {
-    return error(`Index ${i} out of bounds [0, ${len(matrix) - 1}].`)
-  }
-  return len(dn) > 0 ? at(matrixn(matrix[i]), ...dn) as any : matrix[i]
-}
 
 type TransposeFn = {
   <T1 extends MatrixN>(matrix: T1): T1
@@ -65,7 +48,3 @@ export const partition = <
   )
 >(matrix: T, ...[d0, ...rest]: U): T =>
   d0 && isNdim(matrix) ? matrix.slice(...d0).map((x) => partition(x, ...rest)) as T : matrix
-
-export const newaxis = <T extends Matrix>(matrix: T, axis: number): T[] =>
-  zero(axis) || is0dim(matrix) ? [matrix] : matrix.map((x) => newaxis(x, axis - 1)) as T[]
-

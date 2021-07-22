@@ -4,7 +4,7 @@ import { error } from '../utils/function'
 import { shape } from './shape'
 import { arange } from '../creation/arange'
 import { empty } from '../utils/array'
-import { at } from './index'
+import { at } from '../core/at'
 import { len } from '../core/len'
 import { to1dim } from '../core/to1dim'
 

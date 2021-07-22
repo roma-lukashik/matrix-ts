@@ -9,7 +9,8 @@ import {
   NestedMatrices,
   NestedMatrix,
 } from '../types'
-import { at, newaxis } from '../geometry'
+import { at } from '../core/at'
+import { newaxis } from '../geometry/newaxis'
 import { sum } from '../aggregation/sum'
 import { error } from '../utils/function'
 import { first, zip } from '../utils/array'
