@@ -1,7 +1,8 @@
 import { MatrixAxes, MatrixN, SubMatrix } from '../types'
 import { len } from './len'
-import { error, nullish } from '../utils/function'
+import { error, not, nullish } from '../utils/function'
 import { matrixn } from './matrixn'
+import { empty } from '../utils/array'
 
 export const at = <
   T extends MatrixN,
@@ -17,7 +18,7 @@ const _at = <
   if (nullish(matrix[i])) {
     return error(`Index ${i} out of bounds [0, ${len(matrix) - 1}].`)
   }
-  return len(dn) > 0 ? at(matrixn(matrix[i]), ...dn) as U : matrix[i] as U
+  return not(empty(dn)) ? at(matrixn(matrix[i]), ...dn) as U : matrix[i] as U
 }
 
 const indexFromStart = (d0: number, matrix: MatrixN) => d0 < 0 ? len(matrix) + d0 : d0

@@ -22,7 +22,9 @@ export type MatrixSize<T extends Matrix> =
   T extends Matrix0 ? [] :
   T extends MeasurableMatrix ? [number, ...MatrixSize<NestedMatrix<T>>] : number[]
 
-export type MatrixAxes<T extends Matrix> = OptionalVector<MatrixSize<T>>
+export type MatrixAxes<T extends Matrix> =
+  T extends Matrix0 ? [] :
+  T extends MeasurableMatrix ? MatrixSize<T> | MatrixAxes<NestedMatrix<T>> : MatrixSize<T>
 
 export type SubMatrix<
   T extends Matrix,
@@ -40,9 +42,3 @@ export type Size2Matrix<T extends number[]> =
 
 type Tail<T extends number[]> = T extends [number, ...infer K] ? K extends number[] ? K : never : never
 
-type OptionalVector<T extends number[]> =
-  T extends [] ? [] :
-  T extends [number] ? [number?] :
-  T extends [number, number] ? [number?, number?] :
-  T extends [number, number, number] ? [number?, number?, number?] :
-  T extends [number, number, number, number] ? [number?, number?, number?, number?] : number[]

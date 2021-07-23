@@ -35,9 +35,9 @@ const aggregate = <
   T3 extends SubMatrix<T1, T2>,
 >(matrix: T1, [d0, ...dn]: T2, operator: Fn): T3 => {
   if (isNdim(matrix) && notnullish(d0)) {
-    return aggregate(broadcast(matrix, d0, operator), dn, operator)
+    return aggregate(broadcast(matrix, d0, operator), dn, operator) as T3
   }
-  return matrix as T3
+  return matrix as unknown as T3
 }
 
 const broadcast = (matrix: MatrixN, axis: number, operator: Fn): Matrix => {

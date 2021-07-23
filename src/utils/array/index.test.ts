@@ -1,21 +1,6 @@
-import { array, first, arrlen, zip } from '.'
-import { constant, identity } from '../function'
+import { first, arrlen, zip } from '.'
 
 describe('array', () => {
-  describe('#array', () => {
-    it('creates an empty array', () => {
-      expect(array(0, identity)).toEqual([])
-    })
-
-    it('creates [0, 1] array', () => {
-      expect(array(2, identity)).toEqual([0, 1])
-    })
-
-    it('creates [1, 1, 1] array', () => {
-      expect(array(3, constant(1))).toEqual([1, 1, 1])
-    })
-  })
-
   describe('#arrlen', () => {
     it('returns 0 for an empty array', () => {
       expect(arrlen([])).toBe(0)

@@ -1,11 +1,10 @@
 import { Matrix, Matrix1, Size2Matrix, Vector } from '../types'
 import { size } from '../core/size'
-import { error } from '../utils/function'
+import { error, not } from '../utils/function'
 import { shape } from './shape'
 import { arange } from '../creation/arange'
 import { empty } from '../utils/array'
 import { at } from '../core/at'
-import { len } from '../core/len'
 import { to1dim } from '../core/to1dim'
 
 export const reshape = <
@@ -23,4 +22,4 @@ const _reshape = <
 >(matrix: Matrix1, [d0, ...dn]: U, skip = 0): V =>
   arange(d0).map((i) => empty(dn) ? at(matrix, skip + i) : _reshape(matrix, dn, prod(dn) * i + skip)) as V
 
-const prod = (vector: number[]): number => len(vector) ? vector.reduce((a, b) => a * b) : 0
+const prod = (vector: number[]): number => not(empty(vector)) ? vector.reduce((a, b) => a * b) : 0
