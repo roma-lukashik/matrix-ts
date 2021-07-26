@@ -23,8 +23,8 @@ export type MatrixSize<T extends Matrix> =
   T extends MeasurableMatrix ? [number, ...MatrixSize<NestedMatrix<T>>] : number[]
 
 export type MatrixAxes<T extends Matrix> =
-  T extends Matrix0 ? [] :
-  T extends MeasurableMatrix ? MatrixSize<T> | MatrixAxes<NestedMatrix<T>> : MatrixSize<T>
+  T extends Matrix0 ? never :
+  T extends MeasurableMatrix ? MatrixSize<T> | MatrixAxes<NestedMatrix<T>> | [] : number[]
 
 export type SubMatrix<
   T extends Matrix,

@@ -12,8 +12,7 @@ export const at = <
 
 const _at = <
   T extends MatrixN,
-  K extends MatrixAxes<T>,
-  U extends SubMatrix<T, K>
+  U extends SubMatrix<T, MatrixAxes<T>>
 >(matrix: T, i: number, dn: number[]): U => {
   if (nullish(matrix[i])) {
     return error(`Index ${i} out of bounds [0, ${len(matrix) - 1}].`)
