@@ -1,14 +1,13 @@
 import { Matrix1, MatrixN, NestedMatrices, NestedMatrix } from '../types'
-import { at } from '../core/at'
 import { newaxis } from '../geometry/newaxis'
 import { error } from '../utils/function'
 import { zip } from '../utils/array'
 import { is1dim } from '../core/is1dim'
-import { matrix1 } from '../core/matrix1'
 import { is2dim } from '../core/is2dim'
 import { matrixn } from '../core/matrixn'
 import { shape } from '../geometry/shape'
 import { matmul2x2 } from './matmul2x2'
+import { compatible } from './compatible'
 
 type MatmulResult<
   T1 extends MatrixN,
@@ -38,7 +37,7 @@ export const matmul = <
   if (is2dim(b)) {
     return a.map((x) => matmul(matrixn(x), b)) as unknown as T3
   }
-  if (at(matrix1(shape(a)), -1) === at(matrix1(shape(b)), -2)) {
+  if (compatible(a, b)) {
     return zip(a, b).map(([x, y]) => matmul(matrixn(x), matrixn(y))) as T3
   }
   return error(`Shapes (${shape(a)}) and (${shape(b)}) are not aligned.`)

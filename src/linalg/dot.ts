@@ -5,11 +5,11 @@ import { is1dim } from '../core/is1dim'
 import { sum } from '../aggregation/sum'
 import { matrix1 } from '../core/matrix1'
 import { is2dim } from '../core/is2dim'
-import { at } from '../core/at'
 import { shape } from '../geometry/shape'
 import { error } from '../utils/function'
 import { matmul } from './matmul'
 import { matmul2x2 } from './matmul2x2'
+import { compatible } from './compatible'
 
 type DotResult <
   T1 extends Matrix,
@@ -46,7 +46,7 @@ export const dot = <
   if (is1dim(a)) {
     return b.map((y) => dot(a, y)) as T3
   }
-  if (at(matrix1(shape(a)), -1) === at(matrix1(shape(b)), -2)) {
+  if (compatible(a, b)) {
     return a.map((x) => dot(x, b)) as T3
   }
   return error(`Shapes (${shape(a)}) and (${shape(b)}) are not aligned.`)
