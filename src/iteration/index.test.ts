@@ -1,4 +1,6 @@
 import { neach } from './index'
+import { reshape } from '../geometry/reshape'
+import { arange } from '../creation/arange'
 
 describe('iteration', () => {
   describe('neach', () => {
@@ -9,13 +11,11 @@ describe('iteration', () => {
     })
 
     it('iterates over all matrix elements in a proper way', () => {
-      const m = [
-        [[0, 1], [2, 3]],
-        [[4, 5], [6, 7]],
-        [[8, 9], [10, 11]],
-      ]
+      const m = reshape(arange(12), [3, 2, 2])
+
       const args: [number, number, number, number][] = []
       neach(m, (...arg) => args.push(arg))
+
       expect(args).toEqual([
         [0, 0, 0, 0],
         [1, 0, 0, 1],
