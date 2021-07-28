@@ -5,11 +5,11 @@ describe('matmul', () => {
     const a = [[1, 2], [3, 4]]
     const b = [2, 4]
 
-    it('AxB', ()  => {
+    it('AxB', () => {
       expect(matmul(a, b)).toEqual([10, 22])
     })
 
-    it('BxA', ()  => {
+    it('BxA', () => {
       expect(matmul(b, a)).toEqual([14, 20])
     })
   })
@@ -18,11 +18,11 @@ describe('matmul', () => {
     const a = [[1, 2], [3, 4]]
     const b = [[5, 6], [7, 8]]
 
-    it('AxB', ()  => {
+    it('AxB', () => {
       expect(matmul(a, b)).toEqual([[19, 22], [43, 50]])
     })
 
-    it('BxA', ()  => {
+    it('BxA', () => {
       expect(matmul(b, a)).toEqual([[23, 34], [31, 46]])
     })
   })
@@ -43,7 +43,7 @@ describe('matmul', () => {
       [2, 3],
     ]
 
-    it('AxB', ()  => {
+    it('AxB', () => {
       expect(matmul(a, b)).toEqual([
         [
           [2, 3],
@@ -56,7 +56,7 @@ describe('matmul', () => {
       ])
     })
 
-    it('BxA', ()  => {
+    it('BxA', () => {
       expect(matmul(b, a)).toEqual([
         [
           [2, 3],
@@ -129,13 +129,13 @@ describe('matmul', () => {
   })
 
   describe('throws en error', () => {
-    it('A=(2, 2) B=(1, 2)', ()  => {
+    it('A=(2, 2) B=(1, 2)', () => {
       const a = [[1, 2], [3, 4]]
       const b = [[2, 4]]
       expect(() => matmul(a, b)).toThrowError('Input operand does not have enough dimensions.')
     })
 
-    it('A=(2, 2) B=(1, 3)', ()  => {
+    it('A=(2, 2) B=(1, 3)', () => {
       const a = [[1, 2], [3, 4]]
       const b = [[2], [4], [5]]
       expect(() => matmul(b, a)).toThrowError('Input operand does not have enough dimensions.')

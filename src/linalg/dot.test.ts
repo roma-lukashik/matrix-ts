@@ -66,11 +66,11 @@ describe('dot', () => {
     const a = [[1, 2], [3, 4]]
     const b = [[5, 6], [7, 8]]
 
-    it('AxB', ()  => {
+    it('AxB', () => {
       expect(dot(a, b)).toEqual([[19, 22], [43, 50]])
     })
 
-    it('BxA', ()  => {
+    it('BxA', () => {
       expect(dot(b, a)).toEqual([[23, 34], [31, 46]])
     })
   })

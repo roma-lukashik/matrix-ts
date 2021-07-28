@@ -1,5 +1,5 @@
 import { Matrix, NestedMatrices } from '../types'
-import {BinaryOperator } from '../utils/math'
+import { BinaryOperator } from '../utils/math'
 import { broadcast } from './broadcast'
 
 type MatrixBinaryOperator = <

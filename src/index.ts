@@ -42,5 +42,5 @@ export type {
   Matrix2,
   Matrix3,
   Matrix4,
-  MatrixN
+  MatrixN,
 } from './types'
