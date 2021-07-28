@@ -28,7 +28,7 @@ jobs:
           pkg-manager: yarn
       - run:
           name: Run tests
-          command: yarn test -- -w=1
+          command: yarn test --w=1
 
 workflows:
   # Below is the definition of your workflow.
