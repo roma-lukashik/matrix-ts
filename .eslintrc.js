@@ -1,17 +1,17 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "es2021": true
+    'env': {
+        'browser': true,
+        'es2021': true
     },
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": 12,
-        "sourceType": "module"
+    'parser': '@typescript-eslint/parser',
+    'parserOptions': {
+        'ecmaVersion': 12,
+        'sourceType': 'module'
     },
-    "plugins": [
-        "@typescript-eslint"
+    'plugins': [
+        '@typescript-eslint'
     ],
-    "rules": {
+    'rules': {
       'no-extra-semi': 'error',
       'semi': ['error', 'never'],
       'comma-dangle': ['error', 'always-multiline'],
