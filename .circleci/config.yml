@@ -30,6 +30,10 @@ jobs:
           name: Run tests
           command: yarn test --w=1
 
+      - run:
+          name: Run linter
+          command: yarn lint
+
 workflows:
   # Below is the definition of your workflow.
   # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
