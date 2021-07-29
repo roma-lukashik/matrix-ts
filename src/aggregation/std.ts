@@ -1,7 +1,8 @@
 import { AggregateMatrixOperator } from './common'
 import { mean } from './mean'
 import { meankeepdim } from './meankeepdim'
-import { pow2, sqrt } from '../math'
+import { pow2 } from '../math/pow2'
+import { sqrt } from '../math/sqrt'
 import { subtract } from '../binary-operation/subtract'
 
 /**

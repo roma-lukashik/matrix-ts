@@ -31,10 +31,15 @@ export * from './geometry/partition'
 export * from './geometry/reshape'
 export * from './geometry/shape'
 export * from './geometry/transpose'
-export * from './iteration'
+export * from './iteration/neach'
+export * from './iteration/nmap'
 export * from './linalg/matmul'
 export * from './linalg/dot'
-export * from './math'
+export * from './math/abs'
+export * from './math/exp'
+export * from './math/log'
+export * from './math/pow2'
+export * from './math/sqrt'
 export type {
   Matrix,
   Matrix0,
